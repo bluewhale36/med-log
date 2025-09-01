@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>약 정보 보기 및 수정</title>
+    <link rel="stylesheet" href="/css/medication/edit.css" />
+    <script src="/js/medication/edit/edit-mode.js" defer></script>
+</head>
+<body>
+<div class="header-row">
+    <h1>약 정보</h1>
+    <button id="edit-toggle-btn" type="button">수정</button>
+</div>
+<form id="medication-edit-form">
+    <fieldset id="edit-notify" style="display: none">
+        <legend style="color: crimson">WARNING</legend>
+        <div class="input-row">
+            <span>You are Editing Medication Information</span>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>약 정보</legend>
+        <div class="input-row">
+            <label>약 명 :
+                <input type="text" th:value="${medDTO.medName}" disabled>
+            </label>
+            <label>약 형태 :
+                <input type="text" th:value="${medDTO.medType.title}" disabled>
+            </label>
+            <label>사용량 :
+                <input type="text" th:value="${medDTO.doseAmount}" disabled>
+            </label>
+            <label>사용량 단위 :
+                <input type="text" th:value="${medDTO.doseUnit.title}" disabled>
+            </label>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>복용 주기</legend>
+        <div class="input-row">
+            <label>주기 종류 :
+                <input type="text" th:value="|${medDTO.doseFrequency.doseFrequencyType.title} (ex.${medDTO.doseFrequency.doseFrequencyType.placeholder})|" disabled>
+            </label>
+        </div>
+        <div class="day-time-set">
+            <p th:text="${medDTO.doseFrequency.doseFrequencyDetail}">월, 수, 금 오전 9시</p>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>복용 기간</legend>
+        <div class="input-row">
+            <label>시작 일자 :
+                <input type="date" name="startedOn" th:value="${medDTO.startedOn}" disabled>
+            </label>
+            <label>종료 일자 :
+                <input type="date" name="endedOn" th:value="${medDTO.endedOn}" disabled>
+            </label>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>기타 정보</legend>
+        <label>복약 지도:
+            <textarea name="instruction" rows="5" th:text="${medDTO.instruction}" disabled></textarea>
+        </label>
+        <div class="input-row">
+            <label>효과 :
+                <input type="text" name="effect" th:value="${medDTO.effect}" disabled>
+            </label>
+            <label>부작용 :
+                <input type="text" name="sideEffect" th:value="${medDTO.sideEffect}" disabled>
+            </label>
+        </div>
+    </fieldset>
+
+    <!-- 수정 모드 진입 시 노출 -->
+    <div class="edit-mode-buttons" style="display: none;">
+        <button type="submit">저장</button>
+        <button type="button" id="cancel-edit-btn">취소</button>
+    </div>
+
+    <div class="persistent-buttons">
+        <button type="button">보관</button>
+        <button type="button" style="background-color: crimson;">삭제</button>
+    </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Med Intake Record Main Page</h1>
+
+<ul>
+  <li th:each="medDTO : ${medDTOList}">
+    <span th:text="${medDTO.medName}"></span>
+    <span th:text="${medDTO.getDoseFrequency().getDoseFrequencyType().title}"></span>
+    <span th:text="${medDTO.getDoseFrequency().getDoseFrequencyDetail()}"></span>
+  </li>
+</ul>
+</body>
+</html>

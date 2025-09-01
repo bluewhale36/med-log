@@ -1,0 +1,100 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #111111;
+    --input-bg: #f4f4f4;
+    --input-border: #cccccc;
+    --primary-color: #1976d2;
+    --button-bg: #1976d2;
+    --button-text: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #121212;
+        --text-color: #eeeeee;
+        --input-bg: #1e1e1e;
+        --input-border: #444444;
+        --primary-color: #64b5f6;
+        --button-bg: #64b5f6;
+        --button-text: #000000;
+    }
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+form {
+    background-color: var(--input-bg);
+    padding: 20px;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+}
+
+fieldset {
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    padding: 12px;
+}
+
+legend {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+input[type="submit"] {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 4px;
+    box-sizing: border-box;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+input[type="submit"] {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    margin-top: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    opacity: 0.9;
+}
+
+input[type="radio"] {
+    margin-right: 4px;
+}
+
+#toggle-password {
+    margin-right: 6px;
+    vertical-align: middle;
+}

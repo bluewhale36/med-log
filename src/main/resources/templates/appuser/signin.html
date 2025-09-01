@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/appuser/login_and_signin.css" />
+</head>
+<body>
+<h1>Sign in Page</h1>
+
+<form action="/appuser/signin" method="post">
+    <fieldset>
+        <legend>아이디, 비밀번호</legend>
+        <label>username
+            <input type="text" name="username">
+        </label>
+        <br>
+        <label>password
+            <input type="password" name="password">
+        </label>
+    </fieldset>
+    <fieldset>
+        <legend>기본 정보</legend>
+        <label>name
+            <input type="text" name="name">
+        </label>
+        <br>
+        <label>email
+            <input type="email" name="email">
+        </label>
+        <br>
+        <label>birthdate
+            <input type="date" name="birthdate">
+        </label>
+        <br>
+        <span>gender<br/>
+            <label th:each="gender : ${genderList}">
+                <input type="radio" name="gender" th:value="${gender.name}" />
+                <span th:text="${gender.gender}"></span>
+            </label>
+        </span>
+    </fieldset>
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>

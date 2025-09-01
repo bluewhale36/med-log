@@ -1,0 +1,143 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+body {
+    background: #f9f9f9;
+    color: #333;
+    padding: 1rem;
+}
+
+header h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+}
+
+main {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ✅ section 요소 */
+section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    flex: 1;
+    min-width: 300px;
+}
+
+.row {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap; /* 요소 수 초과 시 줄바꿈 */
+    margin-bottom: 2rem;
+}
+
+/* ✅ 비율 제한 클래스 */
+.col-1-2 {
+    flex: 0 0 50%;
+}
+
+.col-1-3 {
+    flex: 0 0 33.3333%;
+}
+
+.col-2-3 {
+    flex: 0 0 66.6667%;
+}
+
+.col-1-4 {
+    flex: 0 0 25%;
+}
+
+.col-3-4 {
+    flex: 0 0 75%;
+}
+
+.medication-list ul,
+.hospital-records ul,
+.intake-schedule ul {
+    list-style: none;
+    margin-top: 1rem;
+}
+
+.medication-list li,
+.hospital-records li,
+.intake-schedule li {
+    padding: 0.8rem;
+    border-bottom: 1px solid #eee;
+}
+
+.stats-graph {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 120px;
+    margin-top: 1rem;
+}
+
+.bar {
+    width: 12%;
+    background: #4caf50;
+    transition: height 0.3s ease-in-out;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ✅ 버튼 공통 스타일 */
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #1976d2;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1565c0;
+}
+
+/* 📱 반응형 */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+
+    .stats-graph {
+        height: 100px;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+    }
+
+    .col-1-2,
+    .col-1-3,
+    .col-2-3,
+    .col-1-4,
+    .col-3-4 {
+        flex: 0 0 100%;
+    }
+}

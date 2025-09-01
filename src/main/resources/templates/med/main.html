@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>복용 중인 약 목록</title>
+    <link rel="stylesheet" href="/css/medication/list.css">
+</head>
+<body>
+<h1>복용 중인 약</h1>
+
+<div class="medication-list">
+    <div class="medication-card" th:each="med : ${medDTOList}">
+        <div class="card-header">
+            <h2 th:text="${med.medName}">약 이름</h2>
+            <span class="med-type" th:text="${med.medType.title}">정제</span>
+        </div>
+
+        <div class="card-body">
+            <p><strong>용량:</strong> <span th:text="${med.doseAmount}">500</span> <span th:text="${med.doseUnit.title}">mg</span></p>
+            <p><strong>복용 기간:</strong>
+                <span th:text="${med.startedOn}">2025-08-01</span> ~
+                <span th:text="${med.endedOn}">2025-12-31</span>
+            </p>
+            <p><strong>복용 주기:</strong> <span th:text="${med.doseFrequency.doseFrequencyType.title}">특정 요일</span></p>
+            <p th:text="${med.doseFrequency.doseFrequencyDetail}">월, 수, 금 오전 9시</p>
+        </div>
+
+        <div class="card-footer">
+            <a th:href="@{/med/{medUuid}(medUuid=${med.medUuid.value})}">
+                <button type="button">details</button>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

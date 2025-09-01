@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/appuser/login_and_signin.css" />
+</head>
+<body>
+<h1>Login Page</h1>
+
+<form action="/appuser/login" method="post">
+    <label>username
+        <input type="text" name="username">
+    </label>
+    <br/>
+    <label>password
+        <input type="password" name="password" id="password-input">
+    </label>
+    <br/>
+    <label>
+        <input type="checkbox" id="toggle-password"> 비밀번호 보기
+    </label>
+    <br/>
+    <input type="submit" value="Log In">
+</form>
+</body>
+</html>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const passwordInput = document.getElementById("password-input");
+        const toggle = document.getElementById("toggle-password");
+
+        toggle.addEventListener("change", () => {
+            passwordInput.type = toggle.checked ? "text" : "password";
+        });
+    });
+</script>

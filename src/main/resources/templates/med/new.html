@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Register Medication</title>
+  <script src="/js/medication/new/validation.js" defer></script>
+  <script src="/js/medication/new/formsubmit.js" defer></script>
+  <script src="/js/medication/new/theme.js" defer></script>
+  <link rel="stylesheet" href="/css/medication/new.css" />
+</head>
+<body>
+<h1>Register new Medication</h1>
+<button id="theme-toggle-btn" type="button">🌙 다크 모드</button>
+
+<form id="medication-form">
+
+  <!-- 현재 로그인 사용자 UUID 식별자 -->
+  <input type="hidden" name="appUserUuid" th:value="${appUserUuid}">
+
+  <!-- 병원 방문 기록 선택 영역 -->
+  <fieldset id="hvr-field">
+    <legend>병원 방문 기록 선택</legend>
+    <th:block th:each="hvrDTO : ${hvrDTOList}">
+      <label>
+        <input type="radio" class="visit-record-radio" name="visitUuid" th:value="${hvrDTO.getVisitUuid().asString()}">
+        <input type="datetime-local" style="display: none;" th:value="${hvrDTO.getConsultedAt()}" />
+        <span th:text="|${hvrDTO.getHospitalName()}, ${hvrDTO.getConsultedAt()}, ${hvrDTO.getDiagnosis()}|"></span>
+      </label>
+      <br/>
+    </th:block>
+  </fieldset>
+
+  <!-- 약 기본 정보 입력 영역 -->
+  <fieldset>
+    <legend>약 정보 입력</legend>
+    <div class="input-row">
+      <label>약 명 :
+        <input type="text" name="medName">
+      </label>
+      <label>약 형태 :
+        <select name="medType">
+          <optgroup th:each="form : ${medFormList}" th:label="${form.title}">
+              <option th:each="type : ${medTypeList}"
+                      th:if="${type.medForm.equals(form)}"
+                      th:value="${type.name}"
+                      th:text="${type.title}">
+              </option>
+          </optgroup>
+        </select>
+      </label>
+      <label>사용량 :
+        <input type="number" name="doseAmount" min="0">
+      </label>
+      <label>사용량 단위 :
+        <select name="doseUnit">
+          <option th:each="unit : ${doseUnitList}" th:value="${unit.name()}" th:text="${unit.title}"></option>
+        </select>
+      </label>
+    </div>
+  </fieldset>
+
+  <!-- 약 복용 주기 선택 -->
+  <fieldset>
+    <legend>주기 종류 선택</legend>
+    <th:block th:each="type : ${frequencyTypeList}">
+      <label>
+        <input type="radio" name="frequencyType"
+               th:value="${type.name()}"
+               class="dose-frequency-type-radio"
+               th:id="${'type-' + type.name()}">
+        <span th:text="${type.title}"></span>
+        <small class="info" th:text="${type.placeholder}"></small>
+      </label>
+      <br/>
+    </th:block>
+  </fieldset>
+
+  <!-- 약 복용 주기 상세 정보 입력 -->
+  <fieldset>
+    <legend>복용 주기 상세 정보 입력</legend>
+    <!-- 공통 복용 시간 영역 -->
+    <div id="time-section" class="detail-section">
+      <label>복용 시간:
+        <div id="time-input-container"></div>
+        <button type="button" id="add-time-btn">+ 시간 추가</button>
+      </label>
+    </div>
+
+    <!-- CYCLICAL 영역 -->
+    <div id="detail-CYCLICAL" class="detail-section">
+      <label>복용 기간: <input type="number" id="onDuration" min="1"/></label>
+      <label>휴약 기간: <input type="number" id="offDuration" min="1"/></label>
+      <label>단위:
+        <select id="cycleUnit">
+          <option value="DAY">일</option>
+          <option value="WEEK">주</option>
+        </select>
+      </label>
+    </div>
+
+    <!-- INTERVAL 영역 -->
+    <div id="detail-INTERVAL" class="detail-section">
+      <label>간격(일): <input type="number" id="interval" min="1"/></label>
+    </div>
+
+    <!-- SPECIFIC_DAYS 영역 -->
+    <div id="detail-SPECIFIC_DAYS" class="detail-section">
+      <label>요일 + 복용 시간 설정:</label>
+      <div id="specific-days-container"></div>
+      <button type="button" id="add-day-time-set-btn">+ 세트 추가</button>
+    </div>
+
+    <!-- AS_NEEDED 영역 -->
+    <div id="detail-AS_NEEDED" class="detail-section">
+      <span style="color: #999999">추가 입력할 정보가 없습니다.</span>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>복용 기간</legend>
+    <div class="input-row">
+      <label>시작 일자
+        <input type="date" id="dose-start-on-input" name="startedOn">
+      </label>
+      <label>종료 일자
+        <input type="date" name="endedOn">
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>기타 정보</legend>
+    <label>복약 지도
+      <textarea name="instruction" cols="30" rows="10"></textarea>
+    </label>
+    <div class="input-row">
+      <label>효과
+        <input type="text" name="effect">
+      </label>
+      <label>부작용
+        <input type="text" name="sideEffect">
+      </label>
+    </div>
+  </fieldset>
+
+  <button type="submit">등록</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Hospital Visit Main Page</h1>
+
+<a href="/hospital/visit/register">Register new visit log</a>
+
+<hr/>
+
+<th:block th:each="hvrDTO : ${hvrDTOList}">
+    <a th:href="@{/hospital/visit/{hvrUuid}(hvrUuid=${hvrDTO.getVisitUuid().asString()})}">
+        <div th:text="${hvrDTO}"></div>
+    </a>
+    <br/>
+</th:block>
+</body>
+</html>

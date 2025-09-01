@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>약 복용 관리 홈</title>
+    <link rel="stylesheet" href="/css/home.css" />
+</head>
+<body>
+<header>
+    <h1>약 복용 관리</h1>
+    <button sec:authorize="!isAuthenticated()"><a href="/appuser/login">로그인</a></button>
+    <button sec:authorize="!isAuthenticated()"><a href="/appuser/signin">회원가입</a></button>
+    <button sec:authorize="isAuthenticated()"><a href="/appuser/logout">로그아웃</a></button>
+</header>
+
+<main>
+    <section class="medication-list">
+        <div class="header-row">
+            <h2>복용 중인 약</h2>
+            <button id="medRecordBtn" class="btn btn-primary">
+                <a href="/med/new">약 등록하기</a>
+            </button>
+        </div>
+        <ul id="medList">
+            <!-- JS로 동적 삽입 -->
+            <li th:each="medDTO : ${medDTOList}">
+                <span th:text="${medDTO.getMedName()}"></span>
+                <span th:text="|${medDTO.getDoseAmount()}${medDTO.getDoseUnit().getTitle()}|"></span>
+            </li>
+            <li th:if="${medDTOList.size() == 0}">
+                <span>복용 중인 약이 없습니다.</span>
+            </li>
+        </ul>
+    </section>
+
+    <section class="medication-stats">
+        <div class="header-row">
+            <h2>이번주 복용 현황</h2>
+            <button class="btn btn-primary">
+                <a href="/med/intake">복용 기록하기</a>
+            </button>
+        </div>
+        <div class="stats-graph" id="weeklyStats">
+            <!-- JS로 그래프 삽입 -->
+        </div>
+    </section>
+
+    <section class="hospital-records">
+        <div class="header-row">
+            <h2>최근 병원 방문 기록</h2>
+            <button id="visitRecordBtn" class="btn btn-primary">
+                <a href="/hospital/visit/register">병원 기록하기</a>
+            </button>
+        </div>
+        <ul id="visitList">
+            <!-- JS로 동적 삽입 -->
+            <li th:each="hvrDTO : ${hvrDTOList}">
+                <span th:text="${hvrDTO.getConsultedAt()}"></span>
+                <span th:text="${hvrDTO.getHospitalName()}"></span>
+            </li>
+            <li th:if="${hvrDTOList.size() == 0}">
+                <span>병원 방문 기록이 없습니다.</span>
+            </li>
+        </ul>
+    </section>
+</main>
+
+</body>
+</html>
+<script>
+    // Mock 데이터
+    const weeklyStats = [1, 1, 0, 1, 1, 0, 1]; // 최근 7일 복용 여부 (1=복용, 0=미복용)
+
+    window.onload = () => {
+
+        const statsContainer = document.getElementById("weeklyStats");
+        weeklyStats.forEach(value => {
+            const bar = document.createElement("div");
+            bar.className = "bar";
+            bar.style.height = value ? "100%" : "20%";
+            statsContainer.appendChild(bar);
+        });
+
+        document.getElementById("recordVisitBtn").onclick = () => {
+            alert("병원 방문 기록 입력 페이지로 이동합니다.");
+            // location.href = "/visit/new"; // 실제 구현 시 라우팅 처리
+        };
+    };
+</script>
