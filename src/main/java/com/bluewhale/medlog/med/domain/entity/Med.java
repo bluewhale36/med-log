@@ -73,7 +73,7 @@ public class Med {
 
     @OneToMany(
             fetch = FetchType.LAZY,
-            cascade = CascadeType.REMOVE, orphanRemoval = true,
+            cascade = CascadeType.ALL, orphanRemoval = true,
             mappedBy = "med"
     )
     private List<MedIntakeSnapshot> medIntakeSnapshotList;

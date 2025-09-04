@@ -57,8 +57,8 @@ public class AppUser {
 
     @OneToMany(
             fetch = FetchType.EAGER,
-            cascade = CascadeType.REMOVE, orphanRemoval = true,
-            mappedBy = "app_user"
+            cascade = CascadeType.ALL, orphanRemoval = true,
+            mappedBy = "appUser"
     )
     private List<AppUserRole> appUserRole;
 
