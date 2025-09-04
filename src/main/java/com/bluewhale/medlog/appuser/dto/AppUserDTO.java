@@ -7,12 +7,10 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
 public class AppUserDTO {
@@ -25,7 +23,6 @@ public class AppUserDTO {
     private LocalDate birthdate;
     private Gender gender;
     private LocalDateTime enrolledAt;
-    private List<AppUserMetricLogDTO> appUserMetricLogDTOList;
 
     public static AppUserDTO from(AppUser entity) {
         return AppUserDTO.builder()
@@ -37,7 +34,6 @@ public class AppUserDTO {
                 .birthdate(entity.getBirthdate())
                 .gender(entity.getGender())
                 .enrolledAt(entity.getEnrolledAt())
-                .appUserMetricLogDTOList(null)
                 .build();
     }
 }

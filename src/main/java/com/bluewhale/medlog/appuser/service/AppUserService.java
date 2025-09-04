@@ -7,7 +7,7 @@ import com.bluewhale.medlog.security.enums.IsLocked;
 import com.bluewhale.medlog.security.enums.Role;
 import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.appuser.domain.entity.AppUserRole;
-import com.bluewhale.medlog.appuser.dto.AppUserSignInDTO;
+import com.bluewhale.medlog.appuser.dto.AppUserRegisterDTO;
 import com.bluewhale.medlog.appuser.repository.AppUserRepository;
 import com.bluewhale.medlog.appuser.repository.AppUserRoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class AppUserService {
     private final AppUserRepository appUserRepository;
     private final AppUserRoleRepository appUserRoleRepository;
 
-    public void registerNewUser(AppUserSignInDTO dto) {
+    public void registerNewUser(AppUserRegisterDTO dto) {
         String uuid = UUID.randomUUID().toString();
 
         AppUser user = AppUser.builder()

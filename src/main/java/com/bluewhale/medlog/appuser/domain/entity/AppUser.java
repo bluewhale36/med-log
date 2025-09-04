@@ -1,5 +1,7 @@
 package com.bluewhale.medlog.appuser.domain.entity;
 
+import com.bluewhale.medlog.appuser.dto.AppUserRegisterDTO;
+import com.bluewhale.medlog.appuser.dto.AppUserUpdateDTO;
 import com.bluewhale.medlog.security.converter.IsEnabledConverter;
 import com.bluewhale.medlog.security.converter.IsLockedConverter;
 import com.bluewhale.medlog.security.enums.IsEnabled;
@@ -13,6 +15,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -57,7 +60,32 @@ public class AppUser {
             cascade = CascadeType.REMOVE, orphanRemoval = true,
             mappedBy = "app_user"
     )
-    @JoinColumn(name = "app_user_id")
     private List<AppUserRole> appUserRole;
+
+    public static AppUser create(AppUserRegisterDTO dto, String encodedPassword) {
+        return AppUser.builder()
+                .appUserId(null)
+                .appUserUuid(new AppUserUuid(UUID.randomUUID().toString()))
+                .username(dto.getUsername())
+                .password(encodedPassword)
+                .name(dto.getName())
+                .email(dto.getEmail())
+                .birthdate(dto.getBirthdate())
+                .gender(dto.getGender())
+                .isEnabled(IsEnabled.ENABLED)
+                .isLocked(IsLocked.UNLOCKED)
+                .enrolledAt(null)
+                .appUserRole(null)
+                .build();
+    }
+
+    public void update(AppUserUpdateDTO dto) {
+        this.username = dto.getUsername();
+        this.password = dto.getPassword();
+        this.name = dto.getName();
+        this.email = dto.getEmail();
+        this.birthdate = dto.getBirthdate();
+        this.gender = dto.getGender();
+    }
 
 }

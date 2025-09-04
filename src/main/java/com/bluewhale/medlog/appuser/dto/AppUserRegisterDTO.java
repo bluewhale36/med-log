@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Getter
 @ToString
-public class AppUserSignInDTO {
+public class AppUserRegisterDTO {
 
     private final String username;
     private final String password;

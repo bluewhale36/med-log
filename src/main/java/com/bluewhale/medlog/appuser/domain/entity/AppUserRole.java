@@ -23,4 +23,6 @@ public class AppUserRole {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+
 }

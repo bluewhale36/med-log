@@ -1,6 +1,6 @@
 package com.bluewhale.medlog.appuser.controller;
 
-import com.bluewhale.medlog.appuser.dto.AppUserSignInDTO;
+import com.bluewhale.medlog.appuser.dto.AppUserRegisterDTO;
 import com.bluewhale.medlog.appuser.service.AppUserService;
 import com.bluewhale.medlog.appuser.enums.Gender;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class AppUserController {
     }
 
     @PostMapping("/signin")
-    public String registerNewUser(@ModelAttribute AppUserSignInDTO dto) {
+    public String registerNewUser(@ModelAttribute AppUserRegisterDTO dto) {
         System.out.println(dto);
         appUserService.registerNewUser(dto);
         return "redirect:/";
