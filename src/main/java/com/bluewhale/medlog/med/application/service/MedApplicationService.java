@@ -8,6 +8,7 @@ import com.bluewhale.medlog.med.application.usecase.medintakesnapshot.CreateOrMo
 import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.med.dto.MedTimeModifyDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +29,10 @@ public class MedApplicationService {
     private final GetMedIntakeRecordViewDTOListUseCase_Impl getMedIntakeRecordViewDTOListUseCase;
     private final ModifyMedTimeInfoUseCase_Impl modifyMedTimeInfoUseCase;
 
+    @Transactional(rollbackOn = Exception.class)
     public void registerNewMed(Map<String, Object> payload) {
         MedDTO insertedMedDTO = regiNewMedUseCase.execute(payload);
-        createOrModifyNewMedSnapshotUseCase.execute(insertedMedDTO);
+        createOrModifyNewMedSnapshotUseCase.execute(insertedMedDTO.getAppUserUuid());
     }
 
     public List<MedIntakeRecordDayViewDTO> getDTOListForIntakeRecord(AppUserUuid appUserUuid) {

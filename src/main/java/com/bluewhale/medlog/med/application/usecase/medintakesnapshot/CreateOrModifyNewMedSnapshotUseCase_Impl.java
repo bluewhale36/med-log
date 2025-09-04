@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CreateOrModifyNewMedSnapshotUseCase_Impl implements IF_UseCase<MedDTO, Void> {
+public class CreateOrModifyNewMedSnapshotUseCase_Impl implements IF_UseCase<AppUserUuid, Void> {
 
     private final MedIntakeSnapshotService misServ;
 
     @Override
-    public Void execute(MedDTO input) {
-//        misServ.generateMedIntakeSnapshotByAppUserUuidForAfter14Days(input);
+    public Void execute(AppUserUuid input) {
+        misServ.generateMedIntakeSnapshotByAppUserUuidForAfter14Days(input);
         return null;
     }
 }

@@ -39,7 +39,7 @@ public class MedAggregationService {
         Med entity = medRepo.findById(medId).orElseThrow(
                 () -> new IllegalArgumentException(String.format("Medication for MedUuid %s not found", medId))
         );
-        VisitUuid visitUuid = hvrQServ.getUuidById(entity.getVisitId());
+        VisitUuid visitUuid = entity.getVisitId() != null ? hvrQServ.getUuidById(entity.getVisitId()) : null;
         AppUserUuid appUserUuid = appUserQServ.getUuidById(entity.getAppUserId());
         List<MedIntakeRecordAggregationDTO> mirFullDTOList = mirFServ.getMirFullDTOListByMedId(medId);
 
