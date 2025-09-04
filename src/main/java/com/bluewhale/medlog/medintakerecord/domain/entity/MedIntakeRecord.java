@@ -1,5 +1,6 @@
 package com.bluewhale.medlog.medintakerecord.domain.entity;
 
+import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.persistence.MedUuidConverter;
 import com.bluewhale.medlog.medintakerecord.domain.value.MedIntakeRecordUuid;
 import jakarta.persistence.*;
@@ -23,8 +24,9 @@ public class MedIntakeRecord {
     @Convert(converter = MedUuidConverter.class)
     private MedIntakeRecordUuid medIntakeRecordUuid;
 
-    @Column(name = "med_id")
-    private Long medId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "med_id")
+    private Med med;
 
     private boolean isTaken;
 

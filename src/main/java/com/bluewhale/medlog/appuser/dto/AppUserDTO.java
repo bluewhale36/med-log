@@ -1,5 +1,6 @@
 package com.bluewhale.medlog.appuser.dto;
 
+import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.enums.Gender;
 import lombok.*;
@@ -25,4 +26,18 @@ public class AppUserDTO {
     private Gender gender;
     private LocalDateTime enrolledAt;
     private List<AppUserMetricLogDTO> appUserMetricLogDTOList;
+
+    public static AppUserDTO from(AppUser entity) {
+        return AppUserDTO.builder()
+                .appUserUuid(entity.getAppUserUuid())
+                .username(entity.getUsername())
+                .password(null)
+                .name(entity.getName())
+                .email(entity.getEmail())
+                .birthdate(entity.getBirthdate())
+                .gender(entity.getGender())
+                .enrolledAt(entity.getEnrolledAt())
+                .appUserMetricLogDTOList(null)
+                .build();
+    }
 }

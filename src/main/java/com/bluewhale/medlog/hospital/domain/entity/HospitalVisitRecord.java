@@ -1,5 +1,6 @@
 package com.bluewhale.medlog.hospital.domain.entity;
 
+import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.hospital.domain.persistence.VisitUuidConverter;
 import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
 import jakarta.persistence.*;
@@ -22,7 +23,9 @@ public class HospitalVisitRecord {
     @Convert(converter = VisitUuidConverter.class)
     private VisitUuid visitUuid;
 
-    private Long appUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "app_user_id")
+    private AppUser appUser;
 
     private String hospitalName;
 

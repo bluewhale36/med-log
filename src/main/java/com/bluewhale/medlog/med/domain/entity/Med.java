@@ -1,5 +1,7 @@
 package com.bluewhale.medlog.med.domain.entity;
 
+import com.bluewhale.medlog.appuser.domain.entity.AppUser;
+import com.bluewhale.medlog.hospital.domain.entity.HospitalVisitRecord;
 import com.bluewhale.medlog.med.domain.persistence.DoseFrequencyConverter;
 import com.bluewhale.medlog.med.domain.persistence.MedUuidConverter;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
@@ -7,6 +9,7 @@ import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
 import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
+import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,9 +33,13 @@ public class Med {
     @Convert(converter = MedUuidConverter.class)
     private MedUuid medUuid;
 
-    private Long visitId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "visit_id")
+    private HospitalVisitRecord hospitalVisitRecord;
 
-    private Long appUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "app_user_id")
+    private AppUser appUser;
 
     private String medName;
 
@@ -56,4 +63,18 @@ public class Med {
     private LocalDate startedOn;
 
     private LocalDate endedOn;
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE, orphanRemoval = true,
+            mappedBy = "med"
+    )
+    private List<MedIntakeRecord> medIntakeRecordList;
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE, orphanRemoval = true,
+            mappedBy = "med"
+    )
+    private List<MedIntakeSnapshot> medIntakeSnapshotList;
 }

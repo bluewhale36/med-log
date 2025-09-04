@@ -52,7 +52,11 @@ public class AppUser {
 
     private LocalDateTime enrolledAt;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.REMOVE, orphanRemoval = true,
+            mappedBy = "app_user"
+    )
     @JoinColumn(name = "app_user_id")
     private List<AppUserRole> appUserRole;
 

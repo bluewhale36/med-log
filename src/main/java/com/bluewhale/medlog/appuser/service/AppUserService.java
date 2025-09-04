@@ -2,7 +2,6 @@ package com.bluewhale.medlog.appuser.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.dto.AppUserDTO;
-import com.bluewhale.medlog.appuser.mapper.AppUserMapper;
 import com.bluewhale.medlog.security.enums.IsEnabled;
 import com.bluewhale.medlog.security.enums.IsLocked;
 import com.bluewhale.medlog.security.enums.Role;
@@ -22,8 +21,6 @@ import java.util.UUID;
 public class AppUserService {
 
     private final PasswordEncoder passwordEncoder;
-
-    private final AppUserMapper appUserMapper;
 
     private final AppUserConvertService_Impl appUSerQServ;
 

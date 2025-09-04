@@ -1,5 +1,7 @@
 package com.bluewhale.medlog.medintakesnapshot.domain.entity;
 
+import com.bluewhale.medlog.appuser.domain.entity.AppUser;
+import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.medintakesnapshot.domain.persistence.PolicyTracerConverter;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateTracer;
 import jakarta.persistence.*;
@@ -23,9 +25,13 @@ public class MedIntakeSnapshot {
 
     private LocalDate snapshotDate;
 
-    private Long appUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "app_user_id")
+    private AppUser appUser;
 
-    private Long medId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "med_id")
+    private Med med;
 
     private boolean shouldTake;
 
