@@ -5,6 +5,7 @@ import com.bluewhale.medlog.hospital.domain.entity.HospitalVisitRecord;
 import com.bluewhale.medlog.med.domain.persistence.DoseFrequencyConverter;
 import com.bluewhale.medlog.med.domain.persistence.MedUuidConverter;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
+import com.bluewhale.medlog.med.dto.MedRegisterDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
@@ -15,13 +16,14 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 @Table(name = "med")
 public class Med {
 
@@ -77,4 +79,23 @@ public class Med {
             mappedBy = "med"
     )
     private List<MedIntakeSnapshot> medIntakeSnapshotList;
+
+    public static Med create(MedRegisterDTO dto, AppUser appUser, HospitalVisitRecord hospitalVisitRecord) {
+        return Med.builder()
+                .medId(null)
+                .medUuid(new MedUuid(UUID.randomUUID().toString()))
+                .hospitalVisitRecord(hospitalVisitRecord)
+                .appUser(appUser)
+                .medName(dto.getMedName())
+                .medType(dto.getMedType())
+                .doseAmount(dto.getDoseAmount())
+                .doseUnit(dto.getDoseUnit())
+                .doseFrequency(dto.getDoseFrequency())
+                .instruction(dto.getInstruction())
+                .effect(dto.getEffect())
+                .sideEffect(dto.getSideEffect())
+                .startedOn(dto.getStartedOn())
+                .endedOn(dto.getEndedOn())
+                .build();
+    }
 }

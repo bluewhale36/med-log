@@ -3,10 +3,12 @@ package com.bluewhale.medlog.medintakerecord.domain.entity;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.persistence.MedUuidConverter;
 import com.bluewhale.medlog.medintakerecord.domain.value.MedIntakeRecordUuid;
+import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -33,4 +35,15 @@ public class MedIntakeRecord {
     private LocalDateTime estimatedDoseTime;
 
     private LocalDateTime takenAt;
+
+    public static MedIntakeRecord create(MedIntakeRecordRegisterDTO dto, Med med) {
+        return MedIntakeRecord.builder()
+                .medIntakeRecordId(null)
+                .medIntakeRecordUuid(new MedIntakeRecordUuid(UUID.randomUUID().toString()))
+                .med(med)
+                .isTaken(dto.isTaken())
+                .estimatedDoseTime(dto.getEstimatedDoseTime())
+                .takenAt(dto.getTakenAt())
+                .build();
+    }
 }
