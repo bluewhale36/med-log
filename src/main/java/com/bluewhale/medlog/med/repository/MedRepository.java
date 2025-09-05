@@ -14,5 +14,6 @@ public interface MedRepository extends JpaRepository<Med, Long> {
 
     Optional<Med> findByMedUuid(MedUuid uuid);
 
+    @Query("select m from Med m where m.appUser.appUserId = :appUserId")
     List<Med> findAllByAppUserId(Long appUserId);
 }

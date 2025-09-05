@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Getter
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
 public class MedIntakeSnapshotDTO {

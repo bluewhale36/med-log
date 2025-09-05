@@ -35,7 +35,7 @@ public class MedDTO {
     public static MedDTO from(Med entity) {
         return new MedDTO(
                 entity.getMedUuid(),
-                entity.getHospitalVisitRecord().getVisitUuid(),
+                entity.getHospitalVisitRecord() != null ?  entity.getHospitalVisitRecord().getVisitUuid() : null,
                 entity.getAppUser().getAppUserUuid(),
                 entity.getMedName(),
                 entity.getMedType(),

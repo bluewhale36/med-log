@@ -6,7 +6,6 @@ import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
 import com.bluewhale.medlog.hospital.service.HospitalVisitRecordConvertService_Impl;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.dto.MedAggregationDTO;
-import com.bluewhale.medlog.med.mapper.MedMapper;
 import com.bluewhale.medlog.med.repository.MedRepository;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordAggregationDTO;
 import com.bluewhale.medlog.medintakerecord.service.MedIntakeRecordAggregationService;
@@ -21,7 +20,6 @@ public class MedAggregationService {
 
     private final MedRepository medRepo;
 
-    private final MedMapper medMapper;
 
     private final HospitalVisitRecordConvertService_Impl hvrQServ;
     private final AppUserConvertService_Impl appUserQServ;
@@ -39,10 +37,27 @@ public class MedAggregationService {
         Med entity = medRepo.findById(medId).orElseThrow(
                 () -> new IllegalArgumentException(String.format("Medication for MedUuid %s not found", medId))
         );
-        VisitUuid visitUuid = entity.getVisitId() != null ? hvrQServ.getUuidById(entity.getVisitId()) : null;
-        AppUserUuid appUserUuid = appUserQServ.getUuidById(entity.getAppUserId());
+        VisitUuid visitUuid =
+                entity.getHospitalVisitRecord() != null ?
+                hvrQServ.getUuidById(entity.getHospitalVisitRecord().getVisitId()) :
+                null;
+        AppUserUuid appUserUuid = appUserQServ.getUuidById(entity.getAppUser().getAppUserId());
         List<MedIntakeRecordAggregationDTO> mirFullDTOList = mirFServ.getMirFullDTOListByMedId(medId);
 
-        return medMapper.toFullDTO(entity, visitUuid, appUserUuid, mirFullDTOList);
+        return toAggregationDTO(entity, mirFullDTOList);
+    }
+
+    private MedAggregationDTO toAggregationDTO(Med entity, List<MedIntakeRecordAggregationDTO> mirFullDTOList) {
+        boolean hasVisitRecord = entity.getHospitalVisitRecord() != null;
+        return MedAggregationDTO.of(
+                entity.getMedId(), entity.getMedUuid(),
+                hasVisitRecord ? entity.getHospitalVisitRecord().getVisitId() : null, hasVisitRecord ? entity.getHospitalVisitRecord().getVisitUuid() :  null,
+                entity.getAppUser().getAppUserId(), entity.getAppUser().getAppUserUuid(),
+                entity.getMedName(), entity.getMedType(),
+                entity.getDoseAmount(), entity.getDoseUnit(), entity.getDoseFrequency(),
+                entity.getEffect(), entity.getSideEffect(),
+                entity.getStartedOn(), entity.getEndedOn(),
+                mirFullDTOList
+        );
     }
 }
