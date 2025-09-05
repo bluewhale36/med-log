@@ -1,6 +1,7 @@
 package com.bluewhale.medlog.med.dto;
 
 import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
+import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
@@ -30,4 +31,22 @@ public class MedDTO {
     private final String sideEffect;
     private final LocalDate startedOn;
     private final LocalDate endedOn;
+
+    public static MedDTO from(Med entity) {
+        return new MedDTO(
+                entity.getMedUuid(),
+                entity.getHospitalVisitRecord().getVisitUuid(),
+                entity.getAppUser().getAppUserUuid(),
+                entity.getMedName(),
+                entity.getMedType(),
+                entity.getDoseAmount(),
+                entity.getDoseUnit(),
+                entity.getDoseFrequency(),
+                entity.getInstruction(),
+                entity.getEffect(),
+                entity.getSideEffect(),
+                entity.getStartedOn(),
+                entity.getEndedOn()
+        );
+    }
 }

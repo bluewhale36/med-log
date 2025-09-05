@@ -2,13 +2,12 @@ package com.bluewhale.medlog.appuser.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.dto.AppUserDTO;
-import com.bluewhale.medlog.appuser.mapper.AppUserMapper;
 import com.bluewhale.medlog.security.enums.IsEnabled;
 import com.bluewhale.medlog.security.enums.IsLocked;
 import com.bluewhale.medlog.security.enums.Role;
 import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.appuser.domain.entity.AppUserRole;
-import com.bluewhale.medlog.appuser.dto.AppUserSignInDTO;
+import com.bluewhale.medlog.appuser.dto.AppUserRegisterDTO;
 import com.bluewhale.medlog.appuser.repository.AppUserRepository;
 import com.bluewhale.medlog.appuser.repository.AppUserRoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +22,12 @@ public class AppUserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final AppUserMapper appUserMapper;
-
     private final AppUserConvertService_Impl appUSerQServ;
 
     private final AppUserRepository appUserRepository;
     private final AppUserRoleRepository appUserRoleRepository;
 
-    public void registerNewUser(AppUserSignInDTO dto) {
+    public void registerNewUser(AppUserRegisterDTO dto) {
         String uuid = UUID.randomUUID().toString();
 
         AppUser user = AppUser.builder()
