@@ -1,11 +1,11 @@
 package com.bluewhale.medlog.med.application.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
-import com.bluewhale.medlog.med.application.usecase.med.DeleteMedUseCase;
-import com.bluewhale.medlog.med.application.usecase.med.ModifyMedTimeInfoUseCase_Impl;
-import com.bluewhale.medlog.med.application.usecase.med.RegisterNewMedUseCase_Impl;
-import com.bluewhale.medlog.med.application.usecase.medintakerecord.GetMedIntakeRecordViewDTOListUseCase_Impl;
-import com.bluewhale.medlog.med.application.usecase.medintakesnapshot.CreateOrModifyNewMedSnapshotUseCase_Impl;
+import com.bluewhale.medlog.med.application.usecase.med.SoftDeleteMedUseCase;
+import com.bluewhale.medlog.med.application.usecase.med.ModifyMedTimeInfoUseCase;
+import com.bluewhale.medlog.med.application.usecase.med.RegisterNewMedUseCase;
+import com.bluewhale.medlog.med.application.usecase.medintakerecord.GetMedIntakeRecordViewDTOListUseCase;
+import com.bluewhale.medlog.med.application.usecase.medintakesnapshot.CreateOrModifyNewMedSnapshotUseCase;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.med.dto.MedTimeModifyDTO;
@@ -26,11 +26,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MedApplicationService {
 
-    private final RegisterNewMedUseCase_Impl regiNewMedUseCase;
-    private final CreateOrModifyNewMedSnapshotUseCase_Impl createOrModifyNewMedSnapshotUseCase;
-    private final GetMedIntakeRecordViewDTOListUseCase_Impl getMedIntakeRecordViewDTOListUseCase;
-    private final ModifyMedTimeInfoUseCase_Impl modifyMedTimeInfoUseCase;
-    private final DeleteMedUseCase deleteMedUseCase;
+    private final RegisterNewMedUseCase regiNewMedUseCase;
+    private final CreateOrModifyNewMedSnapshotUseCase createOrModifyNewMedSnapshotUseCase;
+    private final GetMedIntakeRecordViewDTOListUseCase getMedIntakeRecordViewDTOListUseCase;
+    private final ModifyMedTimeInfoUseCase modifyMedTimeInfoUseCase;
+    private final SoftDeleteMedUseCase softDeleteMedUseCase;
 
     @Transactional(rollbackOn = Exception.class)
     public void registerNewMed(Map<String, Object> payload) {
@@ -48,6 +48,6 @@ public class MedApplicationService {
 
     @Transactional(rollbackOn = Exception.class)
     public void deleteMedWithRelatedInfo(MedUuid medUuid) {
-        deleteMedUseCase.execute(medUuid);
+        softDeleteMedUseCase.execute(medUuid);
     }
 }

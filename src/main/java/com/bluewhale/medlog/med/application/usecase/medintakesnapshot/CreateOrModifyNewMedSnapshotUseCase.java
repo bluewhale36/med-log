@@ -2,7 +2,6 @@ package com.bluewhale.medlog.med.application.usecase.medintakesnapshot;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.common.application.usecase.IF_UseCase;
-import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.medintakesnapshot.service.MedIntakeSnapshotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CreateOrModifyNewMedSnapshotUseCase_Impl implements IF_UseCase<AppUserUuid, Void> {
+public class CreateOrModifyNewMedSnapshotUseCase implements IF_UseCase<AppUserUuid, Void> {
 
     private final MedIntakeSnapshotService misServ;
 

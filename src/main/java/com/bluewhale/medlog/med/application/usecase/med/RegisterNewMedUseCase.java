@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class RegisterNewMedUseCase_Impl implements IF_UseCase<Map<String, Object>, MedDTO> {
+public class RegisterNewMedUseCase implements IF_UseCase<Map<String, Object>, MedDTO> {
 
     private final MedService medServ;
 

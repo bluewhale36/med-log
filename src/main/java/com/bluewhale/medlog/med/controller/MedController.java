@@ -63,7 +63,7 @@ public class MedController {
 
     @DeleteMapping("/{medUuid}")
     public ResponseEntity<Void> deleteMed(@PathVariable("medUuid") String medUuid) {
-        medAppServ.deleteMedWithRelatedInfo(new MedUuid(medUuid.trim()));
+        medAppServ.deleteMedWithRelatedInfo(new MedUuid(medUuid));
         return ResponseEntity.ok().build();
     }
 }

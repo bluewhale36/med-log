@@ -2,8 +2,11 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+<!--    <meta name="_csrf" th:content="${_csrf.token}"/>-->
+<!--    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
     <title>약 정보 보기 및 수정</title>
     <link rel="stylesheet" href="/css/medication/edit.css" />
+    <link rel="stylesheet" href="/css/medication/deletion_modal.css">
     <script src="/js/medication/edit/edit-mode.js" defer></script>
     <script src="/js/medication/deletion/delete.js" defer></script>
 </head>
@@ -88,6 +91,18 @@
     <div class="persistent-buttons">
         <button type="button">보관</button>
         <button type="button" style="background-color: crimson;" id="delete-btn">삭제</button>
+    </div>
+
+    <!-- 삭제 버튼 클릭 시 노출 -->
+    <div id="delete-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>삭제 확인</h2>
+            <p>&quot;<span th:text="${medDTO.medName}"></span>&quot;을 삭제하시겠습니까?<br/>복용 기록하기, 정보 보기 등을 할 수 없게 됩니다.</p>
+            <div class="modal-buttons">
+                <button type="button" id="cancel-delete-btn">취소</button>
+                <button type="button" id="confirm-delete-btn">삭제</button>
+            </div>
+        </div>
     </div>
 </form>
 </body>
