@@ -49,7 +49,7 @@ public class AppUserService {
 
         AppUserRole appUserRole = AppUserRole.builder()
                 .roleId(null)
-                .appUserId(insertedUser.getAppUserId())
+                .appUser(insertedUser)
                 .role(Role.REGULAR)
                 .build();
         AppUserRole insertedAppUserRole = appUserRoleRepository.save(appUserRole);
@@ -60,7 +60,7 @@ public class AppUserService {
         AppUser entity = appUserRepository.findByAppUserUuid(appUserUuid).orElseThrow(
                 () -> new IllegalArgumentException(String.format("AppUserUuid %s not found", appUserUuid))
         );
-        return appUserMapper.toDTO(entity);
+        return AppUserDTO.from(entity);
     }
 
 

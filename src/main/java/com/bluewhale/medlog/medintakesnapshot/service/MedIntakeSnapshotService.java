@@ -1,15 +1,18 @@
 package com.bluewhale.medlog.medintakesnapshot.service;
 
+import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
+import com.bluewhale.medlog.appuser.repository.AppUserRepository;
 import com.bluewhale.medlog.appuser.service.AppUserConvertService_Impl;
+import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedAggregationDTO;
 import com.bluewhale.medlog.med.dto.MedDTO;
+import com.bluewhale.medlog.med.repository.MedRepository;
 import com.bluewhale.medlog.med.service.MedAggregationService;
 import com.bluewhale.medlog.med.service.MedConvertService_Impl;
 import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
 import com.bluewhale.medlog.medintakesnapshot.dto.MedIntakeSnapshotDTO;
-import com.bluewhale.medlog.medintakesnapshot.mapper.MedIntakeSnapshotMapper;
 import com.bluewhale.medlog.medintakesnapshot.mapper.PolicyRequestTokenMapper;
 import com.bluewhale.medlog.medintakesnapshot.model.manager.SnapshotPolicyManager;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
@@ -29,13 +32,15 @@ public class MedIntakeSnapshotService {
     private final SnapshotPolicyManager policyManager;
     private final SnapshotPolicyRepository policyRepo;
 
-    private final MedIntakeSnapshotMapper misMapper;
     private final PolicyRequestTokenMapper prtMapper;
 
     private final MedAggregationService medAggServ;
 
     private final AppUserConvertService_Impl appUserCServ;
     private final MedConvertService_Impl medCServ;
+
+    private final AppUserRepository appUserRepository;
+    private final MedRepository medRepository;
 
 
     public void generateMedIntakeSnapshotByAppUserUuidForAfter14Days(AppUserUuid appUserUuid) {
@@ -51,7 +56,14 @@ public class MedIntakeSnapshotService {
             resultList.addAll(policyManager.evaluate(List.of(policyReqToken)));
         }
 
-        policyRepo.saveAll(misMapper.toEntityList(resultList));
+        List<MedIntakeSnapshot> entityList = new ArrayList<>();
+        AppUser appUser = appUserRepository.getReferenceById(appUserId);
+        for (PolicyEvaluateResult result : resultList) {
+            Med medReference = medRepository.getReferenceById(result.getMedId());
+            entityList.add(MedIntakeSnapshot.create(result, appUser, medReference));
+        }
+
+        policyRepo.saveAll(entityList);
     }
 
     public List<MedIntakeSnapshotDTO> getMedIntakeSnapshotDTOListByMedUuid(MedUuid medUuid) {
@@ -60,8 +72,8 @@ public class MedIntakeSnapshotService {
 
         List<MedIntakeSnapshotDTO> dtoList = new ArrayList<>();
         for (MedIntakeSnapshot entity : entityList) {
-            AppUserUuid appUserUuid = appUserCServ.getUuidById(entity.getAppUserId());
-            dtoList.add(misMapper.toDTO(entity, appUserUuid, medUuid));
+            AppUserUuid appUserUuid = appUserCServ.getUuidById(entity.getAppUser().getAppUserId());
+            dtoList.add(MedIntakeSnapshotDTO.from(entity));
         }
         return dtoList;
     }

@@ -13,8 +13,7 @@ import java.util.Optional;
 public interface MedIntakeRecordRepository extends JpaRepository<MedIntakeRecord, Long> {
     Optional<MedIntakeRecord> findByMedIntakeRecordUuid(MedIntakeRecordUuid medIntakeRecordUuid);
 
+    @Query("select r from MedIntakeRecord r where r.med.medId = :medId")
     List<MedIntakeRecord> findByMedId(Long medId);
 
-    @Query("select m.estimatedDoseTime from MedIntakeRecord m where m.medId = :medId")
-    List<LocalDate> findAllRecordedDateByMedID(Long medId);
 }
