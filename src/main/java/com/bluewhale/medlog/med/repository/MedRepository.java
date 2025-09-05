@@ -16,4 +16,7 @@ public interface MedRepository extends JpaRepository<Med, Long> {
 
     @Query("select m from Med m where m.appUser.appUserId = :appUserId")
     List<Med> findAllByAppUserId(Long appUserId);
+
+    @Query("select m.medId from Med m where m.medUuid = :medUuid")
+    Optional<Long> findIdByMedUuid(MedUuid medUuid);
 }

@@ -5,6 +5,7 @@
     <title>약 정보 보기 및 수정</title>
     <link rel="stylesheet" href="/css/medication/edit.css" />
     <script src="/js/medication/edit/edit-mode.js" defer></script>
+    <script src="/js/medication/deletion/delete.js" defer></script>
 </head>
 <body>
 <div class="header-row">
@@ -12,6 +13,8 @@
     <button id="edit-toggle-btn" type="button">수정</button>
 </div>
 <form id="medication-edit-form">
+    <input type="hidden" th:value="${medDTO.getMedUuid().asString()}" id="medUuid">
+
     <fieldset id="edit-notify" style="display: none">
         <legend style="color: crimson">WARNING</legend>
         <div class="input-row">
@@ -84,7 +87,7 @@
 
     <div class="persistent-buttons">
         <button type="button">보관</button>
-        <button type="button" style="background-color: crimson;">삭제</button>
+        <button type="button" style="background-color: crimson;" id="delete-btn">삭제</button>
     </div>
 </form>
 </body>

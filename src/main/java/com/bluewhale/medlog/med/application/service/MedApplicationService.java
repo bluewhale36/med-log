@@ -1,10 +1,12 @@
 package com.bluewhale.medlog.med.application.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
+import com.bluewhale.medlog.med.application.usecase.med.DeleteMedUseCase;
 import com.bluewhale.medlog.med.application.usecase.med.ModifyMedTimeInfoUseCase_Impl;
 import com.bluewhale.medlog.med.application.usecase.med.RegisterNewMedUseCase_Impl;
 import com.bluewhale.medlog.med.application.usecase.medintakerecord.GetMedIntakeRecordViewDTOListUseCase_Impl;
 import com.bluewhale.medlog.med.application.usecase.medintakesnapshot.CreateOrModifyNewMedSnapshotUseCase_Impl;
+import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.med.dto.MedTimeModifyDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
@@ -28,6 +30,7 @@ public class MedApplicationService {
     private final CreateOrModifyNewMedSnapshotUseCase_Impl createOrModifyNewMedSnapshotUseCase;
     private final GetMedIntakeRecordViewDTOListUseCase_Impl getMedIntakeRecordViewDTOListUseCase;
     private final ModifyMedTimeInfoUseCase_Impl modifyMedTimeInfoUseCase;
+    private final DeleteMedUseCase deleteMedUseCase;
 
     @Transactional(rollbackOn = Exception.class)
     public void registerNewMed(Map<String, Object> payload) {
@@ -41,5 +44,10 @@ public class MedApplicationService {
 
     public void modifyMedTimeInformation(MedTimeModifyDTO modiDto) {
         MedDTO medDTO = modifyMedTimeInfoUseCase.execute(modiDto);
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public void deleteMedWithRelatedInfo(MedUuid medUuid) {
+        deleteMedUseCase.execute(medUuid);
     }
 }
