@@ -10,9 +10,9 @@ import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.med.dto.MedTimeModifyDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class MedApplicationService {
     private final ModifyMedTimeInfoUseCase modifyMedTimeInfoUseCase;
     private final SoftDeleteMedUseCase softDeleteMedUseCase;
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void registerNewMed(Map<String, Object> payload) {
         MedDTO insertedMedDTO = regiNewMedUseCase.execute(payload);
         createOrModifyNewMedSnapshotUseCase.execute(insertedMedDTO.getAppUserUuid());
@@ -46,7 +46,7 @@ public class MedApplicationService {
         MedDTO medDTO = modifyMedTimeInfoUseCase.execute(modiDto);
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteMedWithRelatedInfo(MedUuid medUuid) {
         softDeleteMedUseCase.execute(medUuid);
     }
