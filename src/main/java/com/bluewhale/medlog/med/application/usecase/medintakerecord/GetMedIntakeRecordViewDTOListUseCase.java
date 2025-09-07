@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class GetMedIntakeRecordViewDTOListUseCase_Impl implements IF_UseCase<AppUserUuid, List<MedIntakeRecordDayViewDTO>> {
+public class GetMedIntakeRecordViewDTOListUseCase implements IF_UseCase<AppUserUuid, List<MedIntakeRecordDayViewDTO>> {
 
     private final MedAggregationService medAggServ;
     private final MedIntakeSnapshotAggregationService misAggServ;

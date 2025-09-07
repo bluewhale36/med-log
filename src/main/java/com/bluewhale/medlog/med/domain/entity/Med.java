@@ -6,6 +6,7 @@ import com.bluewhale.medlog.med.domain.persistence.DoseFrequencyConverter;
 import com.bluewhale.medlog.med.domain.persistence.MedUuidConverter;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedRegisterDTO;
+import com.bluewhale.medlog.med.model.Status;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
@@ -13,8 +14,12 @@ import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
 import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +30,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder(access = AccessLevel.PRIVATE)
 @Table(name = "med")
+@SQLRestriction("status = \"ACTIVE\"")
+@SQLDelete(sql = "UPDATE med SET status = \"DELETED\", deleted_at = CURRENT_TIMESTAMP() where med_id = ?")
 public class Med {
 
     @Id
@@ -66,6 +73,12 @@ public class Med {
 
     private LocalDate endedOn;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @OneToMany(
             fetch = FetchType.LAZY,
             cascade = CascadeType.REMOVE, orphanRemoval = true,
@@ -96,6 +109,8 @@ public class Med {
                 .sideEffect(dto.getSideEffect())
                 .startedOn(dto.getStartedOn())
                 .endedOn(dto.getEndedOn())
+                .status(Status.ACTIVE)
+                .deletedAt(null)
                 .build();
     }
 }

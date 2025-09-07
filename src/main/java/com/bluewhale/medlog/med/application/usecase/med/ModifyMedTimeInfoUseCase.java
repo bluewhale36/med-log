@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class ModifyMedTimeInfoUseCase_Impl implements IF_UseCase<MedTimeModifyDTO, MedDTO> {
+public class ModifyMedTimeInfoUseCase implements IF_UseCase<MedTimeModifyDTO, MedDTO> {
 
 
     @Override

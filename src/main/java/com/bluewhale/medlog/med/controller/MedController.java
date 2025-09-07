@@ -12,6 +12,7 @@ import com.bluewhale.medlog.med.model.medication.MedType;
 import com.bluewhale.medlog.med.service.MedService;
 import com.bluewhale.medlog.security.annotation.AuthAppUserUuid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -58,5 +59,11 @@ public class MedController {
     public String getFormData(@RequestBody Map<String, Object> payload) {
         medAppServ.registerNewMed(payload);
         return null;
+    }
+
+    @DeleteMapping("/{medUuid}")
+    public ResponseEntity<Void> deleteMed(@PathVariable("medUuid") String medUuid) {
+        medAppServ.deleteMedWithRelatedInfo(new MedUuid(medUuid));
+        return ResponseEntity.ok().build();
     }
 }
