@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping("/hospital/visit")
 public class HospitalVisitRecordController {
 
-    private final HospitalVisitRecordService hvrServ;
     private final HospitalVisitRecordApplicationService hospitalVisitRecordAppService;
 
     @GetMapping({"", "/"})
@@ -31,7 +30,7 @@ public class HospitalVisitRecordController {
 
     @GetMapping("/{visitUuid}")
     public String getOneHospitalVisitRecord(@PathVariable("visitUuid") String visitUuid, Model model) {
-        HospitalVisitRecordDTO dto = hvrServ.getOneHospitalVisitRecordByVisitUuid(new VisitUuid(visitUuid));
+        HospitalVisitRecordDTO dto = hospitalVisitRecordAppService.getHospitalVisitRecordByVisitUuid(new VisitUuid(visitUuid));
         model.addAttribute("hvrDTO", dto);
         return "hospital/visit/one";
     }

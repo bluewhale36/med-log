@@ -2,7 +2,6 @@ package com.bluewhale.medlog.medintakerecord.controller;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.med.application.service.MedApplicationService;
-import com.bluewhale.medlog.med.service.MedService;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
 import com.bluewhale.medlog.security.annotation.AuthAppUserUuid;
 import jakarta.annotation.Nullable;
@@ -21,13 +20,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MedIntakeRecordController {
 
-    private final MedService medServ;
-
-    private final MedApplicationService medAppServ;
+    private final MedApplicationService medAppService;
 
     @GetMapping({"", "/"})
     public String index(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
-        model.addAttribute("medDTOList", medServ.getMedDTOListByAppUserUuid(appUserUuid));
+        model.addAttribute("medDTOList", medAppService.getMedDTOListByAppUserUuid(appUserUuid));
         return "med/medintakerecord/main";
     }
 
@@ -35,7 +32,7 @@ public class MedIntakeRecordController {
     public String record(@RequestParam("date") @Nullable LocalDate date,
                          @AuthAppUserUuid AppUserUuid appUserUuid,
                          Model model) {
-        List<MedIntakeRecordDayViewDTO> list = medAppServ.getDTOListForIntakeRecord(appUserUuid);
+        List<MedIntakeRecordDayViewDTO> list = medAppService.getDTOListForIntakeRecord(appUserUuid);
         List<LocalDate> dateList = list.stream().map(MedIntakeRecordDayViewDTO::getStdDate).toList();
         model.addAttribute("selectedDate", date == null ? LocalDate.now() : date);
         model.addAttribute("dateList", dateList);

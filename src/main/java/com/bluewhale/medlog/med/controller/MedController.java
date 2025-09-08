@@ -1,6 +1,7 @@
 package com.bluewhale.medlog.med.controller;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
+import com.bluewhale.medlog.hospital.application.service.HospitalVisitRecordApplicationService;
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDTO;
 import com.bluewhale.medlog.hospital.service.HospitalVisitRecordService;
 import com.bluewhale.medlog.med.application.service.MedApplicationService;
@@ -25,25 +26,25 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MedController {
 
-    private final MedApplicationService medAppServ;
-    private final MedService medServ;
-    private final HospitalVisitRecordService hvrServ;
+    private final MedApplicationService medAppService;
+    private final HospitalVisitRecordApplicationService hospitalVisitRecordAppService;
+    private final MedService medService;
 
     @GetMapping({"", "/"})
     public String home(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
-        model.addAttribute("medDTOList", medServ.getMedDTOListByAppUserUuid(appUserUuid));
+        model.addAttribute("medDTOList", medService.getMedDTOListByAppUserUuid(appUserUuid));
         return "med/main";
     }
 
     @GetMapping("/{medUuid}")
     public String getOneMedInfo(@PathVariable("medUuid") String medUuid, Model model) {
-        model.addAttribute("medDTO", medServ.getMedDTOByMedUuid(new MedUuid(medUuid)));
+        model.addAttribute("medDTO", medService.getMedDTOByMedUuid(new MedUuid(medUuid)));
         return "med/one-and-edit";
     }
 
     @GetMapping("/new")
     public String registerNewMedication(@AuthAppUserUuid AppUserUuid uuid, Model model) {
-        List<HospitalVisitRecordDTO> hvrDTOList = hvrServ.getHospitalVisitRecordListByAppUserUuid(uuid);
+        List<HospitalVisitRecordDTO> hvrDTOList = hospitalVisitRecordAppService.getHospitalVisitRecordListByAppUserUuid(uuid);
 
         model.addAttribute("appUserUuid", uuid.asString());
         model.addAttribute("medFormList", MedForm.values());
@@ -57,13 +58,13 @@ public class MedController {
     @PostMapping("/new")
     @ResponseBody
     public String getFormData(@RequestBody Map<String, Object> payload) {
-        medAppServ.registerNewMed(payload);
+        medAppService.registerNewMed(payload);
         return null;
     }
 
     @DeleteMapping("/{medUuid}")
     public ResponseEntity<Void> deleteMed(@PathVariable("medUuid") String medUuid) {
-        medAppServ.deleteMedWithRelatedInfo(new MedUuid(medUuid));
+        medAppService.softDeleteMedWithMedUuid(new MedUuid(medUuid));
         return ResponseEntity.ok().build();
     }
 }

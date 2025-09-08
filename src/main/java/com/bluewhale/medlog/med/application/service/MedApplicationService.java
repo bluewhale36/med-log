@@ -1,14 +1,13 @@
 package com.bluewhale.medlog.med.application.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
+import com.bluewhale.medlog.med.application.usecase.med.GetMedDTOListByAppUserUuidUseCase;
 import com.bluewhale.medlog.med.application.usecase.med.SoftDeleteMedUseCase;
-import com.bluewhale.medlog.med.application.usecase.med.ModifyMedTimeInfoUseCase;
 import com.bluewhale.medlog.med.application.usecase.med.RegisterNewMedUseCase;
 import com.bluewhale.medlog.med.application.usecase.medintakerecord.GetMedIntakeRecordViewDTOListUseCase;
 import com.bluewhale.medlog.med.application.usecase.medintakesnapshot.CreateOrModifyNewMedSnapshotUseCase;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
-import com.bluewhale.medlog.med.dto.MedTimeModifyDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,8 +28,8 @@ public class MedApplicationService {
     private final RegisterNewMedUseCase regiNewMedUseCase;
     private final CreateOrModifyNewMedSnapshotUseCase createOrModifyNewMedSnapshotUseCase;
     private final GetMedIntakeRecordViewDTOListUseCase getMedIntakeRecordViewDTOListUseCase;
-    private final ModifyMedTimeInfoUseCase modifyMedTimeInfoUseCase;
     private final SoftDeleteMedUseCase softDeleteMedUseCase;
+    private final GetMedDTOListByAppUserUuidUseCase getMedDTOListByAppUserUuidUseCase;
 
     @Transactional(rollbackFor = Exception.class)
     public void registerNewMed(Map<String, Object> payload) {
@@ -42,12 +41,13 @@ public class MedApplicationService {
         return getMedIntakeRecordViewDTOListUseCase.execute(appUserUuid);
     }
 
-    public void modifyMedTimeInformation(MedTimeModifyDTO modiDto) {
-        MedDTO medDTO = modifyMedTimeInfoUseCase.execute(modiDto);
+    @Transactional(rollbackFor = Exception.class)
+    public void softDeleteMedWithMedUuid(MedUuid medUuid) {
+        softDeleteMedUseCase.execute(medUuid);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteMedWithRelatedInfo(MedUuid medUuid) {
-        softDeleteMedUseCase.execute(medUuid);
+    @Transactional(readOnly = true)
+    public List<MedDTO> getMedDTOListByAppUserUuid(AppUserUuid appUserUuid) {
+        return getMedDTOListByAppUserUuidUseCase.execute(appUserUuid);
     }
 }

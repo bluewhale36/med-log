@@ -5,9 +5,6 @@ import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.repository.MedRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,13 +28,13 @@ public class MedApplicationServiceTest {
 
     @Test
     @DisplayName("Delete Med With Related Info")
-    void deleteMedWithRelatedInfo() {
+    void softDeleteMedWithMedUuid() {
         MedUuid medUuid = new MedUuid(UUID.randomUUID().toString());
         Long medId = 10L;
 
         given(medRepository.findIdByMedUuid(medUuid)).willReturn(Optional.of(medId));
 
-        medApplicationService.deleteMedWithRelatedInfo(medUuid);
+        medApplicationService.softDeleteMedWithMedUuid(medUuid);
 
         then(medRepository).should(times(1)).deleteById(medId);
     }

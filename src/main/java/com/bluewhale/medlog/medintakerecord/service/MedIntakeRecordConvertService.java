@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MedIntakeRecordConvertService_Impl implements IF_ConvertService<MedIntakeRecord, MedIntakeRecordUuid> {
+public class MedIntakeRecordConvertService implements IF_ConvertService<MedIntakeRecord, MedIntakeRecordUuid> {
 
     private final MedIntakeRecordRepository mirRepository;
 
