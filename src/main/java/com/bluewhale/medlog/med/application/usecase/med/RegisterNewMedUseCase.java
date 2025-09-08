@@ -1,6 +1,6 @@
 package com.bluewhale.medlog.med.application.usecase.med;
 
-import com.bluewhale.medlog.common.application.usecase.IF_UseCase;
+import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.med.dto.MedRegisterDTO;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class RegisterNewMedUseCase implements IF_UseCase<Map<String, Object>, MedDTO> {
+public class RegisterNewMedUseCase implements UseCase<Map<String, Object>, MedDTO> {
 
     private final MedService medServ;
 

@@ -1,18 +1,17 @@
 package com.bluewhale.medlog.med.application.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
+import com.bluewhale.medlog.med.application.usecase.med.GetMedDTOListByAppUserUuidUseCase;
 import com.bluewhale.medlog.med.application.usecase.med.SoftDeleteMedUseCase;
-import com.bluewhale.medlog.med.application.usecase.med.ModifyMedTimeInfoUseCase;
 import com.bluewhale.medlog.med.application.usecase.med.RegisterNewMedUseCase;
-import com.bluewhale.medlog.med.application.usecase.medintakerecord.GetMedIntakeRecordViewDTOListUseCase;
+import com.bluewhale.medlog.medintakerecord.application.usecase.GetMedIntakeRecordViewDTOListUseCase;
 import com.bluewhale.medlog.med.application.usecase.medintakesnapshot.CreateOrModifyNewMedSnapshotUseCase;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
-import com.bluewhale.medlog.med.dto.MedTimeModifyDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -29,25 +28,22 @@ public class MedApplicationService {
     private final RegisterNewMedUseCase regiNewMedUseCase;
     private final CreateOrModifyNewMedSnapshotUseCase createOrModifyNewMedSnapshotUseCase;
     private final GetMedIntakeRecordViewDTOListUseCase getMedIntakeRecordViewDTOListUseCase;
-    private final ModifyMedTimeInfoUseCase modifyMedTimeInfoUseCase;
     private final SoftDeleteMedUseCase softDeleteMedUseCase;
+    private final GetMedDTOListByAppUserUuidUseCase getMedDTOListByAppUserUuidUseCase;
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void registerNewMed(Map<String, Object> payload) {
         MedDTO insertedMedDTO = regiNewMedUseCase.execute(payload);
         createOrModifyNewMedSnapshotUseCase.execute(insertedMedDTO.getAppUserUuid());
     }
 
-    public List<MedIntakeRecordDayViewDTO> getDTOListForIntakeRecord(AppUserUuid appUserUuid) {
-        return getMedIntakeRecordViewDTOListUseCase.execute(appUserUuid);
-    }
-
-    public void modifyMedTimeInformation(MedTimeModifyDTO modiDto) {
-        MedDTO medDTO = modifyMedTimeInfoUseCase.execute(modiDto);
-    }
-
-    @Transactional(rollbackOn = Exception.class)
-    public void deleteMedWithRelatedInfo(MedUuid medUuid) {
+    @Transactional(rollbackFor = Exception.class)
+    public void softDeleteMedWithMedUuid(MedUuid medUuid) {
         softDeleteMedUseCase.execute(medUuid);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MedDTO> getMedDTOListByAppUserUuid(AppUserUuid appUserUuid) {
+        return getMedDTOListByAppUserUuidUseCase.execute(appUserUuid);
     }
 }

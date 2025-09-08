@@ -12,15 +12,4 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MedIntakeRecordService {
-
-    private final MedIntakeRecordRepository mirRepo;
-
-    private final MedConvertService_Impl medCServ;
-
-    public List<MedIntakeRecordDTO> getMedIntakeRecordListByMedUuid(MedUuid medUuid) {
-        return mirRepo.findByMedId(medCServ.getIdByUuid(medUuid)).stream().map(MedIntakeRecordDTO::from).toList();
-    }
-
-
-
 }

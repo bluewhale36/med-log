@@ -2,7 +2,7 @@ package com.bluewhale.medlog.common.service;
 
 import com.bluewhale.medlog.common.value.AbstractUuid;
 
-public interface IF_ConvertService<E, UUID extends AbstractUuid> {
+public interface ConvertService<E, UUID extends AbstractUuid> {
 
     public Long getIdByUuid(UUID uuid);
 

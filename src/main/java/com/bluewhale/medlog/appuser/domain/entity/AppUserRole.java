@@ -24,5 +24,12 @@ public class AppUserRole {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    public static AppUserRole create(AppUser appUser, Role role) {
+        return AppUserRole.builder()
+                .roleId(null)
+                .appUser(appUser)
+                .role(role)
+                .build();
+    }
 
 }

@@ -1,8 +1,8 @@
-package com.bluewhale.medlog.med.application.usecase.medintakerecord;
+package com.bluewhale.medlog.medintakerecord.application.usecase;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.service.AppUserConvertService_Impl;
-import com.bluewhale.medlog.common.application.usecase.IF_UseCase;
+import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.med.dto.MedAggregationDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.service.MedAggregationService;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class GetMedIntakeRecordViewDTOListUseCase implements IF_UseCase<AppUserUuid, List<MedIntakeRecordDayViewDTO>> {
+public class GetMedIntakeRecordViewDTOListUseCase implements UseCase<AppUserUuid, List<MedIntakeRecordDayViewDTO>> {
 
     private final MedAggregationService medAggServ;
     private final MedIntakeSnapshotAggregationService misAggServ;
