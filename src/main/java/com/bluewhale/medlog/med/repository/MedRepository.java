@@ -1,5 +1,6 @@
 package com.bluewhale.medlog.med.repository;
 
+import com.bluewhale.medlog.common.repository.IdentifierRoutableRepository;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,17 +12,22 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MedRepository extends JpaRepository<Med, Long> {
+public interface MedRepository extends JpaRepository<Med, Long>, IdentifierRoutableRepository<Med, Long, MedUuid> {
 
     Optional<Med> findByMedUuid(MedUuid uuid);
 
     @Query("select m from Med m where m.appUser.appUserId = :appUserId")
     List<Med> findAllByAppUserId(Long appUserId);
 
-    @Query("select m.medId from Med m where m.medUuid = :medUuid")
-    Optional<Long> findIdByMedUuid(MedUuid medUuid);
-
     @Modifying
     @Query("DELETE FROM Med m where m.medId = :medId")
     void hardDeleteByMedId(Long medId);
+
+    @Override
+    @Query("SELECT m.medId FROM Med m WHERE m.medUuid = :uuid")
+    Optional<Long> findIdByUuid(MedUuid uuid);
+
+    @Override
+    @Query("SELECT m.medUuid FROM Med m WHERE m.medId = :id")
+    Optional<MedUuid> findUuidById(Long id);
 }

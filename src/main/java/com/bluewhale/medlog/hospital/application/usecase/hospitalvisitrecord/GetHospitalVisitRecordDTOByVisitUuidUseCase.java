@@ -5,7 +5,7 @@ import com.bluewhale.medlog.hospital.domain.entity.HospitalVisitRecord;
 import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDTO;
 import com.bluewhale.medlog.hospital.repository.HospitalVisitRecordRepository;
-import com.bluewhale.medlog.hospital.service.HospitalVisitRecordConvertService_Impl;
+import com.bluewhale.medlog.hospital.service.HospitalVisitRecordIdentifierConvertService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GetHospitalVisitRecordDTOByVisitUuidUseCase implements UseCase<VisitUuid, HospitalVisitRecordDTO> {
 
-    private final HospitalVisitRecordConvertService_Impl hospitalVisitRecordConvertService;
+    private final HospitalVisitRecordIdentifierConvertService hospitalVisitRecordConvertService;
     private final HospitalVisitRecordRepository hospitalVisitRecordRepository;
 
     @Override

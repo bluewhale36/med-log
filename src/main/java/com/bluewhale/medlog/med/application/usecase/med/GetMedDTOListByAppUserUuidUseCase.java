@@ -1,7 +1,7 @@
 package com.bluewhale.medlog.med.application.usecase.med;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
-import com.bluewhale.medlog.appuser.service.AppUserConvertService_Impl;
+import com.bluewhale.medlog.appuser.service.AppUserIdentifierConvertService;
 import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.dto.MedDTO;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GetMedDTOListByAppUserUuidUseCase implements UseCase<AppUserUuid, List<MedDTO>> {
 
-    private final AppUserConvertService_Impl appUserConvertService;
+    private final AppUserIdentifierConvertService appUserConvertService;
     private final MedRepository medRepository;
 
     @Override

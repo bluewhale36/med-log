@@ -3,10 +3,10 @@ package com.bluewhale.medlog.med.service;
 import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.repository.AppUserRepository;
-import com.bluewhale.medlog.appuser.service.AppUserConvertService_Impl;
+import com.bluewhale.medlog.appuser.service.AppUserIdentifierConvertService;
 import com.bluewhale.medlog.hospital.domain.entity.HospitalVisitRecord;
 import com.bluewhale.medlog.hospital.repository.HospitalVisitRecordRepository;
-import com.bluewhale.medlog.hospital.service.HospitalVisitRecordConvertService_Impl;
+import com.bluewhale.medlog.hospital.service.HospitalVisitRecordIdentifierConvertService;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
@@ -25,9 +25,9 @@ public class MedService {
 
     private final MedRegisterDTOFactory medRegiDTOFactory;
 
-    private final HospitalVisitRecordConvertService_Impl hvCServ;
-    private final AppUserConvertService_Impl appUserCServ;
-    private final MedConvertService_Impl medCServ;
+    private final HospitalVisitRecordIdentifierConvertService hvCServ;
+    private final AppUserIdentifierConvertService appUserCServ;
+    private final MedIdentifierConvertService medCServ;
 
     private final MedRepository medRepo;
 
