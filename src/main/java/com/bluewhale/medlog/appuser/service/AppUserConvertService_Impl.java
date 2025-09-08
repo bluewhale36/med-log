@@ -1,6 +1,6 @@
 package com.bluewhale.medlog.appuser.service;
 
-import com.bluewhale.medlog.common.service.IF_ConvertService;
+import com.bluewhale.medlog.common.service.ConvertService;
 import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.repository.AppUserRepository;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AppUserConvertService_Impl implements IF_ConvertService<AppUser, AppUserUuid> {
+public class AppUserConvertService_Impl implements ConvertService<AppUser, AppUserUuid> {
 
     private final AppUserRepository appUserRepository;
 

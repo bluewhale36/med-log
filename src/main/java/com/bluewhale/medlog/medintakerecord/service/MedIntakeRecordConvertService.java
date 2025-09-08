@@ -1,6 +1,6 @@
 package com.bluewhale.medlog.medintakerecord.service;
 
-import com.bluewhale.medlog.common.service.IF_ConvertService;
+import com.bluewhale.medlog.common.service.ConvertService;
 import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
 import com.bluewhale.medlog.medintakerecord.domain.value.MedIntakeRecordUuid;
 import com.bluewhale.medlog.medintakerecord.repository.MedIntakeRecordRepository;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MedIntakeRecordConvertService implements IF_ConvertService<MedIntakeRecord, MedIntakeRecordUuid> {
+public class MedIntakeRecordConvertService implements ConvertService<MedIntakeRecord, MedIntakeRecordUuid> {
 
     private final MedIntakeRecordRepository mirRepository;
 

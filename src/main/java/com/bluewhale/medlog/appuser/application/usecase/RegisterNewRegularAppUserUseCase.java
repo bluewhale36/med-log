@@ -3,8 +3,7 @@ package com.bluewhale.medlog.appuser.application.usecase;
 import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.appuser.dto.AppUserRegisterDTO;
 import com.bluewhale.medlog.appuser.repository.AppUserRepository;
-import com.bluewhale.medlog.appuser.repository.AppUserRoleRepository;
-import com.bluewhale.medlog.common.application.usecase.IF_UseCase;
+import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.security.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RegisterNewRegularAppUserUseCase implements IF_UseCase<AppUserRegisterDTO, AppUser> {
+public class RegisterNewRegularAppUserUseCase implements UseCase<AppUserRegisterDTO, AppUser> {
 
     private final PasswordEncoder passwordEncoder;
 

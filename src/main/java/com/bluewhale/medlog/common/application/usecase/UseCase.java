@@ -1,6 +1,6 @@
 package com.bluewhale.medlog.common.application.usecase;
 
-public interface IF_UseCase<I, O> {
+public interface UseCase<I, O> {
 
     O execute(I input);
 }

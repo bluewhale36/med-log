@@ -1,6 +1,6 @@
 package com.bluewhale.medlog.med.application.usecase.med;
 
-import com.bluewhale.medlog.common.application.usecase.IF_UseCase;
+import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.repository.MedRepository;
 import com.bluewhale.medlog.medintakesnapshot.repository.SnapshotPolicyRepository;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class SoftDeleteMedUseCase implements IF_UseCase<MedUuid, Void> {
+public class SoftDeleteMedUseCase implements UseCase<MedUuid, Void> {
 
     private final MedRepository medRepository;
     private final SnapshotPolicyRepository snapshotPolicyRepository;

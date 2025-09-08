@@ -3,7 +3,7 @@ package com.bluewhale.medlog.hospital.application.usecase.hospitalvisitrecord;
 import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.appuser.repository.AppUserRepository;
 import com.bluewhale.medlog.appuser.service.AppUserConvertService_Impl;
-import com.bluewhale.medlog.common.application.usecase.IF_UseCase;
+import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.hospital.domain.entity.HospitalVisitRecord;
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordRegisterDTO;
 import com.bluewhale.medlog.hospital.repository.HospitalVisitRecordRepository;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RegisterNewHospitalVisitRecordUseCase implements IF_UseCase<HospitalVisitRecordRegisterDTO, Void> {
+public class RegisterNewHospitalVisitRecordUseCase implements UseCase<HospitalVisitRecordRegisterDTO, Void> {
 
     private final AppUserConvertService_Impl appUserConvertService;
     private final AppUserRepository appUserRepository;

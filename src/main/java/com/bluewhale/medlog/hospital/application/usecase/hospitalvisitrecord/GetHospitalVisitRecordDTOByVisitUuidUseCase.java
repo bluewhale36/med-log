@@ -1,6 +1,6 @@
 package com.bluewhale.medlog.hospital.application.usecase.hospitalvisitrecord;
 
-import com.bluewhale.medlog.common.application.usecase.IF_UseCase;
+import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.hospital.domain.entity.HospitalVisitRecord;
 import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDTO;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GetHospitalVisitRecordDTOByVisitUuidUseCase implements IF_UseCase<VisitUuid, HospitalVisitRecordDTO> {
+public class GetHospitalVisitRecordDTOByVisitUuidUseCase implements UseCase<VisitUuid, HospitalVisitRecordDTO> {
 
     private final HospitalVisitRecordConvertService_Impl hospitalVisitRecordConvertService;
     private final HospitalVisitRecordRepository hospitalVisitRecordRepository;

@@ -2,7 +2,7 @@ package com.bluewhale.medlog.med.application.usecase.med;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.service.AppUserConvertService_Impl;
-import com.bluewhale.medlog.common.application.usecase.IF_UseCase;
+import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.med.repository.MedRepository;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class GetMedDTOListByAppUserUuidUseCase implements IF_UseCase<AppUserUuid, List<MedDTO>> {
+public class GetMedDTOListByAppUserUuidUseCase implements UseCase<AppUserUuid, List<MedDTO>> {
 
     private final AppUserConvertService_Impl appUserConvertService;
     private final MedRepository medRepository;
