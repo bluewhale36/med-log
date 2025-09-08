@@ -5,6 +5,7 @@ import com.bluewhale.medlog.hospital.application.service.HospitalVisitRecordAppl
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDTO;
 import com.bluewhale.medlog.med.application.service.MedApplicationService;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
+import com.bluewhale.medlog.med.dto.MedTimeModifyDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedForm;
@@ -64,6 +65,15 @@ public class MedController {
     @DeleteMapping("/{medUuid}")
     public ResponseEntity<Void> deleteMed(@PathVariable("medUuid") String medUuid) {
         medAppService.softDeleteMedWithMedUuid(new MedUuid(medUuid));
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{medUuid}")
+    public ResponseEntity<Void> updateMed(@PathVariable("medUuid") String medUuid, @RequestBody MedTimeModifyDTO medTimeModifyDTO) {
+        if (!(new MedUuid(medUuid).equals(medTimeModifyDTO.getMedUuid()))) {
+            return ResponseEntity.badRequest().build();
+        }
+        medAppService.modifyMedTimeSchedule(medTimeModifyDTO);
         return ResponseEntity.ok().build();
     }
 }

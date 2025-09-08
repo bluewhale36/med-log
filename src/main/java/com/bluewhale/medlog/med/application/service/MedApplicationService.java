@@ -4,6 +4,7 @@ import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.med.application.usecase.med.GetMedDTOListByAppUserUuidUseCase;
 import com.bluewhale.medlog.med.application.usecase.med.SoftDeleteMedUseCase;
 import com.bluewhale.medlog.med.application.usecase.med.RegisterNewMedUseCase;
+import com.bluewhale.medlog.med.dto.MedTimeModifyDTO;
 import com.bluewhale.medlog.medintakerecord.application.usecase.GetMedIntakeRecordViewDTOListUseCase;
 import com.bluewhale.medlog.med.application.usecase.medintakesnapshot.CreateOrModifyNewMedSnapshotUseCase;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
@@ -46,4 +47,10 @@ public class MedApplicationService {
     public List<MedDTO> getMedDTOListByAppUserUuid(AppUserUuid appUserUuid) {
         return getMedDTOListByAppUserUuidUseCase.execute(appUserUuid);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public MedDTO modifyMedTimeSchedule(MedTimeModifyDTO medTimeModifyDTO) {
+        return null;
+    }
+
 }
