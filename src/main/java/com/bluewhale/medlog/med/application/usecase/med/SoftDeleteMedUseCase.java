@@ -3,6 +3,7 @@ package com.bluewhale.medlog.med.application.usecase.med;
 import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.repository.MedRepository;
+import com.bluewhale.medlog.med.service.MedIdentifierConvertService;
 import com.bluewhale.medlog.medintakesnapshot.repository.SnapshotPolicyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,13 +19,12 @@ import org.springframework.stereotype.Component;
 public class SoftDeleteMedUseCase implements UseCase<MedUuid, Void> {
 
     private final MedRepository medRepository;
+    private final MedIdentifierConvertService medIdentifierConvertService;
     private final SnapshotPolicyRepository snapshotPolicyRepository;
 
     @Override
     public Void execute(MedUuid input) {
-        Long medId = medRepository.findIdByMedUuid(input).orElseThrow(
-                () -> new IllegalArgumentException(String.format("No Med Found with MedUuid %s", input))
-        );
+        Long medId = medIdentifierConvertService.getIdByUuid(input);
         snapshotPolicyRepository.deleteByMed_MedId(medId);
         medRepository.deleteById(medId);
         return null;

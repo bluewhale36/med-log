@@ -3,6 +3,7 @@ package com.bluewhale.medlog.med.application.usecase.med;
 import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.repository.MedRepository;
+import com.bluewhale.medlog.med.service.MedIdentifierConvertService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +16,11 @@ import org.springframework.stereotype.Component;
 public class HardDeleteMedUseCase implements UseCase<MedUuid, Void> {
 
     private final MedRepository medRepository;
+    private final MedIdentifierConvertService medIdentifierConvertService;
 
     @Override
     public Void execute(MedUuid input) {
-        Long medId = medRepository.findIdByMedUuid(input).orElseThrow(
-                () -> new IllegalArgumentException(String.format("Med Not Found with UUID: %s", input))
-        );
+        Long medId = medIdentifierConvertService.getIdByUuid(input);
         /*
             Cascade 옵션에 따라 Record 및 Snapshot 전체 삭제됨.
          */
