@@ -16,4 +16,6 @@ public interface HospitalVisitRecordRepository extends JpaRepository<HospitalVis
 
     @Query("select hvr from HospitalVisitRecord hvr where hvr.appUser.appUserId = :appUserId")
     List<HospitalVisitRecord> findAllByAppUserId(Long appUserId);
+
+    Optional<Long> findIdByVisitUuid(VisitUuid visitUuid);
 }

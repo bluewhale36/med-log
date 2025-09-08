@@ -1,9 +1,9 @@
 package com.bluewhale.medlog.med.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
-import com.bluewhale.medlog.appuser.service.AppUserConvertService_Impl;
+import com.bluewhale.medlog.appuser.service.AppUserIdentifierConvertService;
 import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
-import com.bluewhale.medlog.hospital.service.HospitalVisitRecordConvertService_Impl;
+import com.bluewhale.medlog.hospital.service.HospitalVisitRecordIdentifierConvertService;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.dto.MedAggregationDTO;
 import com.bluewhale.medlog.med.repository.MedRepository;
@@ -21,8 +21,8 @@ public class MedAggregationService {
     private final MedRepository medRepo;
 
 
-    private final HospitalVisitRecordConvertService_Impl hvrQServ;
-    private final AppUserConvertService_Impl appUserQServ;
+    private final HospitalVisitRecordIdentifierConvertService hvrQServ;
+    private final AppUserIdentifierConvertService appUserQServ;
 
     private final MedIntakeRecordAggregationService mirFServ;
 

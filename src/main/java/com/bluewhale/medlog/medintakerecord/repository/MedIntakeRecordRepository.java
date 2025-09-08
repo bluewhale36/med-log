@@ -16,4 +16,6 @@ public interface MedIntakeRecordRepository extends JpaRepository<MedIntakeRecord
     @Query("select r from MedIntakeRecord r where r.med.medId = :medId")
     List<MedIntakeRecord> findByMedId(Long medId);
 
+    Optional<Long> findIdByMedIntakeRecordUuid(MedIntakeRecordUuid medIntakeRecordUuid);
+
 }

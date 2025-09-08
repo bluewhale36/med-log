@@ -3,14 +3,14 @@ package com.bluewhale.medlog.medintakesnapshot.service;
 import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.repository.AppUserRepository;
-import com.bluewhale.medlog.appuser.service.AppUserConvertService_Impl;
+import com.bluewhale.medlog.appuser.service.AppUserIdentifierConvertService;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedAggregationDTO;
 import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.med.repository.MedRepository;
 import com.bluewhale.medlog.med.service.MedAggregationService;
-import com.bluewhale.medlog.med.service.MedConvertService_Impl;
+import com.bluewhale.medlog.med.service.MedIdentifierConvertService_Impl;
 import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
 import com.bluewhale.medlog.medintakesnapshot.dto.MedIntakeSnapshotDTO;
 import com.bluewhale.medlog.medintakesnapshot.mapper.PolicyRequestTokenMapper;
@@ -36,8 +36,8 @@ public class MedIntakeSnapshotService {
 
     private final MedAggregationService medAggServ;
 
-    private final AppUserConvertService_Impl appUserCServ;
-    private final MedConvertService_Impl medCServ;
+    private final AppUserIdentifierConvertService appUserCServ;
+    private final MedIdentifierConvertService_Impl medCServ;
 
     private final AppUserRepository appUserRepository;
     private final MedRepository medRepository;

@@ -1,7 +1,7 @@
 package com.bluewhale.medlog.hospital.application.usecase.hospitalvisitrecord;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
-import com.bluewhale.medlog.appuser.service.AppUserConvertService_Impl;
+import com.bluewhale.medlog.appuser.service.AppUserIdentifierConvertService;
 import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.hospital.domain.entity.HospitalVisitRecord;
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDTO;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GetHospitalVisitRecordDTOListByAppUserUuidUseCase implements UseCase<AppUserUuid, List<HospitalVisitRecordDTO>> {
 
-    private final AppUserConvertService_Impl appUserConvertService;
+    private final AppUserIdentifierConvertService appUserConvertService;
     private final HospitalVisitRecordRepository hospitalVisitRecordRepository;
 
     @Override

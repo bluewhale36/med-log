@@ -1,22 +1,19 @@
 package com.bluewhale.medlog.medintakerecord.service;
 
-import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.service.MedConvertService_Impl;
+import com.bluewhale.medlog.med.service.MedIdentifierConvertService_Impl;
 import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
-import com.bluewhale.medlog.medintakerecord.domain.value.MedIntakeRecordUuid;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordAggregationDTO;
 import com.bluewhale.medlog.medintakerecord.repository.MedIntakeRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MedIntakeRecordAggregationService {
 
-    private final MedConvertService_Impl medQServ;
+    private final MedIdentifierConvertService_Impl medQServ;
 
     private final MedIntakeRecordRepository mirRepo;
 
