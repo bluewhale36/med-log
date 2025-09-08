@@ -2,6 +2,7 @@ package com.bluewhale.medlog.common.repository;
 
 import com.bluewhale.medlog.common.value.AbstractUuid;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Optional;

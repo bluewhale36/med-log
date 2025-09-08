@@ -2,46 +2,45 @@ package com.bluewhale.medlog.medintakerecord.service;
 
 import com.bluewhale.medlog.common.exception.IllegalIdentifierException;
 import com.bluewhale.medlog.common.exception.NullIdentifierException;
+import com.bluewhale.medlog.common.repository.IdentifierRoutableRepository;
+import com.bluewhale.medlog.common.service.AbstractIdentifierConvertService;
 import com.bluewhale.medlog.common.service.IdentifierConvertService;
 import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
 import com.bluewhale.medlog.medintakerecord.domain.value.MedIntakeRecordUuid;
 import com.bluewhale.medlog.medintakerecord.repository.MedIntakeRecordRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-public class MedIntakeRecordIdentifierConvertService implements IdentifierConvertService<MedIntakeRecordUuid> {
+public class MedIntakeRecordIdentifierConvertService
+        extends AbstractIdentifierConvertService<MedIntakeRecord, MedIntakeRecordUuid> {
 
     private final MedIntakeRecordRepository medIntakeRecordRepository;
 
 
     @Override
-    public Long getIdByUuid(MedIntakeRecordUuid uuid) {
-        if (uuid == null) {
-            throw new NullIdentifierException("Uuid Value for MedIntakeRecord is Null.");
-        }
-
-        return medIntakeRecordRepository.findIdByMedIntakeRecordUuid(uuid).orElseThrow(
-                () -> new IllegalIdentifierException("MedIntakeRecord with Uuid " + uuid + " has not been found.")
-        );
+    protected IdentifierRoutableRepository<MedIntakeRecord, Long, MedIntakeRecordUuid> getRepository() {
+        return medIntakeRecordRepository;
     }
 
     @Override
-    public MedIntakeRecordUuid getUuidById(Long id) {
-        if (id == null) {
-            throw new NullIdentifierException("Id Value for MedIntakeRecord is Null.");
-        }
+    protected Function<Long, Optional<MedIntakeRecordUuid>> uuidFinder() {
+        return medIntakeRecordRepository::findUuidById;
+    }
 
-        MedIntakeRecord entityReference = medIntakeRecordRepository.getReferenceById(id);
+    @Override
+    protected Function<MedIntakeRecordUuid, Optional<Long>> idFinder() {
+        return medIntakeRecordRepository::findIdByUuid;
+    }
 
-        MedIntakeRecordUuid medIntakeRecordUuid;
-        try {
-            medIntakeRecordUuid = entityReference.getMedIntakeRecordUuid();
-        }  catch (EntityNotFoundException e) {
-            throw new IllegalIdentifierException("MedIntakeRecord with id " + id + " has not been found.");
-        }
-        return medIntakeRecordUuid;
+    @Override
+    protected String getEntityName() {
+        return "MedIntakeRecord";
     }
 }

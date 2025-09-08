@@ -2,6 +2,7 @@ package com.bluewhale.medlog.appuser.service;
 
 import com.bluewhale.medlog.common.exception.IllegalIdentifierException;
 import com.bluewhale.medlog.common.exception.NullIdentifierException;
+import com.bluewhale.medlog.common.repository.IdentifierRoutableRepository;
 import com.bluewhale.medlog.common.service.AbstractIdentifierConvertService;
 import com.bluewhale.medlog.common.service.IdentifierConvertService;
 import com.bluewhale.medlog.appuser.domain.entity.AppUser;
@@ -17,28 +18,29 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-public class AppUserIdentifierConvertService extends AbstractIdentifierConvertService<AppUser, AppUserUuid> {
+public class AppUserIdentifierConvertService
+        extends AbstractIdentifierConvertService<AppUser, AppUserUuid> {
 
     private final AppUserRepository appUserRepository;
 
 
     @Override
-    protected JpaRepository<AppUser, Long> getRepository() {
+    protected IdentifierRoutableRepository<AppUser, Long, AppUserUuid> getRepository() {
         return appUserRepository;
     }
 
     @Override
     protected Function<Long, Optional<AppUserUuid>> uuidFinder() {
-        return null;
+        return appUserRepository::findUuidById;
     }
 
     @Override
     protected Function<AppUserUuid, Optional<Long>> idFinder() {
-        return null;
+        return appUserRepository::findIdByUuid;
     }
 
     @Override
     protected String getEntityName() {
-        return "";
+        return "AppUser";
     }
 }

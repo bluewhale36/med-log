@@ -2,47 +2,45 @@ package com.bluewhale.medlog.hospital.service;
 
 import com.bluewhale.medlog.common.exception.IllegalIdentifierException;
 import com.bluewhale.medlog.common.exception.NullIdentifierException;
+import com.bluewhale.medlog.common.repository.IdentifierRoutableRepository;
+import com.bluewhale.medlog.common.service.AbstractIdentifierConvertService;
 import com.bluewhale.medlog.common.service.IdentifierConvertService;
 import com.bluewhale.medlog.hospital.domain.entity.HospitalVisitRecord;
 import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
 import com.bluewhale.medlog.hospital.repository.HospitalVisitRecordRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-public class HospitalVisitRecordIdentifierConvertService implements IdentifierConvertService<VisitUuid> {
+public class HospitalVisitRecordIdentifierConvertService
+        extends AbstractIdentifierConvertService<HospitalVisitRecord, VisitUuid> {
 
     private final HospitalVisitRecordRepository hospitalVisitRecordRepository;
 
 
     @Override
-    public Long getIdByUuid(VisitUuid uuid) {
-        if (uuid == null) {
-            throw new NullIdentifierException("Uuid Value for HospitalVisitRecord is Null.");
-        }
-
-        return hospitalVisitRecordRepository.findIdByVisitUuid(uuid).orElseThrow(
-                () -> new IllegalIdentifierException("HospitalVisitRecord with Uuid " + uuid + " has not been found.")
-        );
+    protected IdentifierRoutableRepository<HospitalVisitRecord, Long, VisitUuid> getRepository() {
+        return hospitalVisitRecordRepository;
     }
 
     @Override
-    public VisitUuid getUuidById(Long id) {
-        if (id == null) {
-            throw new NullIdentifierException("Id Value for HospitalVisitRecord is Null.");
-        }
+    protected Function<Long, Optional<VisitUuid>> uuidFinder() {
+        return hospitalVisitRecordRepository::findUuidById;
+    }
 
-        HospitalVisitRecord entityReference = hospitalVisitRecordRepository.getReferenceById(id);
+    @Override
+    protected Function<VisitUuid, Optional<Long>> idFinder() {
+        return hospitalVisitRecordRepository::findIdByUuid;
+    }
 
-        VisitUuid visitUuid;
-        try {
-            visitUuid = entityReference.getVisitUuid();
-        } catch (EntityNotFoundException e) {
-            throw new IllegalIdentifierException("HospitalVisitRecord with id " + id + " has not been found.");
-        }
-
-        return visitUuid;
+    @Override
+    protected String getEntityName() {
+        return "HospitalVisitRecord";
     }
 }

@@ -2,6 +2,7 @@ package com.bluewhale.medlog.common.service;
 
 import com.bluewhale.medlog.common.exception.IllegalIdentifierException;
 import com.bluewhale.medlog.common.exception.NullIdentifierException;
+import com.bluewhale.medlog.common.repository.IdentifierRoutableRepository;
 import com.bluewhale.medlog.common.value.AbstractUuid;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,7 +12,7 @@ import java.util.function.Function;
 public abstract class AbstractIdentifierConvertService<E, UUID extends AbstractUuid>
         implements IdentifierConvertService<UUID> {
 
-    protected abstract JpaRepository<E, Long> getRepository();
+    protected abstract IdentifierRoutableRepository<E, Long, UUID> getRepository();
 
     protected abstract Function<Long, Optional<UUID>> uuidFinder();
 
