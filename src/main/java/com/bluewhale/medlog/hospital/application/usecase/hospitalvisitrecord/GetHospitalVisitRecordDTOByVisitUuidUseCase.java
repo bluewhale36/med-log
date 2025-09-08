@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GetHospitalVisitRecordByVisitUuidUseCase implements IF_UseCase<VisitUuid, HospitalVisitRecordDTO> {
+public class GetHospitalVisitRecordDTOByVisitUuidUseCase implements IF_UseCase<VisitUuid, HospitalVisitRecordDTO> {
 
     private final HospitalVisitRecordConvertService_Impl hospitalVisitRecordConvertService;
     private final HospitalVisitRecordRepository hospitalVisitRecordRepository;

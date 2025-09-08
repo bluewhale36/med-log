@@ -9,11 +9,14 @@ import com.bluewhale.medlog.security.enums.IsLocked;
 import com.bluewhale.medlog.appuser.domain.persistence.AppUserUuidConverter;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.enums.Gender;
+import com.bluewhale.medlog.security.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,6 +89,15 @@ public class AppUser {
         this.email = dto.getEmail();
         this.birthdate = dto.getBirthdate();
         this.gender = dto.getGender();
+    }
+
+    public void addRole(Role... roles) {
+        if (this.appUserRole == null) {
+            this.appUserRole = new ArrayList<>();
+        }
+        for (Role role : roles) {
+            this.appUserRole.add(AppUserRole.create(this, role));
+        }
     }
 
 }

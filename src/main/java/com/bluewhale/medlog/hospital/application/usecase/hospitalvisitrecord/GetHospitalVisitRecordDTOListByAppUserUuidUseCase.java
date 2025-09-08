@@ -13,7 +13,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class GetHospitalVisitRecordListByAppUserUuidUseCase implements IF_UseCase<AppUserUuid, List<HospitalVisitRecordDTO>> {
+public class GetHospitalVisitRecordDTOListByAppUserUuidUseCase implements IF_UseCase<AppUserUuid, List<HospitalVisitRecordDTO>> {
 
     private final AppUserConvertService_Impl appUserConvertService;
     private final HospitalVisitRecordRepository hospitalVisitRecordRepository;

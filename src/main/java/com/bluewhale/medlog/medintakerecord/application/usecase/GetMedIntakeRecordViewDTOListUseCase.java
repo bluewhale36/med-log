@@ -1,4 +1,4 @@
-package com.bluewhale.medlog.med.application.usecase.medintakerecord;
+package com.bluewhale.medlog.medintakerecord.application.usecase;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.service.AppUserConvertService_Impl;

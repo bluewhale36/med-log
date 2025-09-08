@@ -3,7 +3,6 @@ package com.bluewhale.medlog.med.controller;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.hospital.application.service.HospitalVisitRecordApplicationService;
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDTO;
-import com.bluewhale.medlog.hospital.service.HospitalVisitRecordService;
 import com.bluewhale.medlog.med.application.service.MedApplicationService;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
@@ -44,7 +43,7 @@ public class MedController {
 
     @GetMapping("/new")
     public String registerNewMedication(@AuthAppUserUuid AppUserUuid uuid, Model model) {
-        List<HospitalVisitRecordDTO> hvrDTOList = hospitalVisitRecordAppService.getHospitalVisitRecordListByAppUserUuid(uuid);
+        List<HospitalVisitRecordDTO> hvrDTOList = hospitalVisitRecordAppService.getHospitalVisitRecordDTOListByAppUserUuid(uuid);
 
         model.addAttribute("appUserUuid", uuid.asString());
         model.addAttribute("medFormList", MedForm.values());
