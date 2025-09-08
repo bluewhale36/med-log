@@ -10,7 +10,7 @@ import com.bluewhale.medlog.med.dto.MedAggregationDTO;
 import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.med.repository.MedRepository;
 import com.bluewhale.medlog.med.service.MedAggregationService;
-import com.bluewhale.medlog.med.service.MedIdentifierConvertService_Impl;
+import com.bluewhale.medlog.med.service.MedIdentifierConvertService;
 import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
 import com.bluewhale.medlog.medintakesnapshot.dto.MedIntakeSnapshotDTO;
 import com.bluewhale.medlog.medintakesnapshot.mapper.PolicyRequestTokenMapper;
@@ -37,7 +37,7 @@ public class MedIntakeSnapshotService {
     private final MedAggregationService medAggServ;
 
     private final AppUserIdentifierConvertService appUserCServ;
-    private final MedIdentifierConvertService_Impl medCServ;
+    private final MedIdentifierConvertService medCServ;
 
     private final AppUserRepository appUserRepository;
     private final MedRepository medRepository;

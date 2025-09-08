@@ -1,6 +1,6 @@
 package com.bluewhale.medlog.medintakerecord.service;
 
-import com.bluewhale.medlog.med.service.MedIdentifierConvertService_Impl;
+import com.bluewhale.medlog.med.service.MedIdentifierConvertService;
 import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordAggregationDTO;
 import com.bluewhale.medlog.medintakerecord.repository.MedIntakeRecordRepository;
@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MedIntakeRecordAggregationService {
 
-    private final MedIdentifierConvertService_Impl medQServ;
+    private final MedIdentifierConvertService medQServ;
 
     private final MedIntakeRecordRepository mirRepo;
 

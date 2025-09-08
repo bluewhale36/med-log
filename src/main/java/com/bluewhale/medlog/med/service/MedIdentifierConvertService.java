@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MedIdentifierConvertService_Impl implements IdentifierConvertService<MedUuid> {
+public class MedIdentifierConvertService implements IdentifierConvertService<MedUuid> {
 
     private final MedRepository medRepository;
 

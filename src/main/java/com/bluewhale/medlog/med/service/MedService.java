@@ -27,7 +27,7 @@ public class MedService {
 
     private final HospitalVisitRecordIdentifierConvertService hvCServ;
     private final AppUserIdentifierConvertService appUserCServ;
-    private final MedIdentifierConvertService_Impl medCServ;
+    private final MedIdentifierConvertService medCServ;
 
     private final MedRepository medRepo;
 
