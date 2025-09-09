@@ -2,57 +2,101 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-<!--    <meta name="_csrf" th:content="${_csrf.token}"/>-->
-<!--    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
     <title>약 정보 보기 및 수정</title>
     <link rel="stylesheet" href="/css/medication/edit.css" />
     <link rel="stylesheet" href="/css/medication/deletion_modal.css">
+    <script src="/js/medication/new/validation.js" defer></script>
     <script src="/js/medication/edit/edit-mode.js" defer></script>
-    <script src="/js/medication/deletion/delete.js" defer></script>
+    <script src="/js/medication/edit/edit-submit.js" defer></script>
 </head>
 <body>
 <div class="header-row">
     <h1>약 정보</h1>
     <button id="edit-toggle-btn" type="button">복용 주기 및 부가 정보 수정</button>
 </div>
+
 <form id="medication-edit-form">
     <input type="hidden" th:value="${medDTO.getAppUserUuid().asString()}" name="appUserUuid" id="appUserUuid">
-    <input type="hidden" th:value="${medDTO.getMedUuid().asString()}" id="medUuid">
+    <input type="hidden" th:value="${medDTO.getMedUuid().asString()}" name="medUuid" id="medUuid">
 
     <fieldset id="edit-notify" style="display: none">
         <legend style="color: crimson">WARNING</legend>
-        <div class="input-row">
-            <span>You are Editing Medication Information</span>
-        </div>
+        <b><span>수정 모드를 이용하고 있습니다.</span></b>
     </fieldset>
 
     <fieldset>
-        <legend>약 정보</legend>
+        <legend>약 정보 (수정 불가)</legend>
         <div class="input-row">
             <label>약 명 :
-                <input type="text" th:value="${medDTO.medName}" disabled>
+                <input type="text" th:value="${medDTO.medName}" readonly>
             </label>
             <label>약 형태 :
-                <input type="text" th:value="${medDTO.medType.title}" disabled>
+                <input type="text" th:value="${medDTO.medType.title}" readonly>
             </label>
             <label>사용량 :
-                <input type="text" th:value="${medDTO.doseAmount}" disabled>
+                <input type="text" th:value="${medDTO.doseAmount}" readonly>
             </label>
             <label>사용량 단위 :
-                <input type="text" th:value="${medDTO.doseUnit.title}" disabled>
+                <input type="text" th:value="${medDTO.doseUnit.title}" readonly>
             </label>
         </div>
     </fieldset>
 
-    <fieldset>
+    <fieldset id="display-mode-form">
         <legend>복용 주기</legend>
         <div class="input-row">
             <label>주기 종류 :
-                <input type="text" th:value="|${medDTO.doseFrequency.doseFrequencyType.title} (ex.${medDTO.doseFrequency.doseFrequencyType.placeholder})|" disabled>
+                <input type="text" th:value="|${medDTO.doseFrequency.doseFrequencyType.title} (ex.${medDTO.doseFrequency.doseFrequencyType.placeholder})|" readonly>
             </label>
         </div>
         <div class="day-time-set">
-            <p th:text="${medDTO.doseFrequency.doseFrequencyDetail}">월, 수, 금 오전 9시</p>
+            <p th:text="${medDTO.doseFrequency.doseFrequencyDetail.humanReadable()}"></p>
+        </div>
+    </fieldset>
+
+    <fieldset id="edit-mode-form" style="display: none;">
+        <legend>복용 주기 상세 정보 수정</legend>
+        <div>
+            <th:block th:each="type : ${T(com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType).values()}">
+                <label>
+                    <input type="radio" name="frequencyType"
+                           th:value="${type.name()}"
+                           class="dose-frequency-type-radio"
+                           th:id="${'type-' + type.name()}"
+                           th:checked="${type.name() == medDTO.doseFrequency.doseFrequencyType.name()}">
+                    <span th:text="${type.title}"></span>
+                    <small class="info" th:text="${type.placeholder}"></small>
+                </label>
+                <br/>
+            </th:block>
+        </div>
+        <hr/>
+        <div id="time-section" class="detail-section">
+            <label>복용 시간:
+                <div id="time-input-container"></div>
+                <button type="button" id="add-time-btn">+ 시간 추가</button>
+            </label>
+        </div>
+        <div id="detail-CYCLICAL" class="detail-section">
+            <label>복용 기간: <input type="number" id="onDuration" min="1"/></label>
+            <label>휴약 기간: <input type="number" id="offDuration" min="1"/></label>
+            <label>단위:
+                <select id="cycleUnit">
+                    <option value="DAY">일</option>
+                    <option value="WEEK">주</option>
+                </select>
+            </label>
+        </div>
+        <div id="detail-INTERVAL" class="detail-section">
+            <label>간격(일): <input type="number" id="interval" min="1"/></label>
+        </div>
+        <div id="detail-SPECIFIC_DAYS" class="detail-section">
+            <label>요일 + 복용 시간 설정:</label>
+            <div id="specific-days-container"></div>
+            <button type="button" id="add-day-time-set-btn">+ 세트 추가</button>
+        </div>
+        <div id="detail-AS_NEEDED" class="detail-section">
+            <span style="color: #999999">추가 입력할 정보가 없습니다.</span>
         </div>
     </fieldset>
 
@@ -83,18 +127,15 @@
         </div>
     </fieldset>
 
-    <!-- 수정 모드 진입 시 노출 -->
     <div class="edit-mode-buttons" style="display: none;">
         <button type="submit">저장</button>
         <button type="button" id="cancel-edit-btn">취소</button>
     </div>
-
     <div class="persistent-buttons">
         <button type="button">보관</button>
         <button type="button" style="background-color: crimson;" id="delete-btn">삭제</button>
     </div>
 
-    <!-- 삭제 버튼 클릭 시 노출 -->
     <div id="delete-modal" class="modal-overlay">
         <div class="modal-content">
             <h2>삭제 확인</h2>
@@ -106,5 +147,12 @@
         </div>
     </div>
 </form>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const doseFrequencyData = /*[[${medDTO.doseFrequency}]]*/ null;
+    /*]]>*/
+</script>
+
 </body>
 </html>

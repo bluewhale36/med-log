@@ -8,4 +8,8 @@ public class AsNeededDetail extends AbstractDoseFrequencyDetail {
     private final boolean asNeeded = true;
 
 
+    @Override
+    public String humanReadable() {
+        return "필요할 때마다 복용하세요.";
+    }
 }
