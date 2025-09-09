@@ -14,11 +14,14 @@ import java.time.LocalDate;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class MedTimeModifyDTO {
+public class MedModifyDTO {
 
     private final AppUserUuid appUserUuid;
     private final MedUuid medUuid;
     private final DoseFrequency doseFrequency;
+    private final String instruction;
+    private final String effect;
+    private final String sideEffect;
     private final LocalDate startedOn;
     private final LocalDate endedOn;
 

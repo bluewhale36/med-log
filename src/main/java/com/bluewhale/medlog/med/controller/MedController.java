@@ -5,7 +5,8 @@ import com.bluewhale.medlog.hospital.application.service.HospitalVisitRecordAppl
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDTO;
 import com.bluewhale.medlog.med.application.service.MedApplicationService;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.dto.MedTimeModifyDTO;
+import com.bluewhale.medlog.med.dto.MedDTO;
+import com.bluewhale.medlog.med.dto.MedModifyDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedForm;
@@ -69,11 +70,15 @@ public class MedController {
     }
 
     @PatchMapping("/{medUuid}")
-    public ResponseEntity<Void> updateMed(@PathVariable("medUuid") String medUuid, @RequestBody MedTimeModifyDTO medTimeModifyDTO) {
-        if (!(new MedUuid(medUuid).equals(medTimeModifyDTO.getMedUuid()))) {
+    public ResponseEntity<Void> updateMed(
+            @PathVariable("medUuid") String medUuid,
+            @RequestBody MedModifyDTO medModifyDTO, Model model
+    ) {
+        if (!(medUuid.equals(medModifyDTO.getMedUuid().asString()))) {
             return ResponseEntity.badRequest().build();
         }
-        medAppService.modifyMedTimeSchedule(medTimeModifyDTO);
+        MedDTO modifiedMedDTO = medAppService.updateMedInfo(medModifyDTO);
+        model.addAttribute("medDTO", modifiedMedDTO);
         return ResponseEntity.ok().build();
     }
 }

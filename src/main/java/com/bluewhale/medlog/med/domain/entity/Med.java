@@ -6,6 +6,7 @@ import com.bluewhale.medlog.med.domain.persistence.DoseFrequencyConverter;
 import com.bluewhale.medlog.med.domain.persistence.MedUuidConverter;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedRegisterDTO;
+import com.bluewhale.medlog.med.dto.MedModifyDTO;
 import com.bluewhale.medlog.med.model.Status;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
@@ -16,7 +17,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -112,5 +112,11 @@ public class Med {
                 .status(Status.ACTIVE)
                 .deletedAt(null)
                 .build();
+    }
+
+    public void updateSchedule(MedModifyDTO modifyDTO) {
+        this.doseFrequency = modifyDTO.getDoseFrequency();
+        this.startedOn = modifyDTO.getStartedOn();
+        this.endedOn = modifyDTO.getEndedOn();
     }
 }

@@ -13,9 +13,10 @@
 <body>
 <div class="header-row">
     <h1>약 정보</h1>
-    <button id="edit-toggle-btn" type="button">수정</button>
+    <button id="edit-toggle-btn" type="button">복용 주기 및 부가 정보 수정</button>
 </div>
 <form id="medication-edit-form">
+    <input type="hidden" th:value="${medDTO.getAppUserUuid().asString()}" name="appUserUuid" id="appUserUuid">
     <input type="hidden" th:value="${medDTO.getMedUuid().asString()}" id="medUuid">
 
     <fieldset id="edit-notify" style="display: none">

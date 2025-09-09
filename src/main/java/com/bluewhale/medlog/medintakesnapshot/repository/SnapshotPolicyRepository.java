@@ -16,4 +16,6 @@ public interface SnapshotPolicyRepository extends JpaRepository<MedIntakeSnapsho
 
     @Modifying
     void deleteByMed_MedId(Long medMedId);
+
+    void deleteByAppUser_AppUserId(Long appUserAppUserId);
 }
