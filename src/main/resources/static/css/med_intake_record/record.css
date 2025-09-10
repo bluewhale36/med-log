@@ -46,6 +46,10 @@ header h1 {
     font-weight: 500;
 }
 
+.date-scroll-block {
+    margin-bottom: 16px;
+}
+
 .date-scroll {
     display: flex;
     overflow-x: auto;
@@ -132,6 +136,10 @@ header h1 {
     padding: 16px 20px;
     border-radius: 12px;
     margin-bottom: 8px;
+}
+
+.as-needed li {
+    background-color: rgba(10, 132, 255, 0.33);
 }
 
 .pill-icon {

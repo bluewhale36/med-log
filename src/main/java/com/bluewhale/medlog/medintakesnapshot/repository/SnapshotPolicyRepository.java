@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -18,4 +19,6 @@ public interface SnapshotPolicyRepository extends JpaRepository<MedIntakeSnapsho
     void deleteByMed_MedId(Long medMedId);
 
     void deleteByAppUser_AppUserId(Long appUserAppUserId);
+
+    MedIntakeSnapshot findByMed_MedIdAndEstimatedDoseTime(Long medMedId, LocalDateTime estimatedDoseTime);
 }

@@ -15,13 +15,15 @@
 
     <div class="date-label" th:text="${#temporals.format(selectedDate, 'yyyy.MM.dd (E)')}"></div>
 
-    <div class="date-scroll">
-        <div class="date-item-wrapper"
-             th:each="recordDay : ${mirdvDTOList}"
-             th:classappend="${recordDay.stdDate.equals(selectedDate)} ? 'selected' : ''"
-             th:attr="onclick=|location.href='/med/intake/record?date=${recordDay.stdDate}'|">
-            <div class="date-day-circle"></div>
-            <div class="date-day-label" th:text="${#temporals.format(recordDay.stdDate, 'E')}"></div>
+    <div class="date-scroll-block">
+        <div class="date-scroll">
+            <div class="date-item-wrapper"
+                 th:each="recordDay : ${mirdvDTOList}"
+                 th:classappend="${recordDay.stdDate.equals(selectedDate)} ? 'selected' : ''"
+                 th:attr="onclick=|location.href='/med/intake/record?date=${recordDay.stdDate}'|">
+                <div class="date-day-circle"></div>
+                <div class="date-day-label" th:text="${#temporals.format(recordDay.stdDate, 'E')}"></div>
+            </div>
         </div>
     </div>
 
@@ -45,6 +47,21 @@
                     </li>
                 </ul>
             </div>
+        </div>
+        <div class="time-block as-needed">
+            <div class="time-header">
+                <span class="time">추가 기록</span>
+            </div>
+            <ul class="med-list">
+                <li>
+                    <div style="display: flex; align-items: center;">
+                        <span class="pill-icon empty"></span>
+                        <div class="med-info">
+                            <span class="med-name">추가로 복용한 약 기록</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 
