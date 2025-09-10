@@ -4,14 +4,14 @@ import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.med.application.service.MedApplicationService;
 import com.bluewhale.medlog.medintakerecord.application.service.MedIntakeRecordApplicationService;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
+import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
 import com.bluewhale.medlog.security.annotation.AuthAppUserUuid;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,5 +42,11 @@ public class MedIntakeRecordController {
         model.addAttribute("mirdvDTOList", list);
 
         return"med_intake_record/record";
+    }
+
+    @PostMapping("/record")
+    public ResponseEntity<Void> registerNewRecord(@RequestBody List<MedIntakeRecordRegisterDTO> medIntakeRecordRegisterDTOList) {
+        System.out.println(medIntakeRecordRegisterDTOList);
+        return ResponseEntity.ok().build();
     }
 }

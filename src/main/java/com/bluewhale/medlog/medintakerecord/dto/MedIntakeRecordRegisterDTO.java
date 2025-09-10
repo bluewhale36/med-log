@@ -17,11 +17,10 @@ public class MedIntakeRecordRegisterDTO {
     private final MedUuid medUuid;
 
     /*
-        True : 복용함
-        False : 건너뜀
-        Null : 기록 없음 -> DB 에 INSERT 하지 않음
+        true : 복용함
+        false : 건너뜀
      */
-    private final Boolean isTaken;
+    private final boolean isTaken;
 
     private final LocalDateTime estimatedDoseTime;
     private final LocalDateTime takenAt;

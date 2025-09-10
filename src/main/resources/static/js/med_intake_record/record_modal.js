@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalDoneBtn = document.getElementById("modal-done-btn");
 
     const pageDate = document.querySelector(".date-label").textContent.split(' ')[0];
-    let medicationStatus = {}; // { medUuid: { status: 'taken' | 'skipped', time: Date } }
+    let medicationStatus = {}; // { medUuid: { status: 'taken' | 'skipped', time: Date, stdTime: LocalDateTime } }
 
     function updateLogAllButtonState() {
         const hasSkipped = Object.values(medicationStatus).some(value => value.status === 'skipped');
@@ -19,9 +19,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 서버로 데이터를 전송하는 함수
     function sendIntakeRecord() {
-        console.log("서버로 전송할 최종 기록:", medicationStatus);
-        // TODO: medicationStatus 객체를 기반으로 서버에 fetch POST 요청 구현
-        // fetch('/med/intake/record', { ... body: JSON.stringify(medicationStatus) ... })
+        // medicationStatus 객체를 List<MedIntakeRecordRegisterDTO> 형태로 변환
+        const payload = Object.keys(medicationStatus).map(medUuid => {
+            const record = medicationStatus[medUuid];
+            return {
+                medUuid: medUuid,
+                isTaken: record.status === 'taken', // 'taken'은 true, 'skipped'는 false
+                estimatedDoseTime: record.stdTime, // ISO 8601 형식 (YYYY-MM-DDTHH:mm:ss)
+                takenAt: record.time.toISOString() // 복용/건너뜀 버튼을 누른 시각
+            };
+        });
+
+        if (payload.length === 0) {
+            console.log("전송할 기록이 없습니다.");
+            closeModal();
+            return;
+        }
+
+        console.log("서버로 전송할 최종 기록:", JSON.stringify(payload));
+
+        fetch('/med/intake/record', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("기록이 성공적으로 저장되었습니다.");
+                    window.location.reload();
+                } else {
+                    alert(`기록 저장에 실패했습니다. (상태 코드: ${response.status})`);
+                }
+            })
+            .catch(error => {
+                console.error('기록 저장 중 오류 발생:', error);
+                alert("기록 저장 중 오류가 발생했습니다.");
+            });
     }
 
     openModalButtons.forEach(button => {
@@ -30,11 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
             updateLogAllButtonState();
 
             const timeBlock = e.target.closest(".time-block");
-            const time = timeBlock.querySelector(".time").textContent;
+            const time = timeBlock.dataset.stdTime;
             const medList = timeBlock.querySelector(".med-list");
             const medItems = medList.querySelectorAll("li");
 
-            // 날짜 형식 한국어로 변경
             const date = new Date(pageDate.replace(/\./g, '-'));
             const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
             modalDateLabel.textContent = date.toLocaleDateString('ko-KR', options);
@@ -47,15 +81,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 const medUuid = item.dataset.medUuid;
                 const medName = item.querySelector('.med-name').textContent;
                 const medDetail = item.querySelector('.med-detail').textContent;
-                // const medType = item.querySelector('.med-type').textContent; // 약 종류 정보는 현재 사용하지 않음
 
                 const medItemDiv = document.createElement('div');
                 medItemDiv.classList.add('medication-item');
                 medItemDiv.dataset.medUuid = medUuid;
 
-                // 약 종류에 따른 그래픽 구분 주석 처리
-                // let pillGraphicClass = medType.toLowerCase().includes('capsule') ? 'capsule' : 'tablet';
-                let pillGraphicClass = 'tablet'; // 기본값 설정
+                const stdDateTime = new Date(pageDate.replace(/\./g, '-') + 'T' + time);
+                medItemDiv.dataset.stdTime = stdDateTime.toISOString().slice(0, 19);
+
+                let pillGraphicClass = 'tablet';
 
                 medItemDiv.innerHTML = `
                     <div class="medication-item-info">
@@ -87,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const currentButton = e.currentTarget;
                 const medItem = currentButton.closest('.medication-item');
                 const medUuid = medItem.dataset.medUuid;
+                const stdTime = medItem.dataset.stdTime;
                 const action = currentButton.dataset.action;
 
                 const statusTimeDiv = medItem.querySelector('.medication-status-time');
@@ -94,22 +129,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 const skippedBtn = medItem.querySelector('.skipped-btn');
                 const takenBtn = medItem.querySelector('.taken-btn');
 
-                // 버튼 다시 클릭 시 취소 기능 복구
                 if (medicationStatus[medUuid] && medicationStatus[medUuid].status === action) {
                     delete medicationStatus[medUuid];
                     currentButton.classList.remove('active');
                     currentButton.textContent = action === 'taken' ? '복용함' : '건너뜀';
                     statusTimeDiv.textContent = '';
                 } else {
-                    // 다른 버튼 상태 초기화
                     skippedBtn.classList.remove('active');
                     takenBtn.classList.remove('active');
                     skippedBtn.textContent = '건너뜀';
                     takenBtn.textContent = '복용함';
 
-                    // 현재 버튼 활성화 및 텍스트 변경
                     currentButton.classList.add('active');
-                    medicationStatus[medUuid] = { status: action, time: new Date() };
+                    medicationStatus[medUuid] = { status: action, time: new Date(), stdTime: stdTime };
 
                     const now = new Date();
                     const currentTime = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -129,19 +161,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // '전체 복용' 버튼
     logAllTakenBtn.addEventListener('click', () => {
         if (logAllTakenBtn.disabled) return;
 
         modalMedicationItems.querySelectorAll('.medication-item').forEach(item => {
             const medUuid = item.dataset.medUuid;
-            medicationStatus[medUuid] = { status: 'taken', time: new Date() };
+            const stdTime = item.dataset.stdTime;
+            medicationStatus[medUuid] = { status: 'taken', time: new Date(), stdTime: stdTime };
         });
 
         sendIntakeRecord();
-        alert("모든 약을 복용으로 기록했습니다.");
-        closeModal();
-        location.reload();
     });
 
     function closeModal() {
@@ -151,9 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
     closeModalBtn.addEventListener("click", closeModal);
     modalDoneBtn.addEventListener("click", () => {
         sendIntakeRecord();
-        alert("기록이 완료되었습니다.");
-        closeModal();
-        location.reload();
     });
 
     window.addEventListener("click", (event) => {
@@ -162,7 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 버튼 및 제목 한국어화
     logAllTakenBtn.textContent = "모두 복용으로 기록";
     modalDoneBtn.textContent = "완료";
 });

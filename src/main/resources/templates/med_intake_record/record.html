@@ -28,7 +28,7 @@
     <div class="section-block">
         <div class="section-title">복용해야 하는 약</div>
         <div th:each="recordDay : ${mirdvDTOList}" th:if="${recordDay.stdDate.equals(selectedDate)}">
-            <div class="time-block" th:each="entry : ${recordDay.viewItemDTOListMapForTypeScheduled}">
+            <div class="time-block" th:each="entry : ${recordDay.viewItemDTOListMapForTypeScheduled}" th:data-std-time="${entry.key}">
                 <div class="time-header">
                     <span class="time" th:text="${entry.key}"></span>&nbsp;&nbsp;<button type="button" class="time-record-button">+ 기록</button>
                 </div>
@@ -39,7 +39,7 @@
                             <div class="med-info">
                                 <span class="med-name" th:text="${item.medName}"></span>
                                 <span class="med-detail" th:text="${item.doseAmount + ' ' + item.doseUnit.title}"></span>
-                                <span class="med-type" th:text="${item.medType.title}"></span>
+                                <span class="med-type" th:text="${item.medType.title}" style="display:none;"></span>
                             </div>
                         </div>
                     </li>
@@ -62,7 +62,7 @@
                             <div class="med-info">
                                 <span class="med-name" th:text="${item.medName}"></span>
                                 <span class="med-detail" th:text="${item.doseAmount + ' ' + item.doseUnit.title}"></span>
-                                <span class="med-type" th:text="${item.medType.title}"></span>
+                                <span class="med-type" th:text="${item.medType.title}" style="display:none;"></span>
                             </div>
                         </div>
                     </li>
@@ -84,13 +84,13 @@
                 <h2 class="med-time"></h2>
                 <p class="med-count"></p>
             </div>
-            <button id="log-all-taken-btn" class="log-all-taken-button">Log All as Taken</button>
+            <button id="log-all-taken-btn" class="log-all-taken-button"></button>
         </div>
 
         <div id="modal-medication-items"></div>
 
         <div class="modal-footer">
-            <button id="modal-done-btn" class="modal-done-button">Done</button>
+            <button id="modal-done-btn" class="modal-done-button"></button>
         </div>
     </div>
 </div>

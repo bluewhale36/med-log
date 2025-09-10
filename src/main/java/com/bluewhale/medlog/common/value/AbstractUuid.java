@@ -17,8 +17,6 @@ import java.util.UUID;
  * @since 2025-09-08
  */
 @Getter
-@ToString
-@EqualsAndHashCode
 public abstract class AbstractUuid {
 
     private final String value;
@@ -46,5 +44,10 @@ public abstract class AbstractUuid {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid UUID: " + uuid);
         }
+    }
+
+    @Override
+    public String toString() {
+        return value;
     }
 }
