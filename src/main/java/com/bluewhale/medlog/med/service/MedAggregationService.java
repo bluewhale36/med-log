@@ -20,10 +20,6 @@ public class MedAggregationService {
 
     private final MedRepository medRepo;
 
-
-    private final HospitalVisitRecordIdentifierConvertService hvrQServ;
-    private final AppUserIdentifierConvertService appUserQServ;
-
     private final MedIntakeRecordAggregationService mirFServ;
 
     public List<MedAggregationDTO> getMedAggDTOListByAppUserId(Long appUserId) {
@@ -37,11 +33,6 @@ public class MedAggregationService {
         Med entity = medRepo.findById(medId).orElseThrow(
                 () -> new IllegalArgumentException(String.format("Medication for MedUuid %s not found", medId))
         );
-        VisitUuid visitUuid =
-                entity.getHospitalVisitRecord() != null ?
-                hvrQServ.getUuidById(entity.getHospitalVisitRecord().getVisitId()) :
-                null;
-        AppUserUuid appUserUuid = appUserQServ.getUuidById(entity.getAppUser().getAppUserId());
         List<MedIntakeRecordAggregationDTO> mirFullDTOList = mirFServ.getMirFullDTOListByMedId(medId);
 
         return toAggregationDTO(entity, mirFullDTOList);

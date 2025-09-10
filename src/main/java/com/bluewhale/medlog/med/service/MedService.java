@@ -11,7 +11,7 @@ import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.med.dto.MedRegisterDTO;
-import com.bluewhale.medlog.med.factory.MedRegisterDTOFactory;
+import com.bluewhale.medlog.med.parser.MedRegisterPayloadParser;
 import com.bluewhale.medlog.med.repository.MedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MedService {
 
-    private final MedRegisterDTOFactory medRegiDTOFactory;
+    private final MedRegisterPayloadParser medRegisterPayloadParser;
 
     private final HospitalVisitRecordIdentifierConvertService hvCServ;
     private final AppUserIdentifierConvertService appUserCServ;
@@ -35,8 +35,8 @@ public class MedService {
     private final HospitalVisitRecordRepository hospitalVisitRecordRepository;
 
 
-    public MedRegisterDTO getMedRegiDTOFromPayload(Map<String, Object> payload) {
-        return medRegiDTOFactory.fromPayload(payload);
+    public MedRegisterDTO getMedRegisterDTOFromPayload(Map<String, Object> payload) {
+        return medRegisterPayloadParser.parseData(payload);
     }
 
     public Med convertToNewMed(MedRegisterDTO medRegiDTO) {

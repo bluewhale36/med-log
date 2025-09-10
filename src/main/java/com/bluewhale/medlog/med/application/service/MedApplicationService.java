@@ -2,13 +2,13 @@ package com.bluewhale.medlog.med.application.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.med.application.usecase.med.GetMedDTOListByAppUserUuidUseCase;
+import com.bluewhale.medlog.med.application.usecase.med.ModifyMedUseCase;
 import com.bluewhale.medlog.med.application.usecase.med.SoftDeleteMedUseCase;
 import com.bluewhale.medlog.med.application.usecase.med.RegisterNewMedUseCase;
-import com.bluewhale.medlog.medintakerecord.application.usecase.GetMedIntakeRecordViewDTOListUseCase;
+import com.bluewhale.medlog.med.dto.MedModifyDTO;
 import com.bluewhale.medlog.med.application.usecase.medintakesnapshot.CreateOrModifyNewMedSnapshotUseCase;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
-import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +27,9 @@ public class MedApplicationService {
 
     private final RegisterNewMedUseCase regiNewMedUseCase;
     private final CreateOrModifyNewMedSnapshotUseCase createOrModifyNewMedSnapshotUseCase;
-    private final GetMedIntakeRecordViewDTOListUseCase getMedIntakeRecordViewDTOListUseCase;
     private final SoftDeleteMedUseCase softDeleteMedUseCase;
     private final GetMedDTOListByAppUserUuidUseCase getMedDTOListByAppUserUuidUseCase;
+    private final ModifyMedUseCase modifyMedUseCase;
 
     @Transactional(rollbackFor = Exception.class)
     public void registerNewMed(Map<String, Object> payload) {
@@ -46,4 +46,12 @@ public class MedApplicationService {
     public List<MedDTO> getMedDTOListByAppUserUuid(AppUserUuid appUserUuid) {
         return getMedDTOListByAppUserUuidUseCase.execute(appUserUuid);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public MedDTO updateMedInfo(Map<String, Object> payload) {
+        MedDTO modifiedMedDTO = modifyMedUseCase.execute(payload);
+        createOrModifyNewMedSnapshotUseCase.execute(modifiedMedDTO.getAppUserUuid());
+        return modifiedMedDTO;
+    }
+
 }

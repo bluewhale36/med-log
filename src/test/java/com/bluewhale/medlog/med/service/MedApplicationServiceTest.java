@@ -5,6 +5,7 @@ import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.repository.MedRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,8 +24,11 @@ public class MedApplicationServiceTest {
     @Autowired
     private MedApplicationService medApplicationService;
 
-    @MockBean
+    @Mock
     private MedRepository medRepository;
+
+    @Mock
+    private MedIdentifierConvertService medIdentifierConvertService;
 
     @Test
     @DisplayName("Delete Med With Related Info")
@@ -32,7 +36,7 @@ public class MedApplicationServiceTest {
         MedUuid medUuid = new MedUuid(UUID.randomUUID().toString());
         Long medId = 10L;
 
-        given(medRepository.findIdByMedUuid(medUuid)).willReturn(Optional.of(medId));
+        given(medIdentifierConvertService.getIdByUuid(medUuid)).willReturn(medId);
 
         medApplicationService.softDeleteMedWithMedUuid(medUuid);
 

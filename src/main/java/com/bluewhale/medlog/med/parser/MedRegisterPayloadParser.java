@@ -2,10 +2,8 @@ package com.bluewhale.medlog.med.parser;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
-import com.bluewhale.medlog.med.dto.ParsedMedRegisterDTO;
+import com.bluewhale.medlog.med.dto.MedRegisterDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
-import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
-import com.bluewhale.medlog.med.model.dosefrequency.detail.AbstractDoseFrequencyDetail;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,24 +15,17 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class PayloadParser {
+public class MedRegisterPayloadParser implements MedPayloadParser<MedRegisterDTO> {
 
     private final ObjectMapper objectMapper;
 
-    public ParsedMedRegisterDTO parseData(Map<String, Object> payload) {
+    public MedRegisterDTO parseData(Map<String, Object> payload) {
 
-        // 1. doseFrequency 분해 및 조립
-        Map<String, Object> freqMap = (Map<String, Object>) payload.get("doseFrequency");
-        String typeStr = (String) freqMap.get("doseFrequencyType");
-        Map<String, Object> detailMap = (Map<String, Object>) freqMap.get("doseFrequencyDetail");
-
-        DoseFrequencyType type = DoseFrequencyType.valueOf(typeStr);
-        AbstractDoseFrequencyDetail detail = objectMapper.convertValue(detailMap, type.getDetailClass());
-        DoseFrequency doseFrequency = DoseFrequency.of(type, detail);
+        DoseFrequency doseFrequency = getDoseFrequencyFromPayload(payload, objectMapper);
 
         String visitUuidStr = parseString(payload.get("visitUuid"));
 
-        ParsedMedRegisterDTO dto = ParsedMedRegisterDTO.builder()
+        MedRegisterDTO dto = MedRegisterDTO.builder()
                 .visitUuid(visitUuidStr != null ? new VisitUuid(visitUuidStr) : null)
                 .appUserUuid(new AppUserUuid(parseString(payload.get("appUserUuid"))))
                 .medName(parseString(payload.get("medName")))
@@ -50,20 +41,6 @@ public class PayloadParser {
                 .build();
         System.out.println(dto);
         return dto;
-    }
-
-    private Long parseLong(Object obj) {
-        if (obj == null) return null;
-
-        if (obj instanceof Number) {
-            return ((Number) obj).longValue();
-        }
-
-        if (obj instanceof String && !((String) obj).isBlank()) {
-            return Long.parseLong((String) obj);
-        }
-
-        return null;
     }
 
     private LocalDate parseDate(Object obj) {
