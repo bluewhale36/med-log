@@ -10,37 +10,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalDoneBtn = document.getElementById("modal-done-btn");
 
     const pageDate = document.querySelector(".date-label").textContent.split(' ')[0];
-    let medicationStatus = {};
+    let medicationStatus = {}; // { medUuid: { status: 'taken' | 'skipped', time: Date } }
 
     function updateLogAllButtonState() {
-        const hasSkipped = Object.values(medicationStatus).some(status => status === 'skipped');
+        // medicationStatus 객체의 값(value)들 중에 status가 'skipped'인 것이 하나라도 있는지 확인
+        const hasSkipped = Object.values(medicationStatus).some(value => value.status === 'skipped');
         logAllTakenBtn.disabled = hasSkipped;
     }
 
     // 서버로 데이터를 전송하는 함수
     function sendIntakeRecord() {
-        // TODO: medicationStatus 객체를 기반으로 서버에 fetch 요청을 보내는 로직 구현
-        // 이 함수는 'Done' 버튼 클릭 시 호출됩니다.
         console.log("서버로 전송할 최종 기록:", medicationStatus);
-        // fetch('/med/intake/record', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(medicationStatus)
-        // })
-        // .then(response => {
-        //     if(response.ok) {
-        //         alert("기록이 완료되었습니다.");
-        //         location.reload();
-        //     } else {
-        //         alert("기록 저장에 실패했습니다.");
-        //     }
-        // });
+        // TODO: medicationStatus 객체를 기반으로 서버에 fetch POST 요청 구현
+        // fetch('/med/intake/record', { ... body: JSON.stringify(medicationStatus) ... })
     }
 
     openModalButtons.forEach(button => {
         button.addEventListener("click", (e) => {
             medicationStatus = {};
-            logAllTakenBtn.disabled = false;
+            updateLogAllButtonState();
 
             const timeBlock = e.target.closest(".time-block");
             const time = timeBlock.querySelector(".time").textContent;
@@ -77,8 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     </div>
                     <div class="medication-actions">
-                        <button class="skipped-btn" data-action="skipped"><span class="icon"></span>Skipped</button>
-                        <button class="taken-btn" data-action="taken"><span class="icon"></span>Taken</button>
+                        <button class="skipped-btn" data-action="skipped">Skipped</button>
+                        <button class="taken-btn" data-action="taken">Taken</button>
                     </div>
                 `;
                 modalMedicationItems.appendChild(medItemDiv);
@@ -102,17 +90,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 const skippedBtn = medItem.querySelector('.skipped-btn');
                 const takenBtn = medItem.querySelector('.taken-btn');
 
-                if (medicationStatus[medUuid] === action) {
-                    delete medicationStatus[medUuid];
+                // 이미 선택된 버튼을 다시 클릭한 경우 (취소)
+                if (medicationStatus[medUuid] && medicationStatus[medUuid].status === action) {
+                    delete medicationStatus[medUuid]; // 상태 제거
                     currentButton.classList.remove('active');
-                    currentButton.querySelector('.icon').textContent = '';
+                    currentButton.textContent = action.charAt(0).toUpperCase() + action.slice(1); // "Taken" 또는 "Skipped"
                     statusTimeDiv.textContent = '';
                 } else {
+                    // 다른 버튼 상태 초기화
                     skippedBtn.classList.remove('active');
                     takenBtn.classList.remove('active');
-                    skippedBtn.querySelector('.icon').textContent = '';
-                    takenBtn.querySelector('.icon').textContent = '';
+                    skippedBtn.textContent = 'Skipped';
+                    takenBtn.textContent = 'Taken';
 
+                    // 현재 버튼 활성화
                     currentButton.classList.add('active');
                     medicationStatus[medUuid] = { status: action, time: new Date() };
 
@@ -120,11 +111,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     const currentTime = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
 
                     if (action === 'taken') {
-                        currentButton.querySelector('.icon').textContent = '✓';
+                        currentButton.textContent = '✓ Taken';
                         statusTimeDiv.textContent = `${doseText} at ${currentTime}`;
                         statusTimeDiv.style.color = '#0a84ff';
                     } else { // skipped
-                        currentButton.querySelector('.icon').textContent = '×';
+                        currentButton.textContent = '× Skipped';
                         statusTimeDiv.textContent = `Skipped at ${currentTime}`;
                         statusTimeDiv.style.color = '#ccc';
                     }
@@ -134,18 +125,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 'Log All as Taken' 버튼 이벤트: 즉시 서버 전송 로직 실행
+    // 'Log All as Taken' 버튼 이벤트
     logAllTakenBtn.addEventListener('click', () => {
-        if(logAllTakenBtn.disabled) return;
+        if (logAllTakenBtn.disabled) return;
 
         modalMedicationItems.querySelectorAll('.medication-item').forEach(item => {
             const medUuid = item.dataset.medUuid;
-            // 모든 약의 상태를 'taken'으로 설정
             medicationStatus[medUuid] = { status: 'taken', time: new Date() };
         });
 
-        // 즉시 Done 버튼 로직 실행 (서버 전송 및 모달 닫기)
-        modalDoneBtn.click();
+        sendIntakeRecord();
+        alert("모든 약을 복용으로 기록했습니다.");
+        closeModal();
+        location.reload(); // 임시 새로고침
     });
 
     function closeModal() {
@@ -155,9 +147,9 @@ document.addEventListener("DOMContentLoaded", () => {
     closeModalBtn.addEventListener("click", closeModal);
     modalDoneBtn.addEventListener("click", () => {
         sendIntakeRecord();
-        // 실제 서버 응답을 받은 후 처리하는 것이 이상적입니다.
-        // 현재는 즉시 UI를 닫습니다.
+        alert("기록이 완료되었습니다.");
         closeModal();
+        location.reload(); // 임시 새로고침
     });
 
     window.addEventListener("click", (event) => {
