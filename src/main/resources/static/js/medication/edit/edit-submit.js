@@ -61,6 +61,8 @@ document.getElementById("medication-edit-form").addEventListener("submit", funct
 
     const medUuid = medicationInfo.medUuid;
 
+    console.log(JSON.stringify(medicationInfo));
+
     fetch(`/med/${medUuid}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },

@@ -48,8 +48,8 @@ public class MedApplicationService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public MedDTO updateMedInfo(MedModifyDTO medModifyDTO) {
-        MedDTO modifiedMedDTO = modifyMedUseCase.execute(medModifyDTO);
+    public MedDTO updateMedInfo(Map<String, Object> payload) {
+        MedDTO modifiedMedDTO = modifyMedUseCase.execute(payload);
         createOrModifyNewMedSnapshotUseCase.execute(modifiedMedDTO.getAppUserUuid());
         return modifiedMedDTO;
     }

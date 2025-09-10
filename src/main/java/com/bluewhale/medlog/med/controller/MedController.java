@@ -72,12 +72,13 @@ public class MedController {
     @PatchMapping("/{medUuid}")
     public ResponseEntity<Void> updateMed(
             @PathVariable("medUuid") String medUuid,
-            @RequestBody MedModifyDTO medModifyDTO, Model model
+            @RequestBody Map<String, Object> payload,
+            Model model
     ) {
-        if (!(medUuid.equals(medModifyDTO.getMedUuid().asString()))) {
+        if (!(medUuid.equals(payload.get("medUuid").toString()))) {
             return ResponseEntity.badRequest().build();
         }
-        MedDTO modifiedMedDTO = medAppService.updateMedInfo(medModifyDTO);
+        MedDTO modifiedMedDTO = medAppService.updateMedInfo(payload);
         model.addAttribute("medDTO", modifiedMedDTO);
         return ResponseEntity.ok().build();
     }

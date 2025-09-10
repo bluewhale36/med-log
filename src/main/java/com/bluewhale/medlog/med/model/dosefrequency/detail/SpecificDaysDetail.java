@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.function.Function;
 
 
 @Getter
@@ -25,33 +26,32 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
     public String humanReadable() {
         StringBuffer sbf = new StringBuffer();
         for (int i = 0; i < specificDays.size(); i++) {
-            sbf.append(i + 1).append(". ").append(specificDays.get(i).humanReadable()).append("\n");
+            // AbstractDoseFrequencyDetail 의 humanReadableTimeListAsString method 자체를 인자로 넘기는 아이디어!
+            sbf.append(i + 1).append(". ").append(specificDays.get(i).humanReadable(this::humanReadableTimeListAsString)).append("\n");
         }
         return sbf.toString();
     }
 
     @Getter
     @ToString
-    public class SpecificDaysSet {
+    public static class SpecificDaysSet {
 
         private final List<Days> days;
         private final List<LocalTime> times;
 
         @JsonCreator
         public SpecificDaysSet(
-                @JsonProperty("days") List<Days> days,
-                @JsonProperty("times") List<LocalTime> times
+                               @JsonProperty("days") List<Days> days,
+                               @JsonProperty("times") List<LocalTime> times
         ) {
             this.days = days;
             this.times = times;
         }
 
-        private String humanReadable() {
-            return String.format(
-                    "%s마다 %s에 복용합니다.",
-                    String.join("요일, ", days.stream().map(Days::getTitle).toArray(String[]::new)) + "요일",
-                    humanReadbleTimeListAsString(times)
-            );
+        private String humanReadable(Function<List<LocalTime>, String> timeFormatter) {
+            String daysStr = String.join("요일, ", days.stream().map(Days::getTitle).toArray(String[]::new)) + "요일";
+            String timesStr = timeFormatter.apply(this.times);
+            return String.format("%s마다 %s에 복용합니다.", daysStr, timesStr);
         }
 
     }

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
     public String humanReadable() {
         return String.format(
                 "%d일간 복용하고, %d일간 복용하지 않습니다.\n복용 기간에는 %s에 복용합니다.",
-                onDurationInDays, offDurationInDays, humanReadbleTimeListAsString(times)
+                onDurationInDays, offDurationInDays, humanReadableTimeListAsString(times)
         );
     }
 }

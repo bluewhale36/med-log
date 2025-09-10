@@ -22,6 +22,6 @@ public class EveryDayDetail extends AbstractDoseFrequencyDetail {
 
     @Override
     public String humanReadable() {
-        return "매일 " + humanReadbleTimeListAsString(times) + "에 복용합니다.";
+        return "매일 " + humanReadableTimeListAsString(times) + "에 복용합니다.";
     }
 }

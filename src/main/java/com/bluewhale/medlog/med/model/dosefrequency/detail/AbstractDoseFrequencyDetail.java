@@ -11,7 +11,7 @@ public abstract class AbstractDoseFrequencyDetail {
         return times.stream().map(LocalTime::toString).toArray(String[]::new);
     }
 
-    protected String humanReadbleTimeListAsString(List<LocalTime> times) {
+    protected String humanReadableTimeListAsString(List<LocalTime> times) {
         return String.join("분, ", humanReadableTimeListStringSequence(times)) + "분";
     }
 }
