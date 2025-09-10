@@ -12,25 +12,30 @@
     z-index: 1000;
 }
 
-/* 모달 콘텐츠 */
+/* 모달 콘텐츠 (크기 고정 및 flex-box 설정) */
 .modal-content {
     background-color: #1c1c1e;
     border-radius: 15px;
     width: 90%;
     max-width: 550px;
+    height: 85vh; /* 화면 높이의 85%로 고정 */
+    max-height: 700px; /* 최대 높이 제한 */
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
     color: #fff;
     padding: 0;
     overflow: hidden;
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
 }
 
-/* 모달 헤더 */
+/* 모달 헤더 (고정) */
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid #3a3a3c;
+    flex-shrink: 0; /* 크기 줄어들지 않음 */
 }
 
 .modal-close-btn {
@@ -49,157 +54,92 @@
     font-weight: 500;
 }
 
-/* 약 아이콘 및 시간 정보 헤더 */
+/* 약 아이콘 및 시간 정보 헤더 (고정) */
 .med-icon-header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 25px 20px;
+    padding: 20px;
+    flex-shrink: 0; /* 크기 줄어들지 않음 */
 }
-
 .med-icon {
-    width: 60px;
-    height: 60px;
-    background-color: #0a84ff;
-    border-radius: 50%;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 30px;
-    color: #fff;
-    position: relative;
+    width: 60px; height: 60px; background-color: #0a84ff; border-radius: 50%; margin-bottom: 15px;
+    display: flex; justify-content: center; align-items: center; font-size: 30px; color: #fff; position: relative;
 }
+.med-icon::before { content: '💊'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.med-time-info { text-align: center; }
+.med-time { font-size: 30px; font-weight: bold; margin: 0; color: #fff; }
+.med-count { font-size: 16px; color: #999; margin-top: 5px; }
 
-.med-icon::before {
-    content: '💊';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.med-time-info {
-    text-align: center;
-}
-
-.med-time {
-    font-size: 30px;
-    font-weight: bold;
-    margin: 0;
-    color: #fff;
-}
-
-.med-count {
+/* 'Log All as Taken' 버튼 (헤더 영역에 위치) */
+.log-all-taken-button {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    /*margin-top: 15px;*/
+    padding: 8px 12px;
+    background-color: #3a3a3c;
+    color: #0a84ff; /* 텍스트는 파란색 */
+    border: none;
+    border-radius: 50px;
     font-size: 16px;
-    color: #999;
-    margin-top: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+/* 비활성화 스타일 */
+.log-all-taken-button:disabled {
+    background-color: #2c2c2e;
+    color: #555;
+    cursor: not-allowed;
 }
 
-/* 개별 약품 항목 */
+
+/* 개별 약품 항목 (스크롤 영역) */
 #modal-medication-items {
     padding: 0 20px;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    flex-grow: 1; /* 남은 공간 모두 차지 */
+    overflow-y: auto; /* 내용이 넘치면 스크롤 */
 }
 
-.medication-item {
-    background-color: #2c2c2e;
-    padding: 15px;
-    border-radius: 10px;
-}
-
-.medication-item-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.pill-graphic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 15px;
-    flex-shrink: 0;
-    border: 1px solid #555;
-}
-
+.medication-item { background-color: #2c2c2e; padding: 15px; border-radius: 10px; }
+.medication-item-info { display: flex; align-items: center; margin-bottom: 12px; }
+.pill-graphic { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; flex-shrink: 0; border: 1px solid #555; }
 .pill-graphic.tablet { background-color: #f0e68c; }
-.pill-graphic.capsule {
-    width: 45px;
-    background: linear-gradient(to right, #d3d3d3 50%, #f5f5f5 50%);
-    border-radius: 20px;
-}
+.pill-graphic.capsule { width: 45px; background: linear-gradient(to right, #d3d3d3 50%, #f5f5f5 50%); border-radius: 20px; }
+.medication-details { flex-grow: 1; text-align: left; }
+.medication-name { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 4px; }
+.medication-dose { font-size: 15px; color: #ccc; }
+.medication-status-time { font-size: 15px; color: #ccc; font-weight: 500; margin-top: 5px; min-height: 20px; }
 
-.medication-details {
-    flex-grow: 1;
-    text-align: left;
-}
-
-.medication-name {
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-    margin-bottom: 4px;
-}
-
-.medication-dose {
-    font-size: 15px;
-    color: #ccc;
-}
-
-.medication-status-time {
-    font-size: 15px;
-    color: #0a84ff;
-    font-weight: 500;
-    margin-top: 5px;
-    min-height: 20px; /* 상태 메시지 영역 확보 */
-}
-
-.medication-actions {
-    display: flex;
-    gap: 10px;
-}
-
+/* 복용/건너뜀 버튼 */
+.medication-actions { display: flex; gap: 10px; }
 .medication-actions button {
-    flex-grow: 1;
-    padding: 12px 0;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+    flex-grow: 1; padding: 12px 0; border: none; border-radius: 8px; font-size: 16px;
+    font-weight: bold; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease;
+    background-color: #3a3a3c; /* 기본 배경색 */
+    color: #fff; /* 기본 글자색 */
 }
 
-.medication-actions .skipped-btn {
-    background-color: #3a3a3c;
-    color: #fff;
-}
+/* 'Taken' 버튼 활성화 스타일 */
+.medication-actions .taken-btn.active { background-color: #0a84ff; color: white; }
+.medication-actions .taken-btn.active::before { content: '✓ '; } /* 체크 아이콘 */
 
-.medication-actions .taken-btn {
-    background-color: #0a84ff;
-    color: white;
-}
+/* 'Skipped' 버튼 활성화 스타일 */
+.medication-actions .skipped-btn.active { background-color: #555; color: #bbb; }
+.medication-actions .skipped-btn.active::before { content: '× '; } /* X 아이콘 */
 
-/* 하단 버튼 */
-.log-all-taken-button {
-    width: calc(100% - 40px);
-    margin: 20px 20px 10px 20px;
-    padding: 15px;
-    background-color: #3a3a3c;
-    color: #0a84ff;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-}
 
+/* 모달 푸터 (고정) */
+.modal-footer {
+    padding: 20px;
+    flex-shrink: 0; /* 크기 줄어들지 않음 */
+}
 .modal-done-button {
-    width: calc(100% - 40px);
-    margin: 0 20px 20px 20px;
+    width: 100%;
     padding: 15px;
     background-color: #0a84ff;
     color: white;
