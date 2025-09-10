@@ -15,7 +15,14 @@ import java.time.LocalDateTime;
 public class MedIntakeRecordRegisterDTO {
 
     private final MedUuid medUuid;
-    private final boolean isTaken;
+
+    /*
+        True : 복용함
+        False : 건너뜀
+        Null : 기록 없음 -> DB 에 INSERT 하지 않음
+     */
+    private final Boolean isTaken;
+
     private final LocalDateTime estimatedDoseTime;
     private final LocalDateTime takenAt;
 }
