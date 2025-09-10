@@ -5,7 +5,6 @@
     <title>Medication Log</title>
     <link rel="stylesheet" href="/css/med_intake_record/record.css" />
     <link rel="stylesheet" href="/css/med_intake_record/record_modal.css" />
-    <script src="/js/med_intake_record/record_modal.js" defer></script>
 </head>
 <body>
 <div class="container">
@@ -34,7 +33,7 @@
                     <span class="time" th:text="${entry.key}"></span>&nbsp;&nbsp;<button type="button" class="time-record-button">+ 기록</button>
                 </div>
                 <ul class="med-list">
-                    <li th:each="item : ${entry.value}">
+                    <li th:each="item : ${entry.value}" th:data-med-uuid="${item.medUuid.asString()}">
                         <div style="display: flex; align-items: center;">
                             <span class="pill-icon empty"></span>
                             <div class="med-info">
@@ -53,7 +52,9 @@
         <div class="section-title">복용 기록이 있는 약</div>
         <div th:each="recordDay : ${mirdvDTOList}" th:if="${recordDay.stdDate.equals(selectedDate)}">
             <div class="time-block" th:each="entry : ${recordDay.viewItemDTOListMapForTypeRecord}">
-                <div class="time-header" th:text="${entry.key}"></div>
+                <div class="time-header">
+                    <span class="time" th:text="${entry.key}"></span>
+                </div>
                 <ul class="med-list">
                     <li th:each="item : ${entry.value}">
                         <div style="display: flex; align-items: center;">
@@ -73,17 +74,26 @@
 
 <div id="record-modal" class="modal-overlay">
     <div class="modal-content">
-        <h2>복용 기록</h2>
-        <form id="record-form">
-            <div id="modal-med-list"></div>
-            <div class="modal-buttons">
-                <button type="button" id="cancel-record-btn">취소</button>
-                <button type="submit">저장</button>
+        <div class="modal-header">
+            <button class="modal-close-btn">&times;</button>
+            <span class="modal-date-label"></span>
+        </div>
+        <div class="med-icon-header">
+            <span class="med-icon"></span>
+            <div class="med-time-info">
+                <h2 class="med-time"></h2>
+                <p class="med-count"></p>
             </div>
-        </form>
+        </div>
+
+        <div id="modal-medication-items"></div>
+
+        <button id="log-all-taken-btn" class="log-all-taken-button">Log All as Taken</button>
+        <button id="modal-done-btn" class="modal-done-button">Done</button>
     </div>
 </div>
 
+<script src="/js/med_intake_record/record_modal.js"></script>
 <script>
     function getToday() {
         location.href="/med/intake/record";
