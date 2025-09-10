@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Medication Log</title>
+    <link rel="stylesheet" href="/css/med_intake_record/record.css" />
+    <link rel="stylesheet" href="/css/med_intake_record/record_modal.css" />
+    <script src="/js/med_intake_record/record_modal.js" defer></script>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Medication Log</h1>
+        <button class="today-button" onclick="getToday()">오늘</button>
+    </header>
+
+    <div class="date-label" th:text="${#temporals.format(selectedDate, 'yyyy.MM.dd (E)')}"></div>
+
+    <div class="date-scroll">
+        <div class="date-item-wrapper"
+             th:each="recordDay : ${mirdvDTOList}"
+             th:classappend="${recordDay.stdDate.equals(selectedDate)} ? 'selected' : ''"
+             th:attr="onclick=|location.href='/med/intake/record?date=${recordDay.stdDate}'|">
+            <div class="date-day-circle"></div>
+            <div class="date-day-label" th:text="${#temporals.format(recordDay.stdDate, 'E')}"></div>
+        </div>
+    </div>
+
+    <div class="section-block">
+        <div class="section-title">복용해야 하는 약</div>
+        <div th:each="recordDay : ${mirdvDTOList}" th:if="${recordDay.stdDate.equals(selectedDate)}">
+            <div class="time-block" th:each="entry : ${recordDay.viewItemDTOListMapForTypeScheduled}">
+                <div class="time-header">
+                    <span class="time" th:text="${entry.key}"></span>&nbsp;&nbsp;<button type="button" class="time-record-button">+ 기록</button>
+                </div>
+                <ul class="med-list">
+                    <li th:each="item : ${entry.value}">
+                        <div style="display: flex; align-items: center;">
+                            <span class="pill-icon empty"></span>
+                            <div class="med-info">
+                                <span class="med-name" th:text="${item.medName}"></span>
+                                <span class="med-detail" th:text="${item.doseAmount + ' ' + item.doseUnit.title}"></span>
+                                <span class="med-type" th:text="${item.medType.title}"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-block">
+        <div class="section-title">복용 기록이 있는 약</div>
+        <div th:each="recordDay : ${mirdvDTOList}" th:if="${recordDay.stdDate.equals(selectedDate)}">
+            <div class="time-block" th:each="entry : ${recordDay.viewItemDTOListMapForTypeRecord}">
+                <div class="time-header" th:text="${entry.key}"></div>
+                <ul class="med-list">
+                    <li th:each="item : ${entry.value}">
+                        <div style="display: flex; align-items: center;">
+                            <span class="pill-icon filled"></span>
+                            <div class="med-info">
+                                <span class="med-name" th:text="${item.medName}"></span>
+                                <span class="med-detail" th:text="${item.doseAmount + ' ' + item.doseUnit.title}"></span>
+                                <span class="med-type" th:text="${item.medType.title}"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="record-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h2>복용 기록</h2>
+        <form id="record-form">
+            <div id="modal-med-list"></div>
+            <div class="modal-buttons">
+                <button type="button" id="cancel-record-btn">취소</button>
+                <button type="submit">저장</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function getToday() {
+        location.href="/med/intake/record";
+    }
+</script>
+</body>
+</html>

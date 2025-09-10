@@ -27,7 +27,7 @@ public class MedIntakeRecordController {
     @GetMapping({"", "/"})
     public String index(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
         model.addAttribute("medDTOList", medAppService.getMedDTOListByAppUserUuid(appUserUuid));
-        return "med/medintakerecord/main";
+        return "med_intake_record/main";
     }
 
     @GetMapping("/record")
@@ -41,6 +41,6 @@ public class MedIntakeRecordController {
         model.addAttribute("dateList", dateList);
         model.addAttribute("mirdvDTOList", list);
 
-        return"med/medintakerecord/record";
+        return"med_intake_record/record";
     }
 }
