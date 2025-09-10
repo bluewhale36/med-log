@@ -41,7 +41,7 @@ public class MedIntakeRecord {
                 .medIntakeRecordId(null)
                 .medIntakeRecordUuid(new MedIntakeRecordUuid(UUID.randomUUID().toString()))
                 .med(med)
-                .isTaken(dto.isTaken())
+                .isTaken(dto.getIsTaken())
                 .estimatedDoseTime(dto.getEstimatedDoseTime())
                 .takenAt(dto.getTakenAt())
                 .build();
