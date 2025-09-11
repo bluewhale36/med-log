@@ -10,7 +10,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalDoneBtn = document.getElementById("modal-done-btn");
 
     const pageDate = document.querySelector(".date-label").textContent.split(' ')[0];
-    let medicationStatus = {}; // { medUuid: { status: 'taken' | 'skipped', time: Date, stdTime: LocalDateTime } }
+    let medicationStatus = {}; // { medUuid: { status: 'taken' | 'skipped', time: Date, stdTime: String } }
+
+    /**
+     * 한국 시간대(KST)를 기준으로 YYYY-MM-DDTHH:mm:ss 형식의 문자열을 생성합니다.
+     * @param {Date} date - 변환할 Date 객체
+     */
+    function toKSTISOString(date) {
+        const offset = date.getTimezoneOffset() * 60000; // 분 단위를 밀리초로 변환
+        const kstDate = new Date(date.getTime() - offset);
+        // ISO 문자열로 변환하고, 마지막의 'Z'를 제거
+        return kstDate.toISOString().slice(0, 19);
+    }
 
     function updateLogAllButtonState() {
         const hasSkipped = Object.values(medicationStatus).some(value => value.status === 'skipped');
@@ -19,14 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 서버로 데이터를 전송하는 함수
     function sendIntakeRecord() {
-        // medicationStatus 객체를 List<MedIntakeRecordRegisterDTO> 형태로 변환
         const payload = Object.keys(medicationStatus).map(medUuid => {
             const record = medicationStatus[medUuid];
             return {
                 medUuid: medUuid,
-                isTaken: record.status === 'taken', // 'taken'은 true, 'skipped'는 false
-                estimatedDoseTime: record.stdTime, // ISO 8601 형식 (YYYY-MM-DDTHH:mm:ss)
-                takenAt: record.time.toISOString() // 복용/건너뜀 버튼을 누른 시각
+                isTaken: record.status === 'taken',
+                estimatedDoseTime: record.stdTime,
+                takenAt: toKSTISOString(record.time) // KST 기준으로 변환된 시간 사용
             };
         });
 
@@ -86,10 +96,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 medItemDiv.classList.add('medication-item');
                 medItemDiv.dataset.medUuid = medUuid;
 
+                // JS Date 객체를 KST 기준 YYYY-MM-DDTHH:mm:ss 형식으로 변환하여 저장
                 const stdDateTime = new Date(pageDate.replace(/\./g, '-') + 'T' + time);
-                medItemDiv.dataset.stdTime = stdDateTime.toISOString().slice(0, 19);
+                medItemDiv.dataset.stdTime = toKSTISOString(stdDateTime);
 
-                let pillGraphicClass = 'tablet';
+                let pillGraphicClass = 'tablet'; // 기본값
 
                 medItemDiv.innerHTML = `
                     <div class="medication-item-info">

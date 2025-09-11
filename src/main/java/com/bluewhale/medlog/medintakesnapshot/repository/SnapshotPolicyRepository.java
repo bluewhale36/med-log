@@ -20,5 +20,6 @@ public interface SnapshotPolicyRepository extends JpaRepository<MedIntakeSnapsho
 
     void deleteByAppUser_AppUserId(Long appUserAppUserId);
 
-    MedIntakeSnapshot findByMed_MedIdAndEstimatedDoseTime(Long medMedId, LocalDateTime estimatedDoseTime);
+    @Query("SELECT s FROM MedIntakeSnapshot s WHERE s.med.medId = :medId AND s.estimatedDoseTime = :estimatedDoseTime")
+    MedIntakeSnapshot findByMedIdAndEstimatedDoseTime(Long medId, LocalDateTime estimatedDoseTime);
 }

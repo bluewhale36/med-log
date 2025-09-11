@@ -26,12 +26,12 @@ public class ModifyIsTakenInMedSnapshotUseCase
             Long medId = medIdentifierConvertService.getIdByUuid(dto.getMedUuid());
 
             MedIntakeSnapshot entity =
-                    snapshotPolicyRepository.findByMed_MedIdAndEstimatedDoseTime(medId, dto.getEstimatedDoseTime());
+                    snapshotPolicyRepository.findByMedIdAndEstimatedDoseTime(medId, dto.getEstimatedDoseTime());
 
             if (entity != null) {
                 entity.updateIsTaken(dto.isTaken());
             } else {
-                System.out.println("snapshot with medId " +medId + " and estimatedDoseTime " +dto.getEstimatedDoseTime() +" not found.");
+                throw new IllegalStateException("MedIntakeSnapshot not found with medId : " + medId + " And EstimatedDoseTime : " + dto.getEstimatedDoseTime());
             }
         }
         return null;

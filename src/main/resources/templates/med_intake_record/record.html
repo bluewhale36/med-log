@@ -70,7 +70,7 @@
         <div th:each="recordDay : ${mirdvDTOList}" th:if="${recordDay.stdDate.equals(selectedDate)}">
             <div class="time-block" th:each="entry : ${recordDay.viewItemDTOListMapForTypeRecord}">
                 <div class="time-header">
-                    <span class="time" th:text="${entry.key}"></span>
+                    <span class="time" th:text="${entry.key}"></span>&nbsp;&nbsp;<button type="button" class="time-record-button">+ 기록</button>
                 </div>
                 <ul class="med-list">
                     <li th:each="item : ${entry.value}">
