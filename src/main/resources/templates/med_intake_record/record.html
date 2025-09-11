@@ -27,7 +27,6 @@
         </div>
     </div>
 
-    <!-- 복용해야 하는 약 -->
     <div class="section-block">
         <div class="section-title">복용해야 하는 약</div>
         <div th:each="recordDay : ${mirdvDTOList}" th:if="${recordDay.stdDate.equals(selectedDate)}">
@@ -49,16 +48,20 @@
                 </ul>
             </div>
         </div>
-        <!-- 추가 복용 약 기록 -->
+        <div class="as-needed-log-trigger" id="log-as-needed-btn">
+            <div class="time-header">
+                <span class="time">추가로 복용한 약 기록</span>
+                <button type="button" class="time-record-button">+</button>
+            </div>
+        </div>
     </div>
 
-    <!-- 복용 기록 있는 약 -->
     <div class="section-block">
         <div class="section-title">복용 기록이 있는 약</div>
         <div th:each="recordDay : ${mirdvDTOList}" th:if="${recordDay.stdDate.equals(selectedDate)}">
             <div class="time-block" th:each="entry : ${recordDay.viewItemDTOListMapForTypeRecord}">
                 <div class="time-header">
-                    <span class="time" th:text="${entry.key}"></span>&nbsp;&nbsp;<button type="button" class="time-record-button">상세보기</button>
+                    <span class="time" th:text="${entry.key}"></span>
                 </div>
                 <ul class="med-list">
                     <li th:each="item : ${entry.value}">
@@ -77,7 +80,6 @@
     </div>
 </div>
 
-<!-- 약 복용 기록 모달 -->
 <div id="record-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
@@ -92,11 +94,30 @@
             </div>
             <button id="log-all-taken-btn" class="log-all-taken-button"></button>
         </div>
-
-        <div id="modal-medication-items"></div>
-
+        <div id="modal-medication-items" class="modal-medication-items"></div>
         <div class="modal-footer">
             <button id="modal-done-btn" class="modal-done-button"></button>
+        </div>
+    </div>
+</div>
+
+<div id="as-needed-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="modal-close-btn">&times;</button>
+            <span id="as-needed-date-label" class="modal-date-label"></span>
+        </div>
+        <div class="med-icon-header">
+            <span class="med-icon"></span>
+            <div class="med-time-info">
+                <h2 class="med-time">추가 복용 기록</h2>
+                <p id="as-needed-med-count" class="med-count"></p>
+            </div>
+            <button id="log-all-as-needed-btn" class="log-all-taken-button"></button>
+        </div>
+        <div id="as-needed-med-list" class="modal-medication-items"></div>
+        <div class="modal-footer">
+            <button id="as-needed-done-btn" class="modal-done-button"></button>
         </div>
     </div>
 </div>
