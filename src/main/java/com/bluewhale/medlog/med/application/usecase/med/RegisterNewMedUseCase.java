@@ -35,10 +35,13 @@ public class RegisterNewMedUseCase implements UseCase<Map<String, Object>, MedDT
         MedRegisterDTO regiDTO = medService.getMedRegisterDTOFromPayload(input);
 
         Long appUserId = appUserIdentifierConvertService.getIdByUuid(regiDTO.getAppUserUuid());
-        Long visitId = hospitalVisitRecordIdentifierConvertService.getIdByUuid(regiDTO.getVisitUuid());
+        Long visitId =
+                regiDTO.getVisitUuid() != null ?
+                hospitalVisitRecordIdentifierConvertService.getIdByUuid(regiDTO.getVisitUuid()) :
+                null;
 
         AppUser appUserReference = appUserRepository.getReferenceById(appUserId);
-        HospitalVisitRecord hospitalVisitRecordReference = hospitalVisitRecordRepository.getReferenceById(visitId);
+        HospitalVisitRecord hospitalVisitRecordReference = visitId != null ? hospitalVisitRecordRepository.getReferenceById(visitId) : null;
 
         Med entity = Med.create(regiDTO, appUserReference, hospitalVisitRecordReference);
         Med insertedEntity = medRepository.save(entity);
