@@ -67,7 +67,9 @@ document.getElementById("medication-form").addEventListener("submit", function (
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(medicationInfo)
         },
-        successMessage: "약이 성공적으로 등록되었습니다."
+        processingMessage: "약을 등록하는 중입니다...",
+        successMessage: "약이 성공적으로 등록되었습니다.",
+        failureMessage: "약 등록에 실패했습니다. 다시 시도해주세요."
     })
         .then(response => {
             if (response && response.ok) {

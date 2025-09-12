@@ -67,6 +67,7 @@ document.getElementById("medication-edit-form").addEventListener("submit", funct
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(medicationInfo)
         },
+        processingMessage: "약 정보를 수정하는 중입니다...",
         successMessage: "약 정보가 성공적으로 수정되었습니다.",
         failureMessage: "수정에 실패했습니다. 다시 시도해주세요."
     }).then(response => {

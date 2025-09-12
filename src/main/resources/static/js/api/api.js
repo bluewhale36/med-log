@@ -39,13 +39,15 @@ function showToast(message, state, duration = 3000) {
  * @param {string} url - 요청 URL
  * @param {object} config - 설정 객체
  * @param {RequestInit} config.options - fetch에 전달할 옵션 (method, body 등)
+ * @param {string} [config.processingMessage] - 요청 처리 중 표시할 메시지
  * @param {string} [config.successMessage] - 성공 시 표시할 메시지
  * @param {string} [config.failureMessage] - 실패 시 표시할 메시지
  * @returns {Promise<Response>}
  */
-async function apiFetch(url, { options, successMessage, failureMessage } = {}) {
+async function apiFetch(url, { options, processingMessage, successMessage, failureMessage } = {}) {
     if (overlay) overlay.style.display = 'block';
-    showToast('처리 중입니다...', 'loading');
+
+    showToast(processingMessage || '처리 중입니다...', 'loading');
 
     try {
         const response = await fetch(url, options);

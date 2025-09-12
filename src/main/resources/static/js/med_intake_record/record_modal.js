@@ -77,7 +77,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             },
-            successMessage: "복용 기록이 저장되었습니다."
+            processingMessage: "복용 기록을 저장하는 중입니다...",
+            successMessage: "복용 기록이 저장되었습니다.",
+            failureMessage: "복용 기록 저장에 실패했습니다. 다시 시도해주세요."
         })
             .then(response => {
                 if (response && response.ok) {
