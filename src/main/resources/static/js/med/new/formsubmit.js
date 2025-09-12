@@ -56,14 +56,25 @@ function collectMedicationInfo() {
 document.getElementById("medication-form").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const medicationInfo = collectMedicationInfo();  // ✅ 실시간 요약과 동일한 수집 방식
+    const medicationInfo = collectMedicationInfo();
 
-    fetch("/med/new", {
+    // 기존 fetch 대신 fetchWithLoading 함수 사용
+    fetchWithLoading("/med/new", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(medicationInfo)
-    }).then(res => {
-        if (res.ok) alert("제출 성공");
-        else alert("제출 실패");
-    });
+    })
+        .then(res => {
+            if (res.ok) {
+                alert("제출 성공");
+                window.location.href = "/med"; // 성공 시 페이지 이동
+            } else {
+                alert("제출 실패");
+            }
+        })
+        .catch(error => {
+            // fetchWithLoading에서 에러를 다시 던져주므로 여기서 잡을 수 있습니다.
+            alert("제출 요청 중 오류가 발생했습니다.");
+        });
+    // .finally() 블록은 fetchWithLoading 함수 내부에 있으므로 여기서 필요 없습니다.
 });

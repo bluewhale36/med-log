@@ -28,38 +28,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 모달의 '삭제' 버튼 클릭 시 삭제 로직 실행
     confirmDeleteBtn.addEventListener("click", () => {
-        // data-med-uuid 속성에서 약 UUID 가져오기
         const medUuid = document.getElementById("medUuid").value;
         if (!medUuid) {
             alert("삭제할 약의 정보를 찾을 수 없습니다.");
             return;
         }
 
-        // fetch API를 사용하여 DELETE 요청 보내기
-        fetch(`/med/${medUuid}`, {
+        // fetch 대신 fetchWithLoading 사용
+        fetchWithLoading(`/med/${medUuid}`, {
             method: "DELETE",
-            // headers: {
-            //     // CSRF 토큰을 헤더에 추가
-            //     [csrfHeader]: csrfToken
-            // },
         })
             .then(response => {
                 if (response.ok) {
-                    // 삭제 성공 시
                     alert("약 정보가 성공적으로 삭제되었습니다.");
-                    // 약 목록 페이지로 리디렉션
                     window.location.href = "/med";
                 } else {
-                    // 삭제 실패 시
                     alert(`삭제에 실패했습니다. (상태: ${response.status})`);
-                    // 모달 닫기
-                    deleteModal.style.display = "none";
                 }
             })
             .catch(error => {
-                console.error("삭제 중 오류 발생:", error);
                 alert("삭제 요청 중 오류가 발생했습니다.");
-                deleteModal.style.display = "none";
             });
     });
 });

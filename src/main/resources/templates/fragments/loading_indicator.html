@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="loadingIndicator">
+  <link rel="stylesheet" href="/css/common/loading_indicator.css" />
+  <div id="loading-indicator" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+</th:block>
+
+<th:block th:fragment="commonScripts">
+  <script src="/js/api/api.js" defer></script>
+</th:block>
+
+</body>
+</html>

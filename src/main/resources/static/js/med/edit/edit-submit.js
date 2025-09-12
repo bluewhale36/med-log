@@ -63,7 +63,8 @@ document.getElementById("medication-edit-form").addEventListener("submit", funct
 
     console.log(JSON.stringify(medicationInfo));
 
-    fetch(`/med/${medUuid}`, {
+    // 'fetch' 대신 'fetchWithLoading' 함수를 사용합니다.
+    fetchWithLoading(`/med/${medUuid}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(medicationInfo)
@@ -78,4 +79,5 @@ document.getElementById("medication-edit-form").addEventListener("submit", funct
         console.error("수정 중 오류 발생:", error);
         alert("수정 요청 중 오류가 발생했습니다.");
     });
+    // .finally() 블록은 fetchWithLoading 함수에 이미 구현되어 있으므로 필요 없습니다.
 });
