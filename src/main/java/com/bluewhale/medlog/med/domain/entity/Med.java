@@ -52,6 +52,7 @@ public class Med {
 
     private String medName;
 
+    @Enumerated(EnumType.STRING)
     private MedType medType;
 
     private Float doseAmount;
