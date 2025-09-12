@@ -18,7 +18,6 @@ function collectMedicationInfoForUpdate() {
 
     const json = { doseFrequencyType: frequencyType, doseFrequencyDetail: {} };
 
-    // new/validation.js와 동일한 로직으로 상세 정보 수집
     if (frequencyType !== "AS_NEEDED" && frequencyType !== "SPECIFIC_DAYS") {
         const times = Array.from(document.querySelectorAll(".time-input-common"))
             .map(input => input.value).filter(Boolean);
@@ -61,23 +60,23 @@ document.getElementById("medication-edit-form").addEventListener("submit", funct
 
     const medUuid = medicationInfo.medUuid;
 
-    console.log(JSON.stringify(medicationInfo));
-
-    // 'fetch' 대신 'fetchWithLoading' 함수를 사용합니다.
-    fetchWithLoading(`/med/${medUuid}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(medicationInfo)
+    // apiFetch 함수로 교체
+    apiFetch(`/med/${medUuid}`, {
+        options: {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(medicationInfo)
+        },
+        successMessage: "약 정보가 성공적으로 수정되었습니다.",
+        failureMessage: "수정에 실패했습니다. 다시 시도해주세요."
     }).then(response => {
-        if (response.ok) {
-            alert("수정 성공!");
-            window.location.reload(); // 성공 시 페이지 새로고침
-        } else {
-            alert(`수정 실패 (상태 코드: ${response.status})`);
+        if (response && response.ok) {
+            // 성공 메시지를 사용자가 볼 수 있도록 1.5초 후 페이지 새로고침
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
         }
     }).catch(error => {
-        console.error("수정 중 오류 발생:", error);
-        alert("수정 요청 중 오류가 발생했습니다.");
+        console.error("네트워크 또는 처리 중 심각한 오류 발생:", error);
     });
-    // .finally() 블록은 fetchWithLoading 함수에 이미 구현되어 있으므로 필요 없습니다.
 });

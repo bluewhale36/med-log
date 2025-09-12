@@ -1,34 +1,67 @@
-// 로딩 인디케이터 DOM 요소를 가져옵니다.
-const loadingIndicator = document.getElementById('loading-indicator');
+const overlay = document.getElementById('loading-overlay');
+const toast = document.getElementById('toast-notification');
+const toastIcon = document.getElementById('toast-icon');
+const toastMessage = document.getElementById('toast-message');
+let toastTimeout;
 
-// 로딩 UI를 보여주는 함수
-const showLoading = () => {
-    if (loadingIndicator) loadingIndicator.style.display = 'flex';
-};
-
-// 로딩 UI를 숨기는 함수
-const hideLoading = () => {
-    if (loadingIndicator) loadingIndicator.style.display = 'none';
+// 아이콘 SVG 정의
+const icons = {
+    loading: '<div class="spinner"></div>',
+    success: `<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>`,
+    error: `<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`
 };
 
 /**
- * 전역 fetch 래퍼 함수
- * @param {string} url - 요청을 보낼 URL
- * @param {object} options - fetch에 전달할 옵션 (method, headers, body 등)
- * @returns {Promise<Response>} - fetch의 반환값인 Promise
+ * 상단 알림(토스트)를 표시하는 함수
+ * @param {string} message - 표시할 메시지
+ * @param {'loading'|'success'|'error'} state - 알림 상태
+ * @param {number} duration - 성공/실패 시 표시될 시간 (ms)
  */
-const fetchWithLoading = async (url, options) => {
-    showLoading(); // 요청 시작 시 로딩 UI 표시
+function showToast(message, state, duration = 3000) {
+    clearTimeout(toastTimeout); // 이전 타이머 제거
+
+    toast.className = 'toast'; // 클래스 초기화
+    toast.classList.add(state, 'show');
+    toastIcon.innerHTML = icons[state];
+    toastMessage.textContent = message;
+
+    // 로딩 상태가 아닐 때만 자동으로 사라지도록 타이머 설정
+    if (state !== 'loading') {
+        toastTimeout = setTimeout(() => {
+            toast.classList.remove('show');
+            if (overlay) overlay.style.display = 'none'; // 오버레이도 함께 숨김
+        }, duration);
+    }
+}
+
+/**
+ * 전역 fetch 래퍼 함수
+ * @param {string} url - 요청 URL
+ * @param {object} config - 설정 객체
+ * @param {RequestInit} config.options - fetch에 전달할 옵션 (method, body 등)
+ * @param {string} [config.successMessage] - 성공 시 표시할 메시지
+ * @param {string} [config.failureMessage] - 실패 시 표시할 메시지
+ * @returns {Promise<Response>}
+ */
+async function apiFetch(url, { options, successMessage, failureMessage } = {}) {
+    if (overlay) overlay.style.display = 'block';
+    showToast('처리 중입니다...', 'loading');
+
     try {
-        // 실제 fetch 요청 실행
         const response = await fetch(url, options);
+        if (response.ok) {
+            showToast(successMessage || '요청이 성공하였습니다.', 'success');
+        } else {
+            // 서버가 에러 응답을 보냈을 때
+            const errorData = await response.text(); // 더 자세한 에러를 위해 text()나 json() 사용 가능
+            console.error('Server Error:', response.status, errorData);
+            showToast(failureMessage || '요청 처리 중 오류가 발생했습니다.', 'error');
+        }
         return response;
     } catch (error) {
-        // 에러 발생 시 콘솔에 로그를 남기고 에러를 다시 던져서
-        // 호출한 쪽의 .catch() 블록에서 처리할 수 있도록 함
+        // 네트워크 에러 등 fetch 자체가 실패했을 때
         console.error('Fetch Error:', error);
+        showToast(failureMessage || '요청에 실패하였습니다.', 'error');
         throw error;
-    } finally {
-        hideLoading(); // 성공/실패 여부와 관계없이 요청 완료 시 로딩 UI 숨김
     }
-};
+}

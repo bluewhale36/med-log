@@ -53,28 +53,33 @@ function collectMedicationInfo() {
     return info;
 }
 
+
 document.getElementById("medication-form").addEventListener("submit", function (e) {
     e.preventDefault();
 
     const medicationInfo = collectMedicationInfo();
+    if (!medicationInfo) return;
 
-    // 기존 fetch 대신 fetchWithLoading 함수 사용
-    fetchWithLoading("/med/new", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(medicationInfo)
+    // apiFetch 함수로 교체
+    apiFetch("/med/new", {
+        options: {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(medicationInfo)
+        },
+        successMessage: "약이 성공적으로 등록되었습니다."
     })
-        .then(res => {
-            if (res.ok) {
-                alert("제출 성공");
-                window.location.href = "/med"; // 성공 시 페이지 이동
-            } else {
-                alert("제출 실패");
+        .then(response => {
+            if (response && response.ok) {
+                // 성공 메시지를 사용자가 볼 수 있도록 1.5초 후 페이지 이동
+                setTimeout(() => {
+                    window.location.href = "/med";
+                }, 1500);
             }
+            // 실패 시에는 apiFetch가 자동으로 에러 메시지를 표시
         })
         .catch(error => {
-            // fetchWithLoading에서 에러를 다시 던져주므로 여기서 잡을 수 있습니다.
-            alert("제출 요청 중 오류가 발생했습니다.");
+            // 네트워크 에러 등 fetch 자체가 실패한 경우, apiFetch 내부에서 처리하므로 추가 작업 불필요
+            console.error("네트워크 또는 처리 중 심각한 오류 발생:", error);
         });
-    // .finally() 블록은 fetchWithLoading 함수 내부에 있으므로 여기서 필요 없습니다.
 });

@@ -11,6 +11,8 @@
     <script src="/js/med/deletion/delete.js" defer></script>
 </head>
 <body>
+<th:block th:replace="~{fragments/loading_indicator :: commonUiHtml}"></th:block>
+
 <div class="header-row">
     <h1>약 정보</h1>
     <button id="edit-toggle-btn" type="button">복용 주기 및 부가 정보 수정</button>

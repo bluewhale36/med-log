@@ -1,32 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // CSRF 토큰 정보 가져오기
-    // const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
-    // const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
-
-    // 모달 및 버튼 요소 가져오기
     const deleteModal = document.getElementById("delete-modal");
     const openModalBtn = document.getElementById("delete-btn");
     const closeModalBtn = document.getElementById("cancel-delete-btn");
     const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
 
-    // '삭제' 버튼 클릭 시 모달 열기
+    if (!deleteModal || !openModalBtn || !closeModalBtn || !confirmDeleteBtn) return;
+
     openModalBtn.addEventListener("click", () => {
         deleteModal.style.display = "flex";
     });
 
-    // '취소' 버튼 클릭 시 모달 닫기
     closeModalBtn.addEventListener("click", () => {
         deleteModal.style.display = "none";
     });
 
-    // 모달 바깥 영역 클릭 시 모달 닫기
     window.addEventListener("click", (event) => {
         if (event.target === deleteModal) {
             deleteModal.style.display = "none";
         }
     });
 
-    // 모달의 '삭제' 버튼 클릭 시 삭제 로직 실행
     confirmDeleteBtn.addEventListener("click", () => {
         const medUuid = document.getElementById("medUuid").value;
         if (!medUuid) {
@@ -34,20 +27,24 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // fetch 대신 fetchWithLoading 사용
-        fetchWithLoading(`/med/${medUuid}`, {
-            method: "DELETE",
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert("약 정보가 성공적으로 삭제되었습니다.");
+        // 모달 닫기
+        deleteModal.style.display = "none";
+
+        // apiFetch 함수로 교체
+        apiFetch(`/med/${medUuid}`, {
+            options: {
+                method: "DELETE",
+            },
+            successMessage: "약 정보가 성공적으로 삭제되었습니다.",
+            failureMessage: "삭제에 실패했습니다."
+        }).then(response => {
+            if (response && response.ok) {
+                setTimeout(() => {
                     window.location.href = "/med";
-                } else {
-                    alert(`삭제에 실패했습니다. (상태: ${response.status})`);
-                }
-            })
-            .catch(error => {
-                alert("삭제 요청 중 오류가 발생했습니다.");
-            });
+                }, 1500);
+            }
+        }).catch(error => {
+            console.error("네트워크 또는 처리 중 심각한 오류 발생:", error);
+        });
     });
 });
