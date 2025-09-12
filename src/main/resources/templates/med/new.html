@@ -7,8 +7,12 @@
   <script src="/js/med/new/formsubmit.js" defer></script>
   <script src="/js/med/new/theme.js" defer></script>
   <link rel="stylesheet" href="/css/med/new.css" />
+
 </head>
 <body>
+
+<th:block th:replace="~{fragments/loading_indicator :: commonUiHtml}"></th:block>
+
 <h1>Register new Medication</h1>
 <button id="theme-toggle-btn" type="button">🌙 다크 모드</button>
 
