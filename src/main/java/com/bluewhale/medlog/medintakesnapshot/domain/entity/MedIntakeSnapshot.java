@@ -59,4 +59,8 @@ public class MedIntakeSnapshot {
                 .evaluatedAt(result.getEvaluatedAt())
                 .build();
     }
+
+    public void updateIsTaken(boolean isTaken) {
+        this.isTaken = isTaken;
+    }
 }

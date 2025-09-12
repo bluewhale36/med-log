@@ -4,14 +4,14 @@ import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.med.application.service.MedApplicationService;
 import com.bluewhale.medlog.medintakerecord.application.service.MedIntakeRecordApplicationService;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
+import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
 import com.bluewhale.medlog.security.annotation.AuthAppUserUuid;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,7 +27,7 @@ public class MedIntakeRecordController {
     @GetMapping({"", "/"})
     public String index(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
         model.addAttribute("medDTOList", medAppService.getMedDTOListByAppUserUuid(appUserUuid));
-        return "med/medintakerecord/main";
+        return "med_intake_record/main";
     }
 
     @GetMapping("/record")
@@ -41,6 +41,13 @@ public class MedIntakeRecordController {
         model.addAttribute("dateList", dateList);
         model.addAttribute("mirdvDTOList", list);
 
-        return"med/medintakerecord/record";
+        return"med_intake_record/record";
+    }
+
+    @PostMapping("/record")
+    public ResponseEntity<Void> registerNewRecord(@RequestBody List<MedIntakeRecordRegisterDTO> medIntakeRecordRegisterDTOList) {
+        System.out.println("\n\n\n" + medIntakeRecordRegisterDTOList + "\n\n");
+        medIntakeRecordAppService.registerNewMedIntakeRecordList(medIntakeRecordRegisterDTOList);
+        return ResponseEntity.ok().build();
     }
 }

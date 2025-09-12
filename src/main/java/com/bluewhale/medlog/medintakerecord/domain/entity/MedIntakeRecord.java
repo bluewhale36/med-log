@@ -2,6 +2,7 @@ package com.bluewhale.medlog.medintakerecord.domain.entity;
 
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.persistence.MedUuidConverter;
+import com.bluewhale.medlog.medintakerecord.domain.persistence.MedIntakeRecordUuidConverter;
 import com.bluewhale.medlog.medintakerecord.domain.value.MedIntakeRecordUuid;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
 import jakarta.persistence.*;
@@ -23,7 +24,7 @@ public class MedIntakeRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long medIntakeRecordId;
 
-    @Convert(converter = MedUuidConverter.class)
+    @Convert(converter = MedIntakeRecordUuidConverter.class)
     private MedIntakeRecordUuid medIntakeRecordUuid;
 
     @ManyToOne(fetch = FetchType.LAZY)
