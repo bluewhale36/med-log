@@ -24,7 +24,7 @@ public class CyclicalPolicyProvider extends AbstractPolicyProvider {
     @Override
     protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestMedToken prmToken) {
         return Optional.of(
-                ((CyclicalDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).getTimes()
+                ((CyclicalDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).getDoseTimeCountList()
         );
     }
 

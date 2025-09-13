@@ -27,7 +27,7 @@ public class IntervalPolicyProvider extends AbstractPolicyProvider {
         Optional<List<LocalTime>> result;
         try {
             result = Optional.of(
-                    ((IntervalDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).getTimes()
+                    ((IntervalDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).getDoseTimeCountList()
             );
         } catch (Exception e) {
             result = Optional.empty();

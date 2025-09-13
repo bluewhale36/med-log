@@ -1,11 +1,11 @@
 package com.bluewhale.medlog.med.model.dosefrequency.detail;
 
+import com.bluewhale.medlog.med.model.dosefrequency.detail.timecount.DoseTimeCount;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -13,19 +13,19 @@ import java.util.List;
 public class IntervalDetail extends AbstractDoseFrequencyDetail {
 
     private final Integer interval;
-    private final List<LocalTime> times;
+    private final List<DoseTimeCount> doseTimeCountList;
 
     @JsonCreator
     public IntervalDetail(
             @JsonProperty("interval") Integer interval,
-            @JsonProperty("times") List<LocalTime> times
+            @JsonProperty("times") List<DoseTimeCount> doseTimeCountList
     ) {
         this.interval = interval;
-        this.times = times;
+        this.doseTimeCountList = doseTimeCountList;
     }
 
     @Override
     public String humanReadable() {
-        return interval + "일에 하루 복용합니다. 복용일의 복용 시각은 " + humanReadableTimeListAsString(times) + " 입니다.";
+        return interval + "일에 하루 복용합니다. 복용일의 복용 시각은 " + humanReadableTimeListAsString(doseTimeCountList) + " 입니다.";
     }
 }

@@ -28,7 +28,7 @@ public class SpecificDaysPolicyProvider extends AbstractPolicyProvider {
         try {
             List<LocalTime> timeList = new ArrayList<>();
             ((SpecificDaysDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).getSpecificDays().stream()
-                    .map(SpecificDaysDetail.SpecificDaysSet::getTimes).forEach(timeList::addAll);
+                    .map(SpecificDaysDetail.SpecificDaysSet::getDoseTimeCountList).forEach(timeList::addAll);
             result = Optional.of(timeList);
         } catch (Exception e) {
             result = Optional.empty();
@@ -45,7 +45,7 @@ public class SpecificDaysPolicyProvider extends AbstractPolicyProvider {
 
 
         for (SpecificDaysDetail.SpecificDaysSet set : specificDaysSetList) {
-            if (set.getDays().contains(stdDay) && set.getTimes().contains(stdDateTime.toLocalTime())) {
+            if (set.getDays().contains(stdDay) && set.getDoseTimeCountList().contains(stdDateTime.toLocalTime())) {
                 specificTracer.setReason(
                         new SpecificDaysReason(stdDay, true)
                 );
