@@ -9,6 +9,7 @@ import lombok.ToString;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 
@@ -31,6 +32,11 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
             sbf.append(i + 1).append(". ").append(specificDays.get(i).humanReadable(this::humanReadableTimeListAsString)).append("\n");
         }
         return sbf.toString();
+    }
+
+    @Override
+    public Optional<List<DoseTimeCount>> doseTimeCountList() {
+        return Optional.empty();
     }
 
     @Getter

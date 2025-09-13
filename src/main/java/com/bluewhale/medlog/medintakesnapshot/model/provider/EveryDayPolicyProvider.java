@@ -23,7 +23,7 @@ public class EveryDayPolicyProvider extends AbstractPolicyProvider {
     @Override
     protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestMedToken prmToken) {
         return Optional.of(
-                ((EveryDayDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).getDoseTimeCountList()
+                ((EveryDayDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).doseTimeCountList()
         );
     }
 

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Getter
@@ -45,5 +46,10 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
                 "%d일간 복용하고, %d일간 복용하지 않습니다.\n복용 기간에는 %s에 복용합니다.",
                 onDurationInDays, offDurationInDays, humanReadableTimeListAsString(doseTimeCountList)
         );
+    }
+
+    @Override
+    public Optional<List<DoseTimeCount>> doseTimeCountList() {
+        return Optional.of(doseTimeCountList);
     }
 }

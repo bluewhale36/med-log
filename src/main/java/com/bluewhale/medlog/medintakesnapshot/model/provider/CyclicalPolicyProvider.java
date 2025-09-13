@@ -2,6 +2,7 @@ package com.bluewhale.medlog.medintakesnapshot.model.provider;
 
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.CyclicalDetail;
+import com.bluewhale.medlog.med.model.dosefrequency.detail.timecount.DoseTimeCount;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateTracer;
 import com.bluewhale.medlog.medintakesnapshot.model.result.reason.CyclicalReason;
@@ -23,9 +24,15 @@ public class CyclicalPolicyProvider extends AbstractPolicyProvider {
 
     @Override
     protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestMedToken prmToken) {
-        return Optional.of(
-                ((CyclicalDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).getDoseTimeCountList()
-        );
+        List<DoseTimeCount> doseTimeCountList =
+                ((CyclicalDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail())
+                        .doseTimeCountList().orElse(null);
+
+        return doseTimeCountList == null ?
+                Optional.empty() :
+                Optional.of(
+                        doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList()
+                );
     }
 
     @Override

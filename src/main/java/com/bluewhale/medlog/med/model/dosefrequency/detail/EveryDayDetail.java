@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @ToString
@@ -23,5 +24,10 @@ public class EveryDayDetail extends AbstractDoseFrequencyDetail {
     @Override
     public String humanReadable() {
         return "매일 " + humanReadableTimeListAsString(doseTimeCountList) + "에 복용합니다.";
+    }
+
+    @Override
+    public Optional<List<DoseTimeCount>> doseTimeCountList() {
+        return Optional.of(doseTimeCountList);
     }
 }
