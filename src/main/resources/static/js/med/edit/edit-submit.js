@@ -18,10 +18,23 @@ function collectMedicationInfoForUpdate() {
 
     const json = { doseFrequencyType: frequencyType, doseFrequencyDetail: {} };
 
+    // ▼▼▼▼▼▼▼▼▼▼ 변경된 부분 시작 ▼▼▼▼▼▼▼▼▼▼
+
+    // EVERY_DAY, CYCLICAL, INTERVAL 타입에 대한 처리
     if (frequencyType !== "AS_NEEDED" && frequencyType !== "SPECIFIC_DAYS") {
-        const times = Array.from(document.querySelectorAll(".time-input-common"))
-            .map(input => input.value).filter(Boolean);
-        json.doseFrequencyDetail.times = times;
+        const doseTimeCountList = [];
+        // '.time-row' 단위로 순회하며 시간과 개수를 한 쌍으로 읽어옴
+        document.querySelectorAll("#time-input-container .time-row").forEach(row => {
+            const time = row.querySelector(".time-input-common").value;
+            const count = row.querySelector(".dose-count-input").value;
+            if (time && count) {
+                doseTimeCountList.push({
+                    doseTime: time,
+                    doseCount: parseInt(count) // 입력값을 정수로 변환
+                });
+            }
+        });
+        json.doseFrequencyDetail.doseTimeCountList = doseTimeCountList;
     }
 
     if (frequencyType === "CYCLICAL") {
@@ -34,19 +47,37 @@ function collectMedicationInfoForUpdate() {
         json.doseFrequencyDetail.interval = parseInt(document.getElementById("interval").value || 0);
     }
 
+    // SPECIFIC_DAYS 타입에 대한 처리
     if (frequencyType === "SPECIFIC_DAYS") {
         const sets = [];
         document.querySelectorAll(".day-time-set").forEach(set => {
             const selectedDays = Array.from(set.querySelectorAll(".weekday-checkbox:checked"))
                 .map(cb => cb.value);
-            const times = Array.from(set.querySelectorAll(".time-input"))
-                .map(i => i.value).filter(Boolean);
-            if (selectedDays.length && times.length) {
-                sets.push({ days: selectedDays, times });
+
+            const doseTimeCountList = [];
+            // '.time-input'과 '.dose-count-input'을 각각 찾아 순서대로 매칭
+            const timeInputs = set.querySelectorAll(".time-input-group .time-input");
+            const countInputs = set.querySelectorAll(".time-input-group .dose-count-input");
+
+            timeInputs.forEach((timeInput, index) => {
+                const time = timeInput.value;
+                const count = countInputs[index].value;
+                if (time && count) {
+                    doseTimeCountList.push({
+                        doseTime: time,
+                        doseCount: parseInt(count)
+                    });
+                }
+            });
+
+            if (selectedDays.length > 0 && doseTimeCountList.length > 0) {
+                sets.push({ days: selectedDays, doseTimeCountList: doseTimeCountList });
             }
         });
         json.doseFrequencyDetail.specificDays = sets;
     }
+
+    // ▲▲▲▲▲▲▲▲▲▲ 변경된 부분 끝 ▲▲▲▲▲▲▲▲▲▲
 
     info.doseFrequency = json;
     return info;

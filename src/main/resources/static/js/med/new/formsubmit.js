@@ -21,13 +21,17 @@ function collectMedicationInfo() {
 
     // EVERY_DAY, CYCLICAL, INTERVAL 타입에 대한 처리
     if (frequencyType !== "AS_NEEDED" && frequencyType !== "SPECIFIC_DAYS") {
-        const doseTimeCountList = Array.from(document.querySelectorAll(".time-input-common"))
-            .map(input => input.value)
-            .filter(Boolean)
-            .map(time => ({ // 객체 형태로 변환
-                doseTime: time,
-                doseCount: 1 // doseCount를 1로 하드코딩
-            }));
+        const doseTimeCountList = [];
+        document.querySelectorAll("#time-input-container .time-row").forEach(row => {
+            const time = row.querySelector(".time-input-common").value;
+            const count = row.querySelector(".dose-count-input").value;
+            if (time && count) {
+                doseTimeCountList.push({
+                    doseTime: time,
+                    doseCount: parseInt(count)
+                });
+            }
+        });
         json.doseFrequencyDetail.doseTimeCountList = doseTimeCountList;
     }
 
@@ -48,16 +52,22 @@ function collectMedicationInfo() {
             const selectedDays = Array.from(set.querySelectorAll(".weekday-checkbox:checked"))
                 .map(cb => cb.value);
 
-            const doseTimeCountList = Array.from(set.querySelectorAll(".time-input"))
-                .map(i => i.value)
-                .filter(Boolean)
-                .map(time => ({ // 객체 형태로 변환
-                    doseTime: time,
-                    doseCount: 1 // doseCount를 1로 하드코딩
-                }));
+            const doseTimeCountList = [];
+            const timeInputs = set.querySelectorAll(".time-input-group .time-input");
+            const countInputs = set.querySelectorAll(".time-input-group .dose-count-input");
 
-            if (selectedDays.length && doseTimeCountList.length) {
-                // 'times' 대신 'doseTimeCountList' 키로 데이터 추가
+            timeInputs.forEach((timeInput, index) => {
+                const time = timeInput.value;
+                const count = countInputs[index].value;
+                if (time && count) {
+                    doseTimeCountList.push({
+                        doseTime: time,
+                        doseCount: parseInt(count)
+                    });
+                }
+            });
+
+            if (selectedDays.length > 0 && doseTimeCountList.length > 0) {
                 sets.push({ days: selectedDays, doseTimeCountList: doseTimeCountList });
             }
         });
@@ -65,7 +75,6 @@ function collectMedicationInfo() {
     }
 
     info.doseFrequency = json;
-    console.log("Collected Info:", JSON.stringify(info, null, 2)); // 전송될 데이터 확인용 로그
     return info;
 }
 
