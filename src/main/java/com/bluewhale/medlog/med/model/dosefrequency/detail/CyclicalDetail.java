@@ -1,6 +1,7 @@
 package com.bluewhale.medlog.med.model.dosefrequency.detail;
 
 import com.bluewhale.medlog.med.model.CycleUnit;
+import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -17,19 +18,19 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
     private final CycleUnit cycleUnit;
     private final Integer onDuration;
     private final Integer offDuration;
-    private final List<LocalTime> times;
+    private final List<DoseTimeCount> doseTimeCountList;
 
     private final Integer onDurationInDays;
     private final Integer offDurationInDays;
 
     @JsonCreator
     public CyclicalDetail(
-            @JsonProperty("times") List<LocalTime> times,
+            @JsonProperty("times") List<DoseTimeCount> doseTimeCountList,
             @JsonProperty("onDuration") int onDuration,
             @JsonProperty("offDuration") int offDuration,
             @JsonProperty("cycleUnit") CycleUnit cycleUnit
     ) {
-        this.times = times;
+        this.doseTimeCountList = doseTimeCountList;
         this.onDuration = onDuration;
         this.offDuration = offDuration;
         this.cycleUnit = cycleUnit;
@@ -41,9 +42,10 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
 
     @Override
     public String humanReadable() {
+        List<LocalTime> timeList = doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList();
         return String.format(
                 "%d일간 복용하고, %d일간 복용하지 않습니다.\n복용 기간에는 %s에 복용합니다.",
-                onDurationInDays, offDurationInDays, humanReadableTimeListAsString(times)
+                onDurationInDays, offDurationInDays, humanReadableTimeListAsString(timeList)
         );
     }
 }

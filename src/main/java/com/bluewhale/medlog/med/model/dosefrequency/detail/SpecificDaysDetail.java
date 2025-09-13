@@ -1,6 +1,7 @@
 package com.bluewhale.medlog.med.model.dosefrequency.detail;
 
 import com.bluewhale.medlog.med.model.Days;
+import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -37,20 +38,21 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
     public static class SpecificDaysSet {
 
         private final List<Days> days;
-        private final List<LocalTime> times;
+        private final List<DoseTimeCount> doseTimeCountList;
 
         @JsonCreator
         public SpecificDaysSet(
                                @JsonProperty("days") List<Days> days,
-                               @JsonProperty("times") List<LocalTime> times
+                               @JsonProperty("times") List<DoseTimeCount> doseTimeCountList
         ) {
             this.days = days;
-            this.times = times;
+            this.doseTimeCountList = doseTimeCountList;
         }
 
         private String humanReadable(Function<List<LocalTime>, String> timeFormatter) {
+            List<LocalTime> timeList = doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList();
             String daysStr = String.join("요일, ", days.stream().map(Days::getTitle).toArray(String[]::new)) + "요일";
-            String timesStr = timeFormatter.apply(this.times);
+            String timesStr = timeFormatter.apply(timeList);
             return String.format("%s마다 %s에 복용합니다.", daysStr, timesStr);
         }
 

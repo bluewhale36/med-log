@@ -3,6 +3,7 @@ package com.bluewhale.medlog.medintakesnapshot.model.provider;
 import com.bluewhale.medlog.med.model.Days;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.SpecificDaysDetail;
+import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateTracer;
 import com.bluewhale.medlog.medintakesnapshot.model.result.reason.SpecificDaysReason;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +30,10 @@ public class SpecificDaysPolicyProvider extends AbstractPolicyProvider {
         try {
             List<LocalTime> timeList = new ArrayList<>();
             ((SpecificDaysDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).getSpecificDays().stream()
-                    .map(SpecificDaysDetail.SpecificDaysSet::getTimes).forEach(timeList::addAll);
+                    .map(SpecificDaysDetail.SpecificDaysSet::getDoseTimeCountList)
+                    .flatMap(Collection::stream)
+                    .map(DoseTimeCount::getDoseTime)
+                    .forEach(timeList::add);
             result = Optional.of(timeList);
         } catch (Exception e) {
             result = Optional.empty();
@@ -45,7 +50,7 @@ public class SpecificDaysPolicyProvider extends AbstractPolicyProvider {
 
 
         for (SpecificDaysDetail.SpecificDaysSet set : specificDaysSetList) {
-            if (set.getDays().contains(stdDay) && set.getTimes().contains(stdDateTime.toLocalTime())) {
+            if (set.getDays().contains(stdDay) && set.getDoseTimeCountList().contains(stdDateTime.toLocalTime())) {
                 specificTracer.setReason(
                         new SpecificDaysReason(stdDay, true)
                 );
