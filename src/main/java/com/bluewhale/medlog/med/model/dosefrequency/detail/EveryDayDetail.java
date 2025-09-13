@@ -16,7 +16,7 @@ public class EveryDayDetail extends AbstractDoseFrequencyDetail {
     private final List<DoseTimeCount> doseTimeCountList;
 
     @JsonCreator
-    public EveryDayDetail(@JsonProperty("times") List<DoseTimeCount> doseTimeCountList) {
+    public EveryDayDetail(@JsonProperty("doseTimeCountList") List<DoseTimeCount> doseTimeCountList) {
         this.doseTimeCountList = doseTimeCountList;
     }
 

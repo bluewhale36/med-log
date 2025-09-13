@@ -5,6 +5,7 @@ import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.AbstractDoseFrequencyDetail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.Map;
 
 public interface MedPayloadParser<R> {
@@ -16,6 +17,8 @@ public interface MedPayloadParser<R> {
         String typeStr;
         Map<String, Object> detailMap;
 
+        List<Object> timeCountList;
+
         try {
             frequencyMap = (Map<String, Object>) payload.get("doseFrequency");
             typeStr = (String) frequencyMap.get("doseFrequencyType");
@@ -25,6 +28,18 @@ public interface MedPayloadParser<R> {
         }
 
         DoseFrequencyType type = DoseFrequencyType.valueOf(typeStr);
+
+        if (!type.equals(DoseFrequencyType.AS_NEEDED)) {
+            try {
+                timeCountList = (List<Object>) detailMap.get("doseTimeCountList");
+                if (timeCountList != null && !timeCountList.isEmpty()) {
+                    detailMap.put("doseTimeCountList", timeCountList);
+                }
+            } catch (ClassCastException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+
         AbstractDoseFrequencyDetail detail = objectMapper.convertValue(detailMap, type.getDetailClass());
 
         return DoseFrequency.of(type, detail);

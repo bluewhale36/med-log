@@ -43,7 +43,7 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
         @JsonCreator
         public SpecificDaysSet(
                                @JsonProperty("days") List<Days> days,
-                               @JsonProperty("times") List<DoseTimeCount> doseTimeCountList
+                               @JsonProperty("doseTimeCountList") List<DoseTimeCount> doseTimeCountList
         ) {
             this.days = days;
             this.doseTimeCountList = doseTimeCountList;

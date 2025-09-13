@@ -25,7 +25,7 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
 
     @JsonCreator
     public CyclicalDetail(
-            @JsonProperty("times") List<DoseTimeCount> doseTimeCountList,
+            @JsonProperty("doseTimeCountList") List<DoseTimeCount> doseTimeCountList,
             @JsonProperty("onDuration") int onDuration,
             @JsonProperty("offDuration") int offDuration,
             @JsonProperty("cycleUnit") CycleUnit cycleUnit
