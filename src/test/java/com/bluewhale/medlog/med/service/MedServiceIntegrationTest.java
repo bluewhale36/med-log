@@ -2,7 +2,7 @@ package com.bluewhale.medlog.med.service;
 
 import com.bluewhale.medlog.med.repository.MedRepository;
 import com.bluewhale.medlog.medintakerecord.repository.MedIntakeRecordRepository;
-import com.bluewhale.medlog.medintakesnapshot.repository.SnapshotPolicyRepository;
+import com.bluewhale.medlog.medintakesnapshot.repository.MedIntakeSnapshotRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,5 +21,5 @@ public class MedServiceIntegrationTest {
     private MedIntakeRecordRepository medIntakeRecordRepository;
 
     @Autowired
-    private SnapshotPolicyRepository snapshotPolicyRepository;
+    private MedIntakeSnapshotRepository medIntakeSnapshotRepository;
 }

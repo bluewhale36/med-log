@@ -3,19 +3,16 @@ package com.bluewhale.medlog.medintakerecord.application.usecase;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.appuser.service.AppUserIdentifierConvertService;
 import com.bluewhale.medlog.common.application.usecase.UseCase;
-import com.bluewhale.medlog.med.dto.MedAggregationDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.service.MedAggregationService;
 import com.bluewhale.medlog.medintakerecord.domain.policy.MedIntakeRecordViewItemDTORenderPolicy;
-import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordAggregationDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
+import com.bluewhale.medlog.medintakerecord.dto.RenderRequestToken;
 import com.bluewhale.medlog.medintakerecord.enums.RecordViewType;
 import com.bluewhale.medlog.medintakerecord.factory.MedIntakeRecordDayViewDTOFactory;
 import com.bluewhale.medlog.medintakerecord.model.RenderPolicyRequestTokenForMedIntakeRecord;
 import com.bluewhale.medlog.medintakerecord.model.RenderPolicyRequestTokenForMedIntakeSnapshot;
 import com.bluewhale.medlog.medintakerecord.model.RenderPolicyResultToken;
-import com.bluewhale.medlog.medintakesnapshot.dto.MedIntakeSnapshotAggregationDTO;
-import com.bluewhale.medlog.medintakesnapshot.service.MedIntakeSnapshotAggregationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +24,8 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class GetMedIntakeRecordViewDTOListUseCase implements UseCase<AppUserUuid, List<MedIntakeRecordDayViewDTO>> {
+public class GetMedIntakeRecordViewDTOListUseCase
+        implements UseCase<RenderRequestToken, List<MedIntakeRecordDayViewDTO>> {
 
     private final MedAggregationService medAggServ;
     private final MedIntakeSnapshotAggregationService misAggServ;
@@ -39,7 +37,7 @@ public class GetMedIntakeRecordViewDTOListUseCase implements UseCase<AppUserUuid
     private final MedIntakeRecordDayViewDTOFactory mirdvDTOFactory;
 
     @Override
-    public List<MedIntakeRecordDayViewDTO> execute(AppUserUuid input) {
+    public List<MedIntakeRecordDayViewDTO> execute(RenderRequestToken input) {
         /*
             AppUserUuid 가 등록한 모든 약의 Aggregation DTO List 가져온다.
          */

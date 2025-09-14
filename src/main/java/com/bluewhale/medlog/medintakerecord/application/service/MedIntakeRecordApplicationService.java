@@ -6,11 +6,13 @@ import com.bluewhale.medlog.medintakerecord.application.usecase.RegisterNewMedIn
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
+import com.bluewhale.medlog.medintakerecord.dto.RenderRequestToken;
 import com.bluewhale.medlog.medintakesnapshot.dto.MedIntakeSnapshotModifyIsTakenDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,8 +24,10 @@ public class MedIntakeRecordApplicationService {
     private final RegisterNewMedIntakeRecordDTOListUseCase registerNewMedIntakeRecordDTOListUseCase;
 
     @Transactional(readOnly = true)
-    public List<MedIntakeRecordDayViewDTO> getDTOListForIntakeRecordView(AppUserUuid appUserUuid) {
-        return getMedIntakeRecordViewDTOListUseCase.execute(appUserUuid);
+    public List<MedIntakeRecordDayViewDTO> getDTOListForIntakeRecordView(
+            AppUserUuid appUserUuid, LocalDate stdDate
+    ) {
+        return getMedIntakeRecordViewDTOListUseCase.execute(new RenderRequestToken(appUserUuid, stdDate));
     }
 
     @Transactional

@@ -31,10 +31,14 @@ public class MedIntakeRecordController {
     }
 
     @GetMapping("/record")
-    public String record(@RequestParam("date") @Nullable LocalDate date,
-                         @AuthAppUserUuid AppUserUuid appUserUuid,
-                         Model model) {
-        List<MedIntakeRecordDayViewDTO> list = medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid);
+    public String record(
+            @RequestParam("date") @Nullable LocalDate date,
+            @AuthAppUserUuid AppUserUuid appUserUuid,
+            Model model
+    ) {
+        date = date == null ? LocalDate.now() : date;
+
+        List<MedIntakeRecordDayViewDTO> list = medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid, date);
         List<LocalDate> dateList = list.stream().map(MedIntakeRecordDayViewDTO::getStdDate).toList();
 
         model.addAttribute("selectedDate", date == null ? LocalDate.now() : date);

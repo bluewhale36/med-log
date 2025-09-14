@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface SnapshotPolicyRepository extends JpaRepository<MedIntakeSnapshot, Long> {
+public interface MedIntakeSnapshotRepository extends JpaRepository<MedIntakeSnapshot, Long> {
 
     @Query("select s from MedIntakeSnapshot s where s.med.medId = :medId")
     List<MedIntakeSnapshot> findAllByMedId(Long medId);
@@ -22,4 +22,6 @@ public interface SnapshotPolicyRepository extends JpaRepository<MedIntakeSnapsho
 
     @Query("SELECT s FROM MedIntakeSnapshot s WHERE s.med.medId = :medId AND s.estimatedDoseTime = :estimatedDoseTime")
     MedIntakeSnapshot findByMedIdAndEstimatedDoseTime(Long medId, LocalDateTime estimatedDoseTime);
+
+    void deleteAllByMed_MedId(Long medMedId);
 }

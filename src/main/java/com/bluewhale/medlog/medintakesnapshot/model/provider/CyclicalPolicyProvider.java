@@ -6,7 +6,7 @@ import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTim
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateTracer;
 import com.bluewhale.medlog.medintakesnapshot.model.result.reason.CyclicalReason;
-import com.bluewhale.medlog.medintakesnapshot.token.PolicyRequestMedToken;
+import com.bluewhale.medlog.medintakesnapshot.token.PolicyRequestToken;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class CyclicalPolicyProvider extends AbstractPolicyProvider {
     }
 
     @Override
-    protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestMedToken prmToken) {
+    protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestToken prmToken) {
         List<LocalTime> timeList = ((CyclicalDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail())
                 .getDoseTimeCountList().stream().map(DoseTimeCount::getDoseTime).toList();
 
@@ -31,15 +31,16 @@ public class CyclicalPolicyProvider extends AbstractPolicyProvider {
     }
 
     @Override
-    protected PolicyEvaluateResult doEvaluate(PolicyEvaluateTracer specificTracer, PolicyRequestMedToken prmToken, LocalDateTime stdDateTime) {
+    protected PolicyEvaluateResult doEvaluate(PolicyEvaluateTracer specificTracer, PolicyRequestToken requestToken, LocalDateTime referenceDateTime) {
 
-        CyclicalDetail detail = (CyclicalDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail();
+        // DoseFrequencyDetail 을 CyclicalDetail 로 다운캐스팅
+        CyclicalDetail detail = (CyclicalDetail) requestToken.getDoseFrequency().getDoseFrequencyDetail();
 
         int onDurationInDays = detail.getOnDurationInDays(),
                 offDurationInDays = detail.getOffDurationInDays(),
                 cycleInDays = onDurationInDays + offDurationInDays;
 
-        long takenFor = ChronoUnit.DAYS.between(prmToken.getStartedOn(), stdDateTime);
+        long takenFor = ChronoUnit.DAYS.between(requestToken.getStartedOn(), referenceDateTime);
 
         long cycleCount = takenFor /cycleInDays, dayN = takenFor %cycleInDays;
         boolean isOnDuration = dayN < onDurationInDays;
@@ -48,7 +49,8 @@ public class CyclicalPolicyProvider extends AbstractPolicyProvider {
         specificTracer.setReason(reason);
 
         return new PolicyEvaluateResult(
-                null, prmToken.getMedId(), isOnDuration, stdDateTime, stdDateTime.toLocalDate(), specificTracer
+                requestToken.getAppUserId(), requestToken.getMedId(),
+                isOnDuration, referenceDateTime, referenceDateTime.toLocalDate(), specificTracer
         );
     }
 }

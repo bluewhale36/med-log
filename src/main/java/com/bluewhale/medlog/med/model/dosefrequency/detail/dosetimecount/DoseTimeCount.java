@@ -12,14 +12,14 @@ import java.time.LocalTime;
 public class DoseTimeCount {
 
     private final LocalTime doseTime;
-    private final byte doseCount;
+    private final Integer doseCount;
 
     @JsonCreator
     public DoseTimeCount(
             @JsonProperty("doseTime") LocalTime doseTime,
-            @JsonProperty("doseCount") byte doseCount
+            @JsonProperty("doseCount") Integer doseCount
     ) {
         this.doseTime = doseTime;
-        this.doseCount = doseCount;
+        this.doseCount = doseCount != null ? doseCount : 1;
     }
 }

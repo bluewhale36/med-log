@@ -22,7 +22,8 @@
             <div class="date-item-wrapper"
                  th:each="recordDay : ${mirdvDTOList}"
                  th:classappend="${recordDay.stdDate.equals(selectedDate)} ? 'selected' : ''"
-                 th:attr="onclick=|location.href='/med/intake/record?date=${recordDay.stdDate}'|">
+                 th:attr="onclick=|location.href='/med/intake/record?date=${recordDay.stdDate}'|"
+                 style="cursor: pointer;">
                 <div class="date-day-circle"></div>
                 <div class="date-day-label" th:text="${#temporals.format(recordDay.stdDate, 'E')}"></div>
             </div>

@@ -37,21 +37,21 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
     @ToString
     public static class SpecificDaysSet {
 
-        private final List<Days> days;
+        private final List<Days> dayList;
         private final List<DoseTimeCount> doseTimeCountList;
 
         @JsonCreator
         public SpecificDaysSet(
-                               @JsonProperty("days") List<Days> days,
+                               @JsonProperty("days") List<Days> dayList,
                                @JsonProperty("doseTimeCountList") List<DoseTimeCount> doseTimeCountList
         ) {
-            this.days = days;
+            this.dayList = dayList;
             this.doseTimeCountList = doseTimeCountList;
         }
 
         private String humanReadable(Function<List<LocalTime>, String> timeFormatter) {
             List<LocalTime> timeList = doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList();
-            String daysStr = String.join("요일, ", days.stream().map(Days::getTitle).toArray(String[]::new)) + "요일";
+            String daysStr = String.join("요일, ", dayList.stream().map(Days::getTitle).toArray(String[]::new)) + "요일";
             String timesStr = timeFormatter.apply(timeList);
             return String.format("%s마다 %s에 복용합니다.", daysStr, timesStr);
         }

@@ -22,8 +22,8 @@ public class PolicyEvaluateTracer {
     @Setter
     @ToString
     public static class PreProcess {
-        private Boolean isStdDateInMedDuration;
-        private Boolean hasTakenRecordOnStdDate;
+        private Boolean isReferenceDateInMedDuration;
+        private Boolean hasTakenRecordOnReferenceDate;
     }
 
     public static PolicyEvaluateTracer copyOf(PolicyEvaluateTracer aInstance) {

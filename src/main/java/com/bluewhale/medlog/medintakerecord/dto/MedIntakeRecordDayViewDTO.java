@@ -85,6 +85,7 @@ public class MedIntakeRecordDayViewDTO {
         private final MedType medType;
         private final Float doseAmount;
         private final DoseUnit doseUnit;
+        private final byte doseCount;
         private final boolean isTaken;
 
         private final LocalDateTime stdDateTime;

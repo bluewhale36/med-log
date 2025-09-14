@@ -6,7 +6,7 @@ import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTim
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateTracer;
 import com.bluewhale.medlog.medintakesnapshot.model.result.reason.EveryDayReason;
-import com.bluewhale.medlog.medintakesnapshot.token.PolicyRequestMedToken;
+import com.bluewhale.medlog.medintakesnapshot.token.PolicyRequestToken;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ public class EveryDayPolicyProvider extends AbstractPolicyProvider {
     }
 
     @Override
-    protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestMedToken prmToken) {
+    protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestToken prmToken) {
         List<LocalTime> timeList = ((EveryDayDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail())
                 .getDoseTimeCountList().stream().map(DoseTimeCount::getDoseTime).toList();
 
@@ -30,10 +30,10 @@ public class EveryDayPolicyProvider extends AbstractPolicyProvider {
     }
 
     @Override
-    protected PolicyEvaluateResult doEvaluate(PolicyEvaluateTracer specificTracer, PolicyRequestMedToken prmToken, LocalDateTime stdDateTime) {
+    protected PolicyEvaluateResult doEvaluate(PolicyEvaluateTracer specificTracer, PolicyRequestToken requestToken, LocalDateTime referenceDateTime) {
         specificTracer.setReason(new EveryDayReason());
         return new PolicyEvaluateResult(
-                null, prmToken.getMedId(), true, stdDateTime, stdDateTime.toLocalDate(), specificTracer
+                requestToken.getAppUserId(), requestToken.getMedId(), true, referenceDateTime, referenceDateTime.toLocalDate(), specificTracer
         );
     }
 }
