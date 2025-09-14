@@ -156,6 +156,6 @@ public class GetMedIntakeRecordViewDTOListUseCase
                     )
             );
         }
-        return resultList.stream().sorted(Comparator.comparing(MedIntakeRecordDayViewDTO::getStdDate)).toList();
+        return resultList.stream().sorted(Comparator.comparing(MedIntakeRecordDayViewDTO::getReferenceDate)).toList();
     }
 }

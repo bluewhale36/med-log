@@ -1,8 +1,10 @@
 package com.bluewhale.medlog.medintakerecord.dto;
 
+import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
+import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
 import com.bluewhale.medlog.medintakerecord.domain.value.MedIntakeRecordUuid;
 import com.bluewhale.medlog.medintakerecord.enums.RecordViewType;
 import lombok.*;
@@ -20,21 +22,21 @@ import java.util.Optional;
 @EqualsAndHashCode
 public class MedIntakeRecordDayViewDTO {
 
-    private final LocalDate stdDate;
+    private final LocalDate referenceDate;
     private final Map<LocalTime, List<MedIntakeRecordViewItemDTO>> viewItemDTOListMapForTypeRecord;
     private final Map<LocalTime, List<MedIntakeRecordViewItemDTO>> viewItemDTOListMapForTypeScheduled;
 
     private MedIntakeRecordDayViewDTO(
-            LocalDate stdDate,
+            LocalDate referenceDate,
             Map<LocalTime, List<MedIntakeRecordViewItemDTO>> viewItemDTOListMapForTypeRecord,
             Map<LocalTime, List<MedIntakeRecordViewItemDTO>> viewItemDTOListMapForTypeScheduled) {
-        this.stdDate = stdDate;
+        this.referenceDate = referenceDate;
         this.viewItemDTOListMapForTypeRecord = viewItemDTOListMapForTypeRecord;
         this.viewItemDTOListMapForTypeScheduled = viewItemDTOListMapForTypeScheduled;
     }
 
     public static MedIntakeRecordDayViewDTO of(
-            LocalDate stdDate,
+            LocalDate referenceDate,
             Map<LocalTime, List<MedIntakeRecordViewItemDTO>> viewItemDTOListMapForTypeRecord,
             Map<LocalTime, List<MedIntakeRecordViewItemDTO>> viewItemDTOListMapForTypeScheduled
     ) {
@@ -66,29 +68,48 @@ public class MedIntakeRecordDayViewDTO {
                 );
             }
         }
-        return new MedIntakeRecordDayViewDTO(stdDate, viewItemDTOListMapForTypeRecord, viewItemDTOListMapForTypeScheduled);
+        return new MedIntakeRecordDayViewDTO(referenceDate, viewItemDTOListMapForTypeRecord, viewItemDTOListMapForTypeScheduled);
     }
 
-    @RequiredArgsConstructor
-    @Builder
     @Getter
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    @Builder(access = AccessLevel.PRIVATE)
     @ToString
     @EqualsAndHashCode
-    public static class MedIntakeRecordViewItemDTO {
+    public static class ViewItemTypeRecordDTO {
 
-        private final RecordViewType recordViewType;
+        private final RecordViewType recordViewType = RecordViewType.RECORD;
 
-        private final Optional<MedIntakeRecordUuid> mirUuid;
+        private final MedIntakeRecordUuid medIntakeRecordUuid;
 
         private final MedUuid medUuid;
         private final String medName;
         private final MedType medType;
         private final Float doseAmount;
         private final DoseUnit doseUnit;
-        private final byte doseCount;
+        private final Integer doseCount;
         private final boolean isTaken;
 
-        private final LocalDateTime stdDateTime;
+        private final LocalDateTime referenceDateTime;
+
+
+        public static ViewItemTypeRecordDTO of(MedIntakeRecord entity, LocalDateTime referenceDateTime) {
+            if (entity == null) {
+                throw new IllegalArgumentException("MedIntakeRecord entity cannot be null");
+            }
+            if (referenceDateTime == null) {
+                throw new IllegalArgumentException("ReferenceDateTime cannot be null");
+            }
+            Med medEntity = entity.getMed();
+
+
+
+
+            if (medEntity == null) {
+                throw new IllegalArgumentException("Med entity in MedIntakeRecord cannot be null");
+            }
+        }
+
 
     }
 }

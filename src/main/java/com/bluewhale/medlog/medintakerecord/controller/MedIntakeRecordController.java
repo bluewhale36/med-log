@@ -38,12 +38,14 @@ public class MedIntakeRecordController {
     ) {
         date = date == null ? LocalDate.now() : date;
 
-        List<MedIntakeRecordDayViewDTO> list = medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid, date);
-        List<LocalDate> dateList = list.stream().map(MedIntakeRecordDayViewDTO::getStdDate).toList();
+        List<MedIntakeRecordDayViewDTO> medIntakeRecordDayViewDTOList =
+                medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid, date);
+        List<LocalDate> dateList =
+                medIntakeRecordDayViewDTOList.stream().map(MedIntakeRecordDayViewDTO::getReferenceDate).toList();
 
-        model.addAttribute("selectedDate", date == null ? LocalDate.now() : date);
+        model.addAttribute("selectedDate", date);
         model.addAttribute("dateList", dateList);
-        model.addAttribute("mirdvDTOList", list);
+        model.addAttribute("mirdvDTOList", medIntakeRecordDayViewDTOList);
 
         return"med_intake_record/record";
     }

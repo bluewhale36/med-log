@@ -33,6 +33,13 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
         return sbf.toString();
     }
 
+    @Override
+    public List<DoseTimeCount> getDoseTimeCountList() {
+        return specificDays.stream()
+                .flatMap(sds -> sds.getDoseTimeCountList().stream())
+                .toList();
+    }
+
     @Getter
     @ToString
     public static class SpecificDaysSet {
