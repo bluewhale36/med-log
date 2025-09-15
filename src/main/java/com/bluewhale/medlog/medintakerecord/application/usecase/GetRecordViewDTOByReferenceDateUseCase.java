@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -74,35 +75,22 @@ public class GetRecordViewDTOByReferenceDateUseCase
                 4. medIdList 로 Med List 조회
                     - AS_NEEDED 는 일정이 없으므로 제외
              */
-            List<Med> medList = medIdList.stream()
-                    // Entity 조회
-                    .map(
-                            id -> medRepository.findById(id).orElseThrow(
-                                    () -> new NoSuchElementException("No Med found with id: " + id)
-                            )
-                    )
-                    // AS_NEEDED 제외
-                    .filter(
-                            med -> !med.getDoseFrequency().getDoseFrequencyType().equals(DoseFrequencyType.AS_NEEDED)
-                    )
-                    .toList();
-            for (Med med : medList) {
+            Map<Long, Med> medMap = medRepository.findAllById(medIdList).stream()
+                    .collect(Collectors.toMap(Med::getMedId, Function.identity()));
+            for (MedIntakeSnapshot snapshot : snapshotList) {
+                Med med = medMap.get(snapshot.getMed().getMedId());
+                if (med == null || med.getDoseFrequency().getDoseFrequencyType().equals(DoseFrequencyType.AS_NEEDED)) {
+                    continue;
+                }
                 // AS_NEEDED 는 위에서 걸러졌으므로, doseTimeCountList 는 반드시 존재함
                 for (DoseTimeCount doseTimeCount : med.getDoseFrequency().getDoseFrequencyDetail().getDoseTimeCountList()) {
-                    System.out.println("\n\tMed : " + med.getMedId() + ", " + med.getMedName());
-                    System.out.println("\tDoseTimeCount : " + doseTimeCount);
                     // 우선 기록을 먼저 찾자. 기록이 있으면 기록을, 없으면 예정된 스케줄을 보여줘야 한다.
-                    MedIntakeRecord record =
-                            med.getMedIntakeRecordList().stream()
-                                    .filter(
-                                            r -> r.getEstimatedDoseTime().equals(
-                                                    LocalDateTime.of(input.getReferenceDate(), doseTimeCount.getDoseTime())
-                                            )
-                                    )
-                                    .findFirst().orElse(null);
+                    Map<LocalDateTime, MedIntakeRecord> recordMap = med.getMedIntakeRecordList().stream()
+                            .collect(Collectors.toMap(MedIntakeRecord::getEstimatedDoseTime, Function.identity()));
+                    LocalDateTime referenceDateTime = LocalDateTime.of(input.getReferenceDate(), doseTimeCount.getDoseTime());
+                    MedIntakeRecord record = recordMap.get(referenceDateTime);
                     if (record != null) {
                         // 기록이 있는 경우 -> RECORD 타입 DTO 생성
-                        System.out.println("\t\tFound Record : " + record);
                         viewItemTypeRecordDTOList.add(
                                 MedIntakeRecordDayViewDTO.ViewItemTypeRecordDTO.of(
                                         record,
@@ -113,7 +101,6 @@ public class GetRecordViewDTOByReferenceDateUseCase
                         );
                     } else {
                         // 기록이 없는 경우 -> SCHEDULED 타입 DTO 생성
-                        System.out.println("\t\tNo Record found. Creating Scheduled DTO.");
                         viewItemTypeScheduledDTOList.add(
                                 MedIntakeRecordDayViewDTO.ViewItemTypeScheduledDTO.of(
                                         med,
@@ -162,7 +149,6 @@ public class GetRecordViewDTOByReferenceDateUseCase
                     viewItemTypeRecordDTOMap,
                     viewItemTypeScheduledDTOMap
             );
-            System.out.println("\n\n\n" + result + "\n\n\n");
             return Optional.of(result);
         } else {
             log.info("No Med found for AppUserUuid: {}", input.getAppUserUuid());
