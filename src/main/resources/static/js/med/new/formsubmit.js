@@ -68,7 +68,7 @@ function collectMedicationInfo() {
             });
 
             if (selectedDays.length > 0 && doseTimeCountList.length > 0) {
-                sets.push({ days: selectedDays, doseTimeCountList: doseTimeCountList });
+                sets.push({ dayList: selectedDays, doseTimeCountList: doseTimeCountList });
             }
         });
         json.doseFrequencyDetail.specificDays = sets;

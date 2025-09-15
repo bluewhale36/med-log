@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -35,11 +36,14 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
 
     @Override
     public List<DoseTimeCount> getDoseTimeCountList() {
-        return specificDays.stream()
-                .flatMap(sds -> sds.getDoseTimeCountList().stream())
-                .toList();
+        List<DoseTimeCount> list = new ArrayList<>();
+        for (SpecificDaysSet set : specificDays) {
+            list.addAll(set.getDoseTimeCountList());
+        }
+        return list;
     }
 
+    // SpecificDaysDetail.java 의 SpecificDaysSet 클래스 (수정된 코드)
     @Getter
     @ToString
     public static class SpecificDaysSet {
@@ -49,8 +53,8 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
 
         @JsonCreator
         public SpecificDaysSet(
-                               @JsonProperty("days") List<Days> dayList,
-                               @JsonProperty("doseTimeCountList") List<DoseTimeCount> doseTimeCountList
+                @JsonProperty("dayList") List<Days> dayList,
+                @JsonProperty("doseTimeCountList") List<DoseTimeCount> doseTimeCountList
         ) {
             this.dayList = dayList;
             this.doseTimeCountList = doseTimeCountList;

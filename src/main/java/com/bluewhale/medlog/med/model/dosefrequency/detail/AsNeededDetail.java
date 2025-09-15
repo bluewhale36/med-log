@@ -3,6 +3,7 @@ package com.bluewhale.medlog.med.model.dosefrequency.detail;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AsNeededDetail extends AbstractDoseFrequencyDetail {
@@ -18,6 +19,6 @@ public class AsNeededDetail extends AbstractDoseFrequencyDetail {
 
     @Override
     public List<DoseTimeCount> getDoseTimeCountList() {
-        return List.of();
+        return new ArrayList<DoseTimeCount>();
     }
 }

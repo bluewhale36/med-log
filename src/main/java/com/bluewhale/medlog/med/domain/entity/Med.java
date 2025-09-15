@@ -45,7 +45,6 @@ public class Med {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "visit_id")
-    @Nullable
     private HospitalVisitRecord hospitalVisitRecord;
 
     @ManyToOne(fetch = FetchType.LAZY)
