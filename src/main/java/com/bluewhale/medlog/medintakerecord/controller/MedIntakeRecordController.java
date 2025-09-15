@@ -41,8 +41,11 @@ public class MedIntakeRecordController {
                 medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid, referenceDate)
                         .orElse(null);
 
-        model.addAttribute("selectedDate", referenceDate);
+        LocalDate selectedDate = (referenceDate != null) ? referenceDate : LocalDate.now();
+
+        model.addAttribute("selectedDate", selectedDate);
         model.addAttribute("viewDTO", medIntakeRecordDayViewDTO);
+        model.addAttribute("today", LocalDate.now());
 
         return"med_intake_record/record";
     }

@@ -48,7 +48,7 @@ public class MedIntakeSnapshotService {
         log.info("New PolicyRequestToken created : {}", policyRequestToken);
 
         // 스냅샷 생성 정책 실행
-        List<PolicyEvaluateResult> resultList = policyManager.evaluate(List.of(policyRequestToken));
+        List<PolicyEvaluateResult> resultList = policyManager.evaluate(policyRequestToken);
 
         log.info("MedIntakeSnapshot is creating and saving...");
         medIntakeSnapshotRepository.saveAll(

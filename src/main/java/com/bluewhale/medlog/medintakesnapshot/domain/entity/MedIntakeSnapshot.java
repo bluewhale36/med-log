@@ -32,6 +32,7 @@ public class MedIntakeSnapshot {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "med_id")
+    @ToString.Exclude
     private Med med;
 
     private boolean shouldTake;

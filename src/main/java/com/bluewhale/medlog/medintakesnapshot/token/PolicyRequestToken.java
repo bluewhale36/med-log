@@ -20,7 +20,6 @@ public class PolicyRequestToken {
     private final List<PolicyRequestMedIntakeToken> policyRequestMedIntakeTokenList;
     private final LocalDate startedOn;
     private final LocalDate endedOn;
-    // 스냅샷에 대한 기준 일자 (보통 오늘 날짜)
     private final LocalDate referenceDate;
 
     public static PolicyRequestToken from(Med entity) {
@@ -68,5 +67,25 @@ public class PolicyRequestToken {
                     .estimatedDoseTime(entity.getEstimatedDoseTime())
                     .build();
         }
+    }
+
+    public static PolicyRequestToken getCopyFrom(PolicyRequestToken policyRequestToken, LocalDate newReferenceDate) {
+        if (policyRequestToken == null) {
+            throw new IllegalArgumentException("PolicyRequestToken cannot be null");
+        }
+        if (newReferenceDate == null) {
+            throw new IllegalArgumentException("New reference date cannot be null");
+        }
+
+        return new PolicyRequestToken(
+                policyRequestToken.getMedId(),
+                policyRequestToken.getAppUserId(),
+                policyRequestToken.getDoseFrequency(),
+                policyRequestToken.getPolicyRequestMedIntakeTokenList(),
+                policyRequestToken.getStartedOn(),
+                policyRequestToken.getEndedOn(),
+                newReferenceDate
+        );
+
     }
 }

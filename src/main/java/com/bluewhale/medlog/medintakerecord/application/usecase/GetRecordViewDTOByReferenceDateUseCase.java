@@ -136,25 +136,29 @@ public class GetRecordViewDTOByReferenceDateUseCase
             Map<LocalTime, List<MedIntakeRecordDayViewDTO.ViewItemTypeRecordDTO>> viewItemTypeRecordDTOMap =
                     viewItemTypeRecordDTOList.stream()
                             .sorted(
-                                    Comparator.comparing(dto -> dto.getReferenceDateTime().toLocalTime())
+                                    Comparator.comparing(MedIntakeRecordDayViewDTO.ViewItemTypeRecordDTO::getReferenceDateTime)
                             )
                             .collect(
                                     Collectors.groupingBy(
                                             dto -> dto.getReferenceDateTime().toLocalTime(),
+                                            TreeMap::new,
                                             Collectors.toList()
                                     )
                             );
             Map<LocalTime, List<MedIntakeRecordDayViewDTO.ViewItemTypeScheduledDTO>> viewItemTypeScheduledDTOMap =
                     viewItemTypeScheduledDTOList.stream()
                             .sorted(
-                                    Comparator.comparing(dto -> dto.getReferenceDateTime().toLocalTime())
+                                    Comparator.comparing(MedIntakeRecordDayViewDTO.ViewItemTypeScheduledDTO::getReferenceDateTime)
                             )
                             .collect(
                                     Collectors.groupingBy(
                                             dto -> dto.getReferenceDateTime().toLocalTime(),
+                                            TreeMap::new,
                                             Collectors.toList()
                                     )
                             );
+            System.out.println("\n\n\n" + viewItemTypeRecordDTOMap + "\n\n\n");
+            System.out.println("\n\n\n" + viewItemTypeScheduledDTOMap + "\n\n\n");
             /*
                 10. MedIntakeRecordDayViewDTO 생성
              */
@@ -163,6 +167,7 @@ public class GetRecordViewDTOByReferenceDateUseCase
                     viewItemTypeRecordDTOMap,
                     viewItemTypeScheduledDTOMap
             );
+            System.out.println("\n\n\n" + result + "\n\n\n");
             return Optional.of(result);
         } else {
             log.info("No Med found for AppUserUuid: {}", input.getAppUserUuid());
