@@ -38,8 +38,8 @@
                                 <div class="med-info">
                                     <span class="med-name" th:text="${item.medName}"></span>
                                     <span class="med-type" th:text="${item.medType.title}"></span>
-                                    <span class="med-detail" th:text="|${item.doseAmount} ${item.doseUnit.title}|"></span>
-                                    <span class="med-detail" th:text="|${item.doseCount}정|"></span>
+                                    <span class="med-detail" th:text="|${item.doseAmount}${item.doseUnit.title}|"></span>
+                                    <span class="med-detail" th:text="|${item.doseCount}${item.medType.countUnit}|"></span>
                                 </div>
                             </div>
                         </li>
