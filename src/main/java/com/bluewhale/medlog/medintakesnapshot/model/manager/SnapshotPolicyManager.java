@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SnapshotPolicyManager {
 
-    Integer defaultAfterDays = 180;
+    Integer defaultAfterDays = 90;
 
     List<PolicyEvaluateResult> evaluate(PolicyRequestToken policyReqTokenList);
 
