@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/med/intake")
@@ -32,20 +33,16 @@ public class MedIntakeRecordController {
 
     @GetMapping("/record")
     public String record(
-            @RequestParam("date") @Nullable LocalDate date,
+            @RequestParam("referenceDate") @Nullable LocalDate referenceDate,
             @AuthAppUserUuid AppUserUuid appUserUuid,
             Model model
     ) {
-        date = date == null ? LocalDate.now() : date;
+        MedIntakeRecordDayViewDTO medIntakeRecordDayViewDTO =
+                medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid, referenceDate)
+                        .orElse(null);
 
-        List<MedIntakeRecordDayViewDTO> medIntakeRecordDayViewDTOList =
-                medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid, date);
-        List<LocalDate> dateList =
-                medIntakeRecordDayViewDTOList.stream().map(MedIntakeRecordDayViewDTO::getReferenceDate).toList();
-
-        model.addAttribute("selectedDate", date);
-        model.addAttribute("dateList", dateList);
-        model.addAttribute("mirdvDTOList", medIntakeRecordDayViewDTOList);
+        model.addAttribute("selectedDate", referenceDate);
+        model.addAttribute("viewDTO", medIntakeRecordDayViewDTO);
 
         return"med_intake_record/record";
     }

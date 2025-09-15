@@ -1,33 +1,35 @@
 package com.bluewhale.medlog.medintakerecord.application.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
-import com.bluewhale.medlog.medintakerecord.application.usecase.GetMedIntakeRecordViewDTOListUseCase;
+import com.bluewhale.medlog.medintakerecord.application.usecase.GetRecordViewDTOByReferenceDateUseCase;
 import com.bluewhale.medlog.medintakerecord.application.usecase.RegisterNewMedIntakeRecordDTOListUseCase;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
-import com.bluewhale.medlog.medintakerecord.dto.RenderRequestToken;
-import com.bluewhale.medlog.medintakesnapshot.dto.MedIntakeSnapshotModifyIsTakenDTO;
+import com.bluewhale.medlog.medintakerecord.dto.RenderServiceRequestToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MedIntakeRecordApplicationService {
 
-    private final GetMedIntakeRecordViewDTOListUseCase getMedIntakeRecordViewDTOListUseCase;
+    private final GetRecordViewDTOByReferenceDateUseCase getRecordViewDTOByReferenceDateUseCase;
 
     private final RegisterNewMedIntakeRecordDTOListUseCase registerNewMedIntakeRecordDTOListUseCase;
 
     @Transactional(readOnly = true)
-    public List<MedIntakeRecordDayViewDTO> getDTOListForIntakeRecordView(
-            AppUserUuid appUserUuid, LocalDate stdDate
+    public Optional<MedIntakeRecordDayViewDTO> getDTOListForIntakeRecordView(
+            AppUserUuid appUserUuid, LocalDate referenceDate
     ) {
-        return getMedIntakeRecordViewDTOListUseCase.execute(new RenderRequestToken(appUserUuid, stdDate));
+        return getRecordViewDTOByReferenceDateUseCase.execute(
+                RenderServiceRequestToken.of(appUserUuid, referenceDate)
+        );
     }
 
     @Transactional

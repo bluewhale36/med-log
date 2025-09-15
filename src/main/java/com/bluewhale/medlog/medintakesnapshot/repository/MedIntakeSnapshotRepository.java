@@ -24,4 +24,6 @@ public interface MedIntakeSnapshotRepository extends JpaRepository<MedIntakeSnap
     MedIntakeSnapshot findByMedIdAndEstimatedDoseTime(Long medId, LocalDateTime estimatedDoseTime);
 
     void deleteAllByMed_MedId(Long medMedId);
+
+    List<MedIntakeSnapshot> findAllByAppUser_AppUserIdAndEstimatedDoseTimeIsBetween(Long appUserAppUserId, LocalDateTime estimatedDoseTimeAfter, LocalDateTime estimatedDoseTimeBefore);
 }

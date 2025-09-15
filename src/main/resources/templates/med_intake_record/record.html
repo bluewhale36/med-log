@@ -17,10 +17,13 @@
 
     <div class="date-label" th:text="${#temporals.format(selectedDate, 'yyyy.MM.dd (E)')}"></div>
 
+    <!-- Date Scroll Block -->
+    <!-- 구현 방식 변경 예정 -->
+    <!--
     <div class="date-scroll-block">
         <div class="date-scroll">
             <div class="date-item-wrapper"
-                 th:each="recordDay : ${mirdvDTOList}"
+                 th:each="recordDay : ${viewDTO}"
                  th:classappend="${recordDay.stdDate.equals(selectedDate)} ? 'selected' : ''"
                  th:attr="onclick=|location.href='/med/intake/record?date=${recordDay.stdDate}'|"
                  style="cursor: pointer;">
@@ -29,10 +32,11 @@
             </div>
         </div>
     </div>
+    -->
 
     <div class="section-block">
         <div class="section-title">복용해야 하는 약</div>
-        <div th:each="recordDay : ${mirdvDTOList}" th:if="${recordDay.stdDate.equals(selectedDate)}">
+        <div th:each="recordDay : ${viewDTO}" th:if="${recordDay.stdDate.equals(selectedDate)}">
             <div class="time-block" th:each="entry : ${recordDay.viewItemDTOListMapForTypeScheduled}" th:data-std-time="${entry.key}">
                 <div class="time-header">
                     <span class="time" th:text="${entry.key}"></span>&nbsp;&nbsp;<button type="button" class="time-record-button">+ 기록</button>
@@ -61,7 +65,7 @@
 
     <div class="section-block">
         <div class="section-title">복용 기록이 있는 약</div>
-        <div th:each="recordDay : ${mirdvDTOList}" th:if="${recordDay.stdDate.equals(selectedDate)}">
+        <div th:each="recordDay : ${viewDTO}" th:if="${recordDay.stdDate.equals(selectedDate)}">
             <div class="time-block" th:each="entry : ${recordDay.viewItemDTOListMapForTypeRecord}">
                 <div class="time-header">
                     <span class="time" th:text="${entry.key}"></span>
