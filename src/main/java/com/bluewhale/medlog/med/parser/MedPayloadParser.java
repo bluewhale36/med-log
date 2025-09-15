@@ -5,6 +5,7 @@ import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.AbstractDoseFrequencyDetail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.Map;
 
 public interface MedPayloadParser<R> {

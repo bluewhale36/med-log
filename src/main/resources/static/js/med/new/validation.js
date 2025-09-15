@@ -47,10 +47,17 @@ document.querySelectorAll(".dose-frequency-type-radio").forEach((el) => {
 function addCommonTimeInput() {
     const wrapper = document.createElement("div");
     wrapper.classList.add("time-row");
-    const input = document.createElement("input");
-    input.type = "time";
-    input.classList.add("time-input-common");
-    input.style.marginRight = "8px";
+
+    const timeInput = document.createElement("input");
+    timeInput.type = "time";
+    timeInput.classList.add("time-input-common");
+
+    const countInput = document.createElement("input");
+    countInput.type = "number";
+    countInput.classList.add("dose-count-input");
+    countInput.min = "1";
+    countInput.max = "127";
+    countInput.value = "1";
 
     const delBtn = document.createElement("button");
     delBtn.type = "button";
@@ -59,7 +66,8 @@ function addCommonTimeInput() {
         timeInputContainer.removeChild(wrapper);
     });
 
-    wrapper.appendChild(input);
+    wrapper.appendChild(timeInput);
+    wrapper.appendChild(countInput);
     wrapper.appendChild(delBtn);
     timeInputContainer.appendChild(wrapper);
 }
@@ -80,27 +88,47 @@ document.getElementById("add-day-time-set-btn").addEventListener("click", () => 
     const timeGroup = document.createElement("div");
     timeGroup.classList.add("time-input-group");
 
-    const baseInput = document.createElement("input");
-    baseInput.type = "time";
-    baseInput.classList.add("time-input");
-    timeGroup.appendChild(baseInput);
+    const baseTimeInput = document.createElement("input");
+    baseTimeInput.type = "time";
+    baseTimeInput.classList.add("time-input");
+
+    const baseCountInput = document.createElement("input");
+    baseCountInput.type = "number";
+    baseCountInput.classList.add("dose-count-input");
+    baseCountInput.min = "1";
+    baseCountInput.max = "127";
+    baseCountInput.value = "1";
+
+    timeGroup.appendChild(baseTimeInput);
+    timeGroup.appendChild(baseCountInput);
 
     const addTimeBtn = document.createElement("button");
     addTimeBtn.type = "button";
     addTimeBtn.textContent = "+ 시간 추가";
     addTimeBtn.addEventListener("click", () => {
-        const input = document.createElement("input");
-        input.type = "time";
-        input.classList.add("time-input");
+        const newTimeInput = document.createElement("input");
+        newTimeInput.type = "time";
+        newTimeInput.classList.add("time-input");
+
+        const newCountInput = document.createElement("input");
+        newCountInput.type = "number";
+        newCountInput.classList.add("dose-count-input");
+        newCountInput.min = "1";
+        newCountInput.max = "127";
+        newCountInput.value = "1";
+
         const del = document.createElement("button");
         del.textContent = "삭제";
         del.type = "button";
         del.addEventListener("click", () => {
-            timeGroup.removeChild(input);
+            timeGroup.removeChild(newTimeInput);
+            timeGroup.removeChild(newCountInput);
             timeGroup.removeChild(del);
         });
+
         timeGroup.appendChild(document.createElement("br"));
-        timeGroup.appendChild(input);
+        timeGroup.appendChild(newTimeInput);
+        timeGroup.appendChild(newCountInput);
         timeGroup.appendChild(del);
 
         updateAddSetButtonState();

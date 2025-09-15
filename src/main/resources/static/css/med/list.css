@@ -48,6 +48,12 @@ h1 {
     color: var(--primary-color);
 }
 
+.card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 .card-body p {
     margin: 4px 0;
 }

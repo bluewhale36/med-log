@@ -2,7 +2,6 @@ package com.bluewhale.medlog.medintakesnapshot.model.manager;
 
 import com.bluewhale.medlog.medintakesnapshot.model.provider.SnapshotPolicyProvider;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
-import com.bluewhale.medlog.medintakesnapshot.token.PolicyRequestMedToken;
 import com.bluewhale.medlog.medintakesnapshot.token.PolicyRequestToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,52 +19,53 @@ public class PolicyManager implements SnapshotPolicyManager {
     private final List<SnapshotPolicyProvider> providerList;
 
     @Override
-    public List<PolicyEvaluateResult> evaluate(List<PolicyRequestToken> policyReqTokenList) {
-        if (policyReqTokenList == null || policyReqTokenList.isEmpty()) {
-            throw new IllegalArgumentException("policyReqTokenList should not be null or empty");
+    public List<PolicyEvaluateResult> evaluate(PolicyRequestToken policyRequestToken) {
+        // 입력값 검증
+        if (policyRequestToken == null) {
+            throw new IllegalArgumentException("policyRequestToken should not be null or empty");
         }
 
+        boolean isEndedOnExists = policyRequestToken.getEndedOn() != null;
+        boolean isEndedOnInHalfYear =
+                isEndedOnExists &&
+                policyRequestToken.getStartedOn().plusMonths(6L).isAfter(policyRequestToken.getEndedOn());
+
+        int creationDays =
+                isEndedOnExists && isEndedOnInHalfYear ?
+                policyRequestToken.getStartedOn().until(policyRequestToken.getEndedOn()).getDays() + 1 :
+                defaultAfterDays;
+
+        log.info("Evaluating policy for {} days...", creationDays);
+
+        PolicyRequestToken requestToken;
         List<PolicyEvaluateResult> resultList = new ArrayList<>();
-        log.info("\n\n ============== evaluate ============== \n\n");
-        for (PolicyRequestToken policyReqToken : policyReqTokenList) {
-            List<PolicyEvaluateResult> policyEvaluateResultList = evaluate(policyReqToken);
+        for (int i = 0; i < creationDays; i++) {
+            requestToken = PolicyRequestToken.getCopyFrom(policyRequestToken, policyRequestToken.getStartedOn().plusDays(i));
+            log.info("Evaluating policy for reference date: {}", requestToken.getReferenceDate());
+            // 실제 평가 수행
+            List<PolicyEvaluateResult> policyEvaluateResultList = doEvaluate(requestToken);
             resultList.addAll(policyEvaluateResultList);
         }
-
+        log.info("Total {} results evaluated.", resultList.size());
+        // 스냅샷 생성이 필요한 결과만 필터링하여 반환
         return resultList.stream().filter(PolicyEvaluateResult::isShouldTake).toList();
     }
 
-    private List<PolicyEvaluateResult> evaluate(PolicyRequestToken policyReqToken) {
-        List<PolicyEvaluateResult> resultList = new ArrayList<>();
+    private List<PolicyEvaluateResult> doEvaluate(PolicyRequestToken policyRequestToken) {
+        log.info("Finding provider...");
+        SnapshotPolicyProvider provider = providerList.stream()
+                .filter(
+                        (p) -> p.supports(policyRequestToken.getDoseFrequency().getDoseFrequencyType())
+                )
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalStateException(String.format("No supported provider found for policy token '%s'", policyRequestToken))
+                );
+        log.info("Found proper provider : {}", provider.getClass().getSimpleName());
 
-        for (PolicyRequestMedToken policyReqMedToken : policyReqToken.getPolicyReqMedTokenList()) {
-            log.info("Evaluation started for policyReqMedToken: {}", policyReqMedToken);
-            SnapshotPolicyProvider provider = providerList.stream()
-                    .filter(
-                            (p) -> p.supports(policyReqMedToken.getDoseFrequency().getDoseFrequencyType())
-                    )
-                    .findFirst()
-                    .orElseThrow(
-                            () -> new IllegalStateException(String.format("No supported provider found for policy token '%s'", policyReqMedToken))
-                    );
-            log.info("selected provider '{}'", provider);
-            provider.evaluate(policyReqMedToken, policyReqToken.getStdDate()).stream()
-                    .map(
-                            (res) -> copyResult(res, policyReqToken.getAppUserId())
-                    )
-                    .forEach(resultList::add);
-        }
+        // provider 에게 평가 위임
+        List<PolicyEvaluateResult> resultList = provider.evaluate(policyRequestToken, policyRequestToken.getReferenceDate());
+        log.info("Policy evaluation done by provider.");
         return resultList;
-    }
-
-    private PolicyEvaluateResult copyResult(PolicyEvaluateResult policyEvaluateResult, Long appUserId) {
-        return new PolicyEvaluateResult(
-                appUserId,
-                policyEvaluateResult.getMedId(),
-                policyEvaluateResult.isShouldTake(),
-                policyEvaluateResult.getEstimatedDoseTime(),
-                policyEvaluateResult.getStdDate(),
-                policyEvaluateResult.getReason()
-        );
     }
 }

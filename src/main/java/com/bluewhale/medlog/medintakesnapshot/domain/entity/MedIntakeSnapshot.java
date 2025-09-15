@@ -32,6 +32,7 @@ public class MedIntakeSnapshot {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "med_id")
+    @ToString.Exclude
     private Med med;
 
     private boolean shouldTake;
@@ -53,7 +54,7 @@ public class MedIntakeSnapshot {
                 .appUser(appUser)
                 .med(med)
                 .shouldTake(result.isShouldTake())
-                .isTaken(result.getReason().getPreProcess().getHasTakenRecordOnStdDate())
+                .isTaken(result.getReason().getPreProcess().getHasTakenRecordOnReferenceDate())
                 .estimatedDoseTime(result.getEstimatedDoseTime())
                 .policyReason(result.getReason())
                 .evaluatedAt(result.getEvaluatedAt())
