@@ -7,6 +7,7 @@ import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -35,7 +36,7 @@ public class MedDTO {
     public static MedDTO from(Med entity) {
         return new MedDTO(
                 entity.getMedUuid(),
-                entity.getHospitalVisitRecord() != null ?  entity.getHospitalVisitRecord().getVisitUuid() : null,
+                entity.getHospitalVisitRecord() != null ? entity.getHospitalVisitRecord().getVisitUuid() : null,
                 entity.getAppUser().getAppUserUuid(),
                 entity.getMedName(),
                 entity.getMedType(),

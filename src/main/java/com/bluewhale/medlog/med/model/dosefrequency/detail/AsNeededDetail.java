@@ -19,6 +19,6 @@ public class AsNeededDetail extends AbstractDoseFrequencyDetail {
 
     @Override
     public List<DoseTimeCount> getDoseTimeCountList() {
-        return new ArrayList<DoseTimeCount>();
+        return new ArrayList<>();
     }
 }
