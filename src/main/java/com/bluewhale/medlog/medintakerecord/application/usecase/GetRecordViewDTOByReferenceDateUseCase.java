@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,6 +42,7 @@ public class GetRecordViewDTOByReferenceDateUseCase
             1. AppUserUuid 에 해당하는 AppUserId 조회
          */
         Long appUserId = appUserIdentifierConvertService.getIdByUuid(input.getAppUserUuid());
+        log.info("Found AppUserId: {} for AppUserUuid: {}", appUserId, input.getAppUserUuid());
 
         /*
             2. AppUserId 와 ReferenceDate 로 snapshot 조회
@@ -85,47 +87,42 @@ public class GetRecordViewDTOByReferenceDateUseCase
                     )
                     .toList();
             for (Med med : medList) {
-                /*
-                    5. Med List 순회하며, MedIntakeRecordList 에서 ReferenceDate 에 해당하는 recordList 추출
-                 */
-                List<MedIntakeRecord> referenceDateRecordList = med.getMedIntakeRecordList().stream()
-                        .filter(
-                                r -> r.getEstimatedDoseTime().toLocalDate().isEqual(input.getReferenceDate())
-                        )
-                        // 디버깅
-                        .peek(r -> log.info("Filtered Record: {}", r))
-                        .toList();
-
-                if (!referenceDateRecordList.isEmpty()) {
-                    /*
-                        6. recordList 가 비어있지 않다면, 각각의 record 에 대해 RECORD type ViewDTO 생성
-                     */
-                    for (MedIntakeRecord record : referenceDateRecordList) {
-                        MedIntakeRecordDayViewDTO.ViewItemTypeRecordDTO viewItemTypeRecordDTO =
+                // AS_NEEDED 는 위에서 걸러졌으므로, doseTimeCountList 는 반드시 존재함
+                for (DoseTimeCount doseTimeCount : med.getDoseFrequency().getDoseFrequencyDetail().getDoseTimeCountList()) {
+                    System.out.println("\n\tMed : " + med.getMedId() + ", " + med.getMedName());
+                    System.out.println("\tDoseTimeCount : " + doseTimeCount);
+                    // 우선 기록을 먼저 찾자. 기록이 있으면 기록을, 없으면 예정된 스케줄을 보여줘야 한다.
+                    MedIntakeRecord record =
+                            med.getMedIntakeRecordList().stream()
+                                    .filter(
+                                            r -> r.getEstimatedDoseTime().equals(
+                                                    LocalDateTime.of(input.getReferenceDate(), doseTimeCount.getDoseTime())
+                                            )
+                                    )
+                                    .findFirst().orElse(null);
+                    if (record != null) {
+                        // 기록이 있는 경우 -> RECORD 타입 DTO 생성
+                        System.out.println("\t\tFound Record : " + record);
+                        viewItemTypeRecordDTOList.add(
                                 MedIntakeRecordDayViewDTO.ViewItemTypeRecordDTO.of(
                                         record,
-                                        record.getEstimatedDoseTime()
-                                );
-                        viewItemTypeRecordDTOList.add(viewItemTypeRecordDTO);
-                    }
-                } else {
-                    /*
-                        7. recordList 가 비어있다면, 복용 기록이 없으므로 SCHEDULED type ViewDTO 생성
-                     */
-                    List<DoseTimeCount> doseTimeCountList =
-                            med.getDoseFrequency().getDoseFrequencyDetail().getDoseTimeCountList();
-                    /*
-                        8. doseTimeCountList 순회하며, 각각에 대해 SCHEDULED type ViewDTO 생성
-                            - 복용 예정 시각과 복용 예정 약 개수별로 DTO 필요
-                     */
-                    for (DoseTimeCount doseTimeCount : doseTimeCountList) {
-                        MedIntakeRecordDayViewDTO.ViewItemTypeScheduledDTO viewItemTypeScheduledDTO =
+                                        LocalDateTime.of(
+                                                input.getReferenceDate(), doseTimeCount.getDoseTime()
+                                        )
+                                )
+                        );
+                    } else {
+                        // 기록이 없는 경우 -> SCHEDULED 타입 DTO 생성
+                        System.out.println("\t\tNo Record found. Creating Scheduled DTO.");
+                        viewItemTypeScheduledDTOList.add(
                                 MedIntakeRecordDayViewDTO.ViewItemTypeScheduledDTO.of(
                                         med,
                                         doseTimeCount.getDoseCount(),
-                                        input.getReferenceDate().atTime(doseTimeCount.getDoseTime())
-                                );
-                        viewItemTypeScheduledDTOList.add(viewItemTypeScheduledDTO);
+                                        LocalDateTime.of(
+                                                input.getReferenceDate(), doseTimeCount.getDoseTime()
+                                        )
+                                )
+                        );
                     }
                 }
             }
@@ -157,8 +154,6 @@ public class GetRecordViewDTOByReferenceDateUseCase
                                             Collectors.toList()
                                     )
                             );
-            System.out.println("\n\n\n" + viewItemTypeRecordDTOMap + "\n\n\n");
-            System.out.println("\n\n\n" + viewItemTypeScheduledDTOMap + "\n\n\n");
             /*
                 10. MedIntakeRecordDayViewDTO 생성
              */

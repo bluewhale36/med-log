@@ -19,6 +19,7 @@ public class AppUserRole {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id")
+    @ToString.Exclude
     private AppUser appUser;
 
     @Enumerated(EnumType.STRING)
