@@ -30,4 +30,7 @@ public interface MedRepository extends JpaRepository<Med, Long>, IdentifierRouta
     @Override
     @Query("SELECT m.medUuid FROM Med m WHERE m.medId = :id")
     Optional<MedUuid> findUuidById(Long id);
+
+    @Query("SELECT m FROM Med m LEFT JOIN FETCH m.medIntakeRecordList WHERE m.medId IN :medId")
+    List<Med> findAllByMedIdWithMedIntakeRecordList(List<Long> medIdList);
 }

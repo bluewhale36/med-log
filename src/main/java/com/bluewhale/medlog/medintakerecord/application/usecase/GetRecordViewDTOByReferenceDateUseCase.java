@@ -21,6 +21,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * 특정 사용자의 특정 일자에 대한 복약 기록 및 예정 내역을 조회하는 UseCase.
+ * <p>
+ * - RECORD 타입: 해당 일자에 복약 기록이 존재하는 경우
+ * - SCHEDULED 타입: 해당 일자에 복약 기록이 존재하지 않는 예정된 복약 내역
+ * </p>
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -72,18 +79,21 @@ public class GetRecordViewDTOByReferenceDateUseCase
             List<MedIntakeRecordDayViewDTO.ViewItemTypeScheduledDTO> viewItemTypeScheduledDTOList = new ArrayList<>();
 
             /*
-                4. medIdList 로 Med List 조회 및 Map 변환 -> 시간 복잡도 절감
+                4. medIdList 로 Med List 조회 -> MedIntakeRecordList 도 함께 조회 (fetch join)
              */
-            Map<Long, Med> medMap = medRepository.findAllById(medIdList).stream()
-                    .collect(Collectors.toMap(Med::getMedId, Function.identity()));
-            for (Med med : medMap.values()) {
+            List<Med> medList = medRepository.findAllByMedIdWithMedIntakeRecordList(medIdList);
+            for (Med med : medList) {
 
-                if (med.getDoseFrequency().getDoseFrequencyType().equals(DoseFrequencyType.AS_NEEDED)) {
+                if (
+                        med == null ||
+                        med.getDoseFrequency().getDoseFrequencyType().equals(DoseFrequencyType.AS_NEEDED)
+                ) {
                     // Med 가 없거나, AS_NEEDED 인 경우는 건너뛴다.
                     continue;
                 }
 
-                // Intake Record 존재 유무를 기준으로 RECORD, SCHEDULED type DTO 생성 -> 미리 Map 변환하여 시간 복잡도 절감
+                // Intake Record 존재 유무를 기준으로 RECORD, SCHEDULED type DTO 생성
+                // -> 미리 Map 으로 변환하여 추후 시간 복잡도 절감
                 Map<LocalDateTime, MedIntakeRecord> recordMap = med.getMedIntakeRecordList().stream()
                         .collect(Collectors.toMap(MedIntakeRecord::getEstimatedDoseTime, Function.identity()));
 
@@ -93,7 +103,7 @@ public class GetRecordViewDTOByReferenceDateUseCase
                     // 기준 일자 + 투약 시간 -> 기준 일시
                     LocalDateTime referenceDateTime = LocalDateTime.of(input.getReferenceDate(), doseTimeCount.getDoseTime());
 
-                    // 해당 일시의 Intake Record 조회
+                    // 해당 일시의 Intake Record 조회 (Map 으로 미리 변환)
                     MedIntakeRecord record = recordMap.get(referenceDateTime);
                     if (record != null) {
                         // 기록이 있는 경우 -> RECORD 타입 DTO 생성
