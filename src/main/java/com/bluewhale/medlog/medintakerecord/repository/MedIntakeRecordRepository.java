@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,4 +25,9 @@ public interface MedIntakeRecordRepository extends JpaRepository<MedIntakeRecord
     @Override
     @Query("SELECT mir.medIntakeRecordUuid FROM MedIntakeRecord mir WHERE mir.medIntakeRecordId = :id")
     Optional<MedIntakeRecordUuid> findUuidById(Long id);
+
+    @Query("SELECT r FROM MedIntakeRecord r WHERE r.med.medId = :medMedId AND r.estimatedDoseTime >= :startDateTimeInclude AND r.estimatedDoseTime < :endDateTimeExclude")
+    List<MedIntakeRecord> findAllByMed_MedIdAndEstimatedDoseTimeIsBetween(
+            Long medMedId, LocalDateTime startDateTimeInclude, LocalDateTime endDateTimeExclude
+    );
 }

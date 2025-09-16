@@ -9,6 +9,7 @@ import com.bluewhale.medlog.med.repository.MedRepository;
 import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
 import com.bluewhale.medlog.medintakerecord.dto.RenderServiceRequestToken;
+import com.bluewhale.medlog.medintakerecord.repository.MedIntakeRecordRepository;
 import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
 import com.bluewhale.medlog.medintakesnapshot.repository.MedIntakeSnapshotRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,12 +41,15 @@ public class GetRecordViewDTOByReferenceDateUseCase
 
     private final MedRepository medRepository;
 
+    private final MedIntakeRecordRepository recordRepository;
+
     @Override
     public Optional<MedIntakeRecordDayViewDTO> execute(RenderServiceRequestToken input) {
         /*
             0. input : AppUserUuid(현재 로그인 사용자), ReferenceDate(기준 일자)
          */
-
+        log.info("Executing GetRecordViewDTOByReferenceDateUseCase for AppUserUuid: {}, ReferenceDate: {}",
+                input.getAppUserUuid(), input.getReferenceDate());
         /*
             1. AppUserUuid 에 해당하는 AppUserId 조회
          */
@@ -62,6 +66,8 @@ public class GetRecordViewDTOByReferenceDateUseCase
                         input.getReferenceDate().atStartOfDay(),
                         input.getReferenceDate().plusDays(1).atStartOfDay()
                 );
+        log.info("Found {} snapshots for AppUserId: {} on ReferenceDate: {}",
+                snapshotList.size(), appUserId, input.getReferenceDate());
 
         /*
             3. snapshotList 에서 medIdList 추출
@@ -70,6 +76,7 @@ public class GetRecordViewDTOByReferenceDateUseCase
                 .map(s -> s.getMed().getMedId())
                 .distinct()
                 .toList();
+        log.info("Extracted {} distinct MedIds from snapshots.", medIdList.size());
         if (!medIdList.isEmpty()) {
 
             /*
@@ -79,9 +86,11 @@ public class GetRecordViewDTOByReferenceDateUseCase
             List<MedIntakeRecordDayViewDTO.ViewItemTypeScheduledDTO> viewItemTypeScheduledDTOList = new ArrayList<>();
 
             /*
-                4. medIdList 로 Med List 조회 -> MedIntakeRecordList 도 함께 조회 (fetch join)
+                4. medIdList 로 Med List 조회 -> MedIntakeRecordList 도 함께 조회 (left fetch join)
+                    - MedIntakeRecord 를 left fetch join 하므로, 일시에 대한 범위가 필요함.
              */
-            List<Med> medList = medRepository.findAllByMedIdWithMedIntakeRecordList(medIdList);
+            List<Med> medList = medRepository.findAllById(medIdList);
+            log.info("Found {} Med entities with MedIntakeRecords for the given MedIds.", medList.size());
             for (Med med : medList) {
 
                 if (
@@ -92,10 +101,23 @@ public class GetRecordViewDTOByReferenceDateUseCase
                     continue;
                 }
 
+                List<MedIntakeRecord> currRecordList =
+                        recordRepository.findAllByMed_MedIdAndEstimatedDoseTimeIsBetween(
+                                med.getMedId(),
+                                input.getReferenceDate().atStartOfDay(),
+                                input.getReferenceDate().plusDays(1).atStartOfDay()
+                        );
+                log.info("For MedId: {}, found {} MedIntakeRecords on ReferenceDate: {}",
+                        med.getMedId(), currRecordList.size(), input.getReferenceDate());
                 // Intake Record 존재 유무를 기준으로 RECORD, SCHEDULED type DTO 생성
                 // -> 미리 Map 으로 변환하여 추후 시간 복잡도 절감
-                Map<LocalDateTime, MedIntakeRecord> recordMap = med.getMedIntakeRecordList().stream()
-                        .collect(Collectors.toMap(MedIntakeRecord::getEstimatedDoseTime, Function.identity()));
+                Map<LocalDateTime, MedIntakeRecord> recordMap =
+                        !currRecordList.isEmpty() ?
+                        currRecordList.stream()
+                                .collect(
+                                        Collectors.toMap(MedIntakeRecord::getEstimatedDoseTime, Function.identity())
+                                ) :
+                        Collections.emptyMap();
 
                 // AS_NEEDED 는 위에서 걸러졌으므로, doseTimeCountList 는 반드시 존재함
                 for (DoseTimeCount doseTimeCount : med.getDoseFrequency().getDoseFrequencyDetail().getDoseTimeCountList()) {
