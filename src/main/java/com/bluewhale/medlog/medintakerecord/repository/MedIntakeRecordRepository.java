@@ -26,8 +26,8 @@ public interface MedIntakeRecordRepository extends JpaRepository<MedIntakeRecord
     @Query("SELECT mir.medIntakeRecordUuid FROM MedIntakeRecord mir WHERE mir.medIntakeRecordId = :id")
     Optional<MedIntakeRecordUuid> findUuidById(Long id);
 
-    @Query("SELECT r FROM MedIntakeRecord r WHERE r.med.medId = :medMedId AND r.estimatedDoseTime >= :startDateTimeInclude AND r.estimatedDoseTime < :endDateTimeExclude")
-    List<MedIntakeRecord> findAllByMed_MedIdAndEstimatedDoseTimeIsBetween(
-            Long medMedId, LocalDateTime startDateTimeInclude, LocalDateTime endDateTimeExclude
+    @Query("SELECT r FROM MedIntakeRecord r WHERE r.med.medId IN :medIdList AND r.estimatedDoseTime >= :startDateTimeInclude AND r.estimatedDoseTime < :endDateTimeExclude ORDER BY r.estimatedDoseTime")
+    List<MedIntakeRecord> findAllByMed_MedIdAndEstimatedDoseTimeInRange(
+            List<Long> medIdList, LocalDateTime startDateTimeInclude, LocalDateTime endDateTimeExclude
     );
 }

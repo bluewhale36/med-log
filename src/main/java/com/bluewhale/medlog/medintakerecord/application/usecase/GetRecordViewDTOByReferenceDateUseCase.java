@@ -86,11 +86,30 @@ public class GetRecordViewDTOByReferenceDateUseCase
             List<MedIntakeRecordDayViewDTO.ViewItemTypeScheduledDTO> viewItemTypeScheduledDTOList = new ArrayList<>();
 
             /*
-                4. medIdList 로 Med List 조회 -> MedIntakeRecordList 도 함께 조회 (left fetch join)
-                    - MedIntakeRecord 를 left fetch join 하므로, 일시에 대한 범위가 필요함.
+                4. medIdList 로 Med List 조회
              */
             List<Med> medList = medRepository.findAllById(medIdList);
-            log.info("Found {} Med entities with MedIntakeRecords for the given MedIds.", medList.size());
+            log.info("Found {} Med entities with given MedIds.", medList.size());
+
+            /*
+                5. medIdList 와 기준 일자에 해당되는 MedIntakeRecord List 조회
+             */
+            List<MedIntakeRecord> recordList = recordRepository.findAllByMed_MedIdAndEstimatedDoseTimeInRange(
+                    medIdList,
+                    input.getReferenceDate().atStartOfDay(),
+                    input.getReferenceDate().plusDays(1).atStartOfDay()
+            );
+            log.info("Found {} records for medIds: {}", recordList.size(), medIdList);
+
+            /*
+                6. MedId 별로 MedIntakeRecord List 를 맵으로 변환
+             */
+            Map<Long, List<MedIntakeRecord>> recordMapByMedId = recordList.stream()
+                    .collect(
+                            Collectors.groupingBy(
+                                    r -> r.getMed().getMedId()
+                            )
+                    );
             for (Med med : medList) {
 
                 if (
@@ -101,23 +120,21 @@ public class GetRecordViewDTOByReferenceDateUseCase
                     continue;
                 }
 
+                // 해당 약에 대한 MedIntakeRecord List 조회 (Map 으로 미리 변환)
                 List<MedIntakeRecord> currRecordList =
-                        recordRepository.findAllByMed_MedIdAndEstimatedDoseTimeIsBetween(
-                                med.getMedId(),
-                                input.getReferenceDate().atStartOfDay(),
-                                input.getReferenceDate().plusDays(1).atStartOfDay()
+                        recordMapByMedId.getOrDefault(med.getMedId(), Collections.emptyList());
+                log.info("Found {} records for medId: {}", currRecordList.size(), med.getMedId());
+
+                /*
+                    7. 현재 약에 해당하는 MedIntakeRecord List 를 EstimatedDoseTime 기준으로 맵으로 변환
+                 */
+                Map<LocalDateTime, MedIntakeRecord> recordMapByEstimatedDoseTime = currRecordList.stream()
+                        .collect(
+                                Collectors.toMap(
+                                        MedIntakeRecord::getEstimatedDoseTime,
+                                        Function.identity()
+                                )
                         );
-                log.info("For MedId: {}, found {} MedIntakeRecords on ReferenceDate: {}",
-                        med.getMedId(), currRecordList.size(), input.getReferenceDate());
-                // Intake Record 존재 유무를 기준으로 RECORD, SCHEDULED type DTO 생성
-                // -> 미리 Map 으로 변환하여 추후 시간 복잡도 절감
-                Map<LocalDateTime, MedIntakeRecord> recordMap =
-                        !currRecordList.isEmpty() ?
-                        currRecordList.stream()
-                                .collect(
-                                        Collectors.toMap(MedIntakeRecord::getEstimatedDoseTime, Function.identity())
-                                ) :
-                        Collections.emptyMap();
 
                 // AS_NEEDED 는 위에서 걸러졌으므로, doseTimeCountList 는 반드시 존재함
                 for (DoseTimeCount doseTimeCount : med.getDoseFrequency().getDoseFrequencyDetail().getDoseTimeCountList()) {
@@ -126,7 +143,7 @@ public class GetRecordViewDTOByReferenceDateUseCase
                     LocalDateTime referenceDateTime = LocalDateTime.of(input.getReferenceDate(), doseTimeCount.getDoseTime());
 
                     // 해당 일시의 Intake Record 조회 (Map 으로 미리 변환)
-                    MedIntakeRecord record = recordMap.get(referenceDateTime);
+                    MedIntakeRecord record = recordMapByEstimatedDoseTime.get(referenceDateTime);
                     if (record != null) {
                         // 기록이 있는 경우 -> RECORD 타입 DTO 생성
                         viewItemTypeRecordDTOList.add(
@@ -136,6 +153,10 @@ public class GetRecordViewDTOByReferenceDateUseCase
                                                 input.getReferenceDate(), doseTimeCount.getDoseTime()
                                         )
                                 )
+                        );
+                        log.info(
+                                "RECORD type DTO created for MedId: {}, ReferenceDateTime: {}",
+                                med.getMedId(), referenceDateTime
                         );
                     } else {
                         // 기록이 없는 경우 -> SCHEDULED 타입 DTO 생성
@@ -147,6 +168,10 @@ public class GetRecordViewDTOByReferenceDateUseCase
                                                 input.getReferenceDate(), doseTimeCount.getDoseTime()
                                         )
                                 )
+                        );
+                        log.info(
+                                "SCHEDULED type DTO created for MedId: {}, ReferenceDateTime: {}",
+                                med.getMedId(), referenceDateTime
                         );
                     }
                 }
