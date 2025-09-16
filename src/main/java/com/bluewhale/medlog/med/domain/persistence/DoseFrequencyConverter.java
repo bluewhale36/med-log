@@ -30,8 +30,6 @@ public class DoseFrequencyConverter implements AttributeConverter<DoseFrequency,
 
     @Override
     public DoseFrequency convertToEntityAttribute(String dbData) {
-        System.out.println(dbData);
-
         Map<String, Object> freqMap;
         try {
             freqMap = objectMapper.readValue(dbData, Map.class);

@@ -39,7 +39,6 @@ public class MedRegisterPayloadParser implements MedPayloadParser<MedRegisterDTO
                 .startedOn(parseDate(payload.get("startedOn")))
                 .endedOn(parseDate(payload.get("endedOn")))
                 .build();
-        System.out.println(dto);
         return dto;
     }
 

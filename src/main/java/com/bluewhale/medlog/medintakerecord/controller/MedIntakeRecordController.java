@@ -52,7 +52,6 @@ public class MedIntakeRecordController {
 
     @PostMapping("/record")
     public ResponseEntity<Void> registerNewRecord(@RequestBody List<MedIntakeRecordRegisterDTO> medIntakeRecordRegisterDTOList) {
-        System.out.println("\n\n\n" + medIntakeRecordRegisterDTOList + "\n\n");
         medIntakeRecordAppService.registerNewMedIntakeRecordList(medIntakeRecordRegisterDTOList);
         return ResponseEntity.ok().build();
     }
