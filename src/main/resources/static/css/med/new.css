@@ -1,0 +1,254 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #111111;
+    --border-color: #cccccc;
+    --primary-color: #1e88e5;  /* 푸른 계열 포인트 */
+    --button-bg: #1e88e5;
+    --button-text: #ffffff;
+    --input-bg: #f9f9f9;
+    --input-border: #cccccc;
+    --disabled-bg: #e0e0e0;
+    --disabled-text: gray;
+    --btn-disabled-bg: #cccccc;
+    --btn-disabled-text: #666666;
+    --btn-disabled-border: #999999;
+    --scroll-thumb: #bbbbbb;
+    --scroll-track: #f0f0f0;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #121212;
+        --text-color: #eeeeee;
+        --border-color: #444444;
+        --primary-color: #64b5f6;
+        --button-bg: #64b5f6;
+        --button-text: #000000;
+        --input-bg: #1f1f1f;
+        --input-border: #555555;
+        --disabled-bg: #2c2c2c;
+        --disabled-text: #888888;
+        --btn-disabled-bg: #444444;
+        --btn-disabled-text: #aaaaaa;
+        --btn-disabled-border: #666666;
+        --scroll-thumb: #666666;
+        --scroll-track: #222222;
+    }
+}
+
+body.light-theme *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+body.light-theme *::-webkit-scrollbar-thumb {
+    background-color: #bbbbbb;
+    border-radius: 4px;
+}
+
+body.light-theme *::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+}
+
+body.dark-theme *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+body.dark-theme *::-webkit-scrollbar-thumb {
+    background-color: #666666;
+    border-radius: 4px;
+}
+
+body.dark-theme *::-webkit-scrollbar-track {
+    background-color: #222222;
+}
+
+/* Firefox 대응 */
+body.light-theme * {
+    scrollbar-width: thin;
+    scrollbar-color: #bbbbbb #f0f0f0;
+}
+
+body.dark-theme * {
+    scrollbar-width: thin;
+    scrollbar-color: #666666 #222222;
+}
+
+body {
+    max-width: 1220px;
+    margin: 0 auto;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+    padding: 20px;
+}
+
+fieldset {
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+legend {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+input, select {
+    padding: 6px 10px;
+    margin: 6px 0;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 8px 16px;
+    margin-top: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+button:hover {
+    opacity: 0.85;
+}
+
+.detail-section {
+    display: none;
+    margin-left: 10px;
+}
+
+.time-row, .time-input-group {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dose-count-input {
+    width: 70px;
+}
+
+.day-time-set {
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
+}
+
+.weekday-checkbox-group {
+    margin: 5px 0;
+}
+
+.weekday-checkbox-group label {
+    margin-right: 10px;
+}
+
+body.light-theme {
+    --bg-color: #ffffff;
+    --text-color: #111111;
+    --border-color: #cccccc;
+    --primary-color: #1e88e5;
+    --button-bg: #1e88e5;
+    --button-text: #ffffff;
+    --input-bg: #f9f9f9;
+    --input-border: #cccccc;
+}
+
+body.dark-theme {
+    --bg-color: #121212;
+    --text-color: #eeeeee;
+    --border-color: #444444;
+    --primary-color: #64b5f6;
+    --button-bg: #64b5f6;
+    --button-text: #000000;
+    --input-bg: #1f1f1f;
+    --input-border: #555555;
+}
+
+.input-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.input-row label {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.weekday-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.weekday-checkbox-group label {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.weekday-checkbox-group input[type="checkbox"] {
+    margin-right: 4px;
+}
+
+.weekday-checkbox-group label.disabled {
+    background-color: var(--disabled-bg);
+    color: var(--disabled-text);
+    pointer-events: none;
+    cursor: not-allowed;
+    border: 1px solid var(--border-color);
+}
+
+#add-day-time-set-btn {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: 1px solid var(--button-bg);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#add-day-time-set-btn:disabled {
+    background-color: var(--btn-disabled-bg);
+    color: var(--btn-disabled-text);
+    border: 1px solid var(--btn-disabled-border);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.info {
+    color: var(--disabled-text);
+}
+
+textarea {
+    padding: 6px 10px;
+    margin: 6px 0;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    width: 100%;
+    box-sizing: border-box;
+}

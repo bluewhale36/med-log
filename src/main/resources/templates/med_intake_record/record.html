@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Medication Log</title>
+    <link rel="stylesheet" href="/css/med_intake_record/record.css" />
+    <link rel="stylesheet" href="/css/med_intake_record/record_modal.css" />
+</head>
+<body>
+<th:block th:replace="~{fragments/loading_indicator :: commonUiHtml}"></th:block>
+
+<div class="container">
+    <header>
+        <h1>Medication Log</h1>
+        <button class="today-button" onclick="getToday()">오늘</button>
+    </header>
+
+    <div class="date-label" th:text="${#temporals.format(selectedDate, 'yyyy.MM.dd (E)')}"></div>
+
+    <div id="date-scroll-container"
+         th:data-selected-date="${selectedDate}"
+         th:data-today="${today}">
+    </div>
+
+
+    <th:block th:if="${viewDTO != null}">
+        <div class="section-block">
+            <div class="section-title">복용해야 하는 약</div>
+            <div th:if="${!viewDTO.viewItemDTOListMapForTypeScheduled.isEmpty()}">
+                <div class="time-block" th:each="entry : ${viewDTO.viewItemDTOListMapForTypeScheduled}" th:data-std-time="${entry.key}">
+                    <div class="time-header">
+                        <span class="time" th:text="${entry.key}"></span>&nbsp;&nbsp;<button type="button" class="time-record-button">+ 기록</button>
+                    </div>
+                    <ul class="med-list">
+                        <li th:each="item : ${entry.value}" th:data-med-uuid="${item.medUuid.asString()}">
+                            <div style="display: flex; align-items: center;">
+                                <span class="pill-icon empty"></span>
+                                <div class="med-info">
+                                    <span class="med-name" th:text="${item.medName}"></span>
+                                    <span class="med-type" th:text="${item.medType.title}"></span>
+                                    <span class="med-detail" th:text="|${item.doseAmount}${item.doseUnit.title}|"></span>
+                                    <span class="med-detail" th:text="|${item.doseCount}${item.medType.countUnit}|"></span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div th:if="${viewDTO.viewItemDTOListMapForTypeScheduled.isEmpty()}">
+                <p>복용할 약이 없습니다.</p>
+            </div>
+
+            <div class="as-needed-log-trigger" id="log-as-needed-btn">
+                <div class="time-header">
+                    <span class="time">추가로 복용한 약 기록</span>
+                    <button type="button" class="time-record-button">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-block">
+            <div class="section-title">복용 기록이 있는 약</div>
+            <div th:if="${!viewDTO.viewItemDTOListMapForTypeRecord.isEmpty()}">
+                <div class="time-block" th:each="entry : ${viewDTO.viewItemDTOListMapForTypeRecord}">
+                    <div class="time-header">
+                        <span class="time" th:text="${entry.key}"></span>
+                    </div>
+                    <ul class="med-list">
+                        <li th:each="item : ${entry.value}">
+                            <div style="display: flex; align-items: center;">
+                                <span class="pill-icon filled"></span>
+                                <div class="med-info">
+                                    <span class="med-name" th:text="${item.medDTO.medName}"></span>
+                                    <span class="med-type" th:text="${item.medDTO.medType.title}"></span>
+                                    <span class="med-detail" th:text="${item.medDTO.doseAmount + ' ' + item.medDTO.doseUnit.title}"></span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div th:if="${viewDTO.viewItemDTOListMapForTypeRecord.isEmpty()}">
+                <p>복용 기록이 없습니다.</p>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:unless="${viewDTO != null}">
+        <div class="section-block">
+            <div class="section-title">복용 정보</div>
+            <p>해당 날짜에 복용할 약 정보가 없습니다.</p>
+        </div>
+    </th:block>
+
+</div>
+
+<div id="record-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="modal-close-btn">&times;</button>
+            <span class="modal-date-label"></span>
+        </div>
+        <div class="med-icon-header">
+            <span class="med-icon"></span>
+            <div class="med-time-info">
+                <h2 class="med-time"></h2>
+                <p class="med-count"></p>
+            </div>
+            <button id="log-all-taken-btn" class="log-all-taken-button"></button>
+        </div>
+        <div id="modal-medication-items" class="modal-medication-items"></div>
+        <div class="modal-footer">
+            <button id="modal-done-btn" class="modal-done-button"></button>
+        </div>
+    </div>
+</div>
+
+<div id="as-needed-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="modal-close-btn">&times;</button>
+            <span id="as-needed-date-label" class="modal-date-label"></span>
+        </div>
+        <div class="med-icon-header">
+            <span class="med-icon"></span>
+            <div class="med-time-info">
+                <h2 class="med-time">추가 복용 기록</h2>
+                <p id="as-needed-med-count" class="med-count"></p>
+            </div>
+            <button id="log-all-as-needed-btn" class="log-all-taken-button"></button>
+        </div>
+        <div id="as-needed-med-list" class="modal-medication-items"></div>
+        <div class="modal-footer">
+            <button id="as-needed-done-btn" class="modal-done-button"></button>
+        </div>
+    </div>
+</div>
+<script src="/js/med_intake_record/record_modal.js" defer></script>
+<script src="/js/med_intake_record/date_scroll.js" defer></script>
+<script>
+    function getToday() {
+        // 'referenceDate' 파라미터 없이 요청하여 컨트롤러에서 오늘 날짜로 처리하도록 함
+        location.href="/med/intake/record";
+    }
+</script>
+</body>
+</html>

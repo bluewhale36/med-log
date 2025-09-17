@@ -4,6 +4,7 @@ import com.bluewhale.medlog.common.value.AbstractUuid;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
 public class MedUuid extends AbstractUuid {

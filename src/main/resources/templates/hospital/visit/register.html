@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="/css/medication/new.css" />
-    <script src="/js/medication/new/theme.js" defer></script>
+    <link rel="stylesheet" href="/css/med/new.css" />
+    <script src="/js/med/new/theme.js" defer></script>
 </head>
 <body>
+<th:block th:replace="~{fragments/loading_indicator :: commonUiHtml}"></th:block>
+
 <h1>Register new Hospital Visit</h1>
 <button id="theme-toggle-btn" type="button">🌙 다크 모드</button>
 
