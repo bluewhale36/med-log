@@ -3,12 +3,13 @@ package com.bluewhale.medlog.medintakerecord.application.usecase;
 import com.bluewhale.medlog.appuser.service.AppUserIdentifierConvertService;
 import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.med.domain.entity.Med;
+import com.bluewhale.medlog.med.dto.MedViewProjection;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
 import com.bluewhale.medlog.med.repository.MedRepository;
 import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
-import com.bluewhale.medlog.medintakerecord.dto.RenderServiceRequestToken;
+import com.bluewhale.medlog.medintakerecord.model.RenderServiceRequestToken;
 import com.bluewhale.medlog.medintakerecord.repository.MedIntakeRecordRepository;
 import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
 import com.bluewhale.medlog.medintakesnapshot.repository.MedIntakeSnapshotRepository;
@@ -48,6 +49,7 @@ public class GetRecordViewDTOByReferenceDateUseCase
         /*
             0. input : AppUserUuid(현재 로그인 사용자), ReferenceDate(기준 일자)
          */
+        log.info("==============================================================================================");
         log.info("Executing GetRecordViewDTOByReferenceDateUseCase for AppUserUuid: {}, ReferenceDate: {}",
                 input.getAppUserUuid(), input.getReferenceDate());
         /*
@@ -60,6 +62,11 @@ public class GetRecordViewDTOByReferenceDateUseCase
             2. AppUserId 와 ReferenceDate 로 snapshot 조회
                 - EstimatedDoseTime 이 ReferenceDate 에 속한 snapshot 들
          */
+        log.warn("Finding snapshots... for AppUserId: {} between {} and {}",
+                appUserId,
+                input.getReferenceDate().atStartOfDay(),
+                input.getReferenceDate().plusDays(1).atStartOfDay()
+        );
         List<MedIntakeSnapshot> snapshotList =
                 snapshotRepository.findAllByAppUser_AppUserIdAndEstimatedDoseTimeIsBetween(
                         appUserId,
@@ -76,7 +83,7 @@ public class GetRecordViewDTOByReferenceDateUseCase
                 .map(s -> s.getMed().getMedId())
                 .distinct()
                 .toList();
-        log.info("Extracted {} distinct MedIds from snapshots.", medIdList.size());
+        log.info("Extracted {} distinct MedIds from snapshots. : {}", medIdList.size(), medIdList);
         if (!medIdList.isEmpty()) {
 
             /*
@@ -88,12 +95,18 @@ public class GetRecordViewDTOByReferenceDateUseCase
             /*
                 4. medIdList 로 Med List 조회
              */
-            List<Med> medList = medRepository.findAllById(medIdList);
-            log.info("Found {} Med entities with given MedIds.", medList.size());
+            log.warn("Finding Med projections... for MedIds: {}", medIdList);
+            List<MedViewProjection> medProjectionList = medRepository.findAllProjectionByMedIdIn(medIdList);
+            log.info("Found {} Med projections with given MedIds.", medProjectionList.size());
 
             /*
                 5. medIdList 와 기준 일자에 해당되는 MedIntakeRecord List 조회
              */
+            log.warn("Finding MedIntakeRecords... for MedIds: {} between {} and {}",
+                    medIdList,
+                    input.getReferenceDate().atStartOfDay(),
+                    input.getReferenceDate().plusDays(1).atStartOfDay()
+            );
             List<MedIntakeRecord> recordList = recordRepository.findAllByMed_MedIdAndEstimatedDoseTimeInRange(
                     medIdList,
                     input.getReferenceDate().atStartOfDay(),
@@ -110,11 +123,11 @@ public class GetRecordViewDTOByReferenceDateUseCase
                                     r -> r.getMed().getMedId()
                             )
                     );
-            for (Med med : medList) {
+            for (MedViewProjection mewProjection : medProjectionList) {
 
                 if (
-                        med == null ||
-                        med.getDoseFrequency().getDoseFrequencyType().equals(DoseFrequencyType.AS_NEEDED)
+                        mewProjection == null ||
+                        mewProjection.getDoseFrequency().getDoseFrequencyType().equals(DoseFrequencyType.AS_NEEDED)
                 ) {
                     // Med 가 없거나, AS_NEEDED 인 경우는 건너뛴다.
                     continue;
@@ -122,8 +135,8 @@ public class GetRecordViewDTOByReferenceDateUseCase
 
                 // 해당 약에 대한 MedIntakeRecord List 조회 (Map 으로 미리 변환)
                 List<MedIntakeRecord> currRecordList =
-                        recordMapByMedId.getOrDefault(med.getMedId(), Collections.emptyList());
-                log.info("Found {} records for medId: {}", currRecordList.size(), med.getMedId());
+                        recordMapByMedId.getOrDefault(mewProjection.getMedId(), Collections.emptyList());
+                log.info("Found {} records for medId: {}", currRecordList.size(), mewProjection.getMedId());
 
                 /*
                     7. 현재 약에 해당하는 MedIntakeRecord List 를 EstimatedDoseTime 기준으로 맵으로 변환
@@ -137,7 +150,7 @@ public class GetRecordViewDTOByReferenceDateUseCase
                         );
 
                 // AS_NEEDED 는 위에서 걸러졌으므로, doseTimeCountList 는 반드시 존재함
-                for (DoseTimeCount doseTimeCount : med.getDoseFrequency().getDoseFrequencyDetail().getDoseTimeCountList()) {
+                for (DoseTimeCount doseTimeCount : mewProjection.getDoseFrequency().getDoseFrequencyDetail().getDoseTimeCountList()) {
 
                     // 기준 일자 + 투약 시간 -> 기준 일시
                     LocalDateTime referenceDateTime = LocalDateTime.of(input.getReferenceDate(), doseTimeCount.getDoseTime());
@@ -156,13 +169,13 @@ public class GetRecordViewDTOByReferenceDateUseCase
                         );
                         log.info(
                                 "RECORD type DTO created for MedId: {}, ReferenceDateTime: {}",
-                                med.getMedId(), referenceDateTime
+                                mewProjection.getMedId(), referenceDateTime
                         );
                     } else {
                         // 기록이 없는 경우 -> SCHEDULED 타입 DTO 생성
                         viewItemTypeScheduledDTOList.add(
                                 MedIntakeRecordDayViewDTO.ViewItemTypeScheduledDTO.of(
-                                        med,
+                                        mewProjection,
                                         doseTimeCount.getDoseCount(),
                                         LocalDateTime.of(
                                                 input.getReferenceDate(), doseTimeCount.getDoseTime()
@@ -171,7 +184,7 @@ public class GetRecordViewDTOByReferenceDateUseCase
                         );
                         log.info(
                                 "SCHEDULED type DTO created for MedId: {}, ReferenceDateTime: {}",
-                                med.getMedId(), referenceDateTime
+                                mewProjection.getMedId(), referenceDateTime
                         );
                     }
                 }

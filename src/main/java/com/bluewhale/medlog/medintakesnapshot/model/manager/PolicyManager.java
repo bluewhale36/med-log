@@ -26,12 +26,12 @@ public class PolicyManager implements SnapshotPolicyManager {
         }
 
         boolean isEndedOnExists = policyRequestToken.getEndedOn() != null;
-        boolean isEndedOnInHalfYear =
+        boolean isEndedOnIn2Weeks =
                 isEndedOnExists &&
-                policyRequestToken.getStartedOn().plusMonths(6L).isAfter(policyRequestToken.getEndedOn());
+                policyRequestToken.getStartedOn().plusWeeks(2L).isAfter(policyRequestToken.getEndedOn());
 
         int creationDays =
-                isEndedOnExists && isEndedOnInHalfYear ?
+                isEndedOnExists && isEndedOnIn2Weeks ?
                 policyRequestToken.getStartedOn().until(policyRequestToken.getEndedOn()).getDays() + 1 :
                 defaultAfterDays;
 

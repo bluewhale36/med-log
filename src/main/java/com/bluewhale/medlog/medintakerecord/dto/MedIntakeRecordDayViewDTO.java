@@ -3,6 +3,7 @@ package com.bluewhale.medlog.medintakerecord.dto;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
+import com.bluewhale.medlog.med.dto.MedViewProjection;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
@@ -93,20 +94,20 @@ public class MedIntakeRecordDayViewDTO {
 
         private final LocalDateTime referenceDateTime;
 
-        public static ViewItemTypeScheduledDTO of(Med entity, Integer doseCount, LocalDateTime referenceDateTime) {
-            if (entity == null) {
-                throw new IllegalArgumentException("Med entity cannot be null");
+        public static ViewItemTypeScheduledDTO of(MedViewProjection projection, Integer doseCount, LocalDateTime referenceDateTime) {
+            if (projection == null) {
+                throw new IllegalArgumentException("Med projection cannot be null");
             }
             if (referenceDateTime == null) {
                 throw new IllegalArgumentException("ReferenceDateTime cannot be null");
             }
 
             return ViewItemTypeScheduledDTO.builder()
-                    .medUuid(entity.getMedUuid())
-                    .medName(entity.getMedName())
-                    .medType(entity.getMedType())
-                    .doseAmount(entity.getDoseAmount())
-                    .doseUnit(entity.getDoseUnit())
+                    .medUuid(projection.getMedUuid())
+                    .medName(projection.getMedName())
+                    .medType(projection.getMedType())
+                    .doseAmount(projection.getDoseAmount())
+                    .doseUnit(projection.getDoseUnit())
                     .doseCount(doseCount)
                     .estimatedDoseTime(referenceDateTime.toLocalTime())
                     .referenceDateTime(referenceDateTime)

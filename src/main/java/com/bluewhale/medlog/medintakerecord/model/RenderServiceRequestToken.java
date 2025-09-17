@@ -1,4 +1,4 @@
-package com.bluewhale.medlog.medintakerecord.dto;
+package com.bluewhale.medlog.medintakerecord.model;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import jakarta.annotation.Nullable;

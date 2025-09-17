@@ -6,7 +6,7 @@ import com.bluewhale.medlog.medintakerecord.application.usecase.RegisterNewMedIn
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
-import com.bluewhale.medlog.medintakerecord.dto.RenderServiceRequestToken;
+import com.bluewhale.medlog.medintakerecord.model.RenderServiceRequestToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
