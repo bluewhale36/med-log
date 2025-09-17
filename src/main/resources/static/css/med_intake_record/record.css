@@ -204,6 +204,16 @@ header h1 {
     color: #bbb;
 }
 
+.date-item-wrapper.disabled {
+    opacity: 0.5; /* 반투명 처리 */
+    cursor: not-allowed; /* 마우스 커서를 '금지' 모양으로 변경 */
+}
+
+.date-item-wrapper.disabled .date-day-circle {
+    background-color: #2c2c2e; /* 비활성화 시에는 선택된 스타일 제거 */
+    color: #ffffff;
+}
+
 @media screen and (max-width: 768px) {
     .container {
         padding: 0 12px;
