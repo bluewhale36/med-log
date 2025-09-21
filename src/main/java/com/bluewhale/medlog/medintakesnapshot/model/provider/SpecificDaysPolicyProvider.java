@@ -3,6 +3,7 @@ package com.bluewhale.medlog.medintakesnapshot.model.provider;
 import com.bluewhale.medlog.med.model.Days;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.SpecificDaysDetail;
+import com.bluewhale.medlog.med.model.dosefrequency.detail.timecount.DoseTimeCount;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateTracer;
 import com.bluewhale.medlog.medintakesnapshot.model.result.reason.SpecificDaysReason;
@@ -24,16 +25,13 @@ public class SpecificDaysPolicyProvider extends AbstractPolicyProvider {
 
     @Override
     protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestMedToken prmToken) {
-        Optional<List<LocalTime>> result;
-        try {
-            List<LocalTime> timeList = new ArrayList<>();
-            ((SpecificDaysDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).getSpecificDays().stream()
-                    .map(SpecificDaysDetail.SpecificDaysSet::getDoseTimeCountList).forEach(timeList::addAll);
-            result = Optional.of(timeList);
-        } catch (Exception e) {
-            result = Optional.empty();
-        }
-        return result;
+        List<DoseTimeCount> doseTimeCountList =
+                prmToken.getDoseFrequency().getDoseFrequencyDetail().doseTimeCountList().orElse(null);
+        return doseTimeCountList == null ?
+                Optional.empty() :
+                Optional.of(
+                        doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList()
+                );
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.bluewhale.medlog.medintakesnapshot.model.provider;
 
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.IntervalDetail;
+import com.bluewhale.medlog.med.model.dosefrequency.detail.timecount.DoseTimeCount;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateTracer;
 import com.bluewhale.medlog.medintakesnapshot.model.result.reason.IntervalReason;
@@ -24,15 +25,13 @@ public class IntervalPolicyProvider extends AbstractPolicyProvider {
 
     @Override
     protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestMedToken prmToken) {
-        Optional<List<LocalTime>> result;
-        try {
-            result = Optional.of(
-                    ((IntervalDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).doseTimeCountList()
-            );
-        } catch (Exception e) {
-            result = Optional.empty();
-        }
-        return result;
+        List<DoseTimeCount> doseTimeCountList =
+                prmToken.getDoseFrequency().getDoseFrequencyDetail().doseTimeCountList().orElse(null);
+        return doseTimeCountList == null ?
+                Optional.empty() :
+                Optional.of(
+                        doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList()
+                );
     }
 
     @Override

@@ -20,14 +20,13 @@ public class EveryDayDetail extends AbstractDoseFrequencyDetail {
         this.doseTimeCountList = doseTimeCountList;
     }
 
-
-    @Override
-    public String humanReadable() {
-        return "매일 " + humanReadableTimeListAsString(doseTimeCountList) + "에 복용합니다.";
-    }
-
     @Override
     public Optional<List<DoseTimeCount>> doseTimeCountList() {
         return Optional.of(doseTimeCountList);
+    }
+
+    @Override
+    public String getHumanReadableFirstSentence() {
+        return "매일 복용합니다.";
     }
 }

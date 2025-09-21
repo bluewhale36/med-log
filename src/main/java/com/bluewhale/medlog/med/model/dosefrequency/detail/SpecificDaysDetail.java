@@ -25,18 +25,30 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
     }
 
     @Override
-    public String humanReadable() {
-        StringBuffer sbf = new StringBuffer();
-        for (int i = 0; i < specificDays.size(); i++) {
-            // AbstractDoseFrequencyDetail 의 humanReadableTimeListAsString method 자체를 인자로 넘기는 아이디어!
-            sbf.append(i + 1).append(". ").append(specificDays.get(i).humanReadable(this::humanReadableTimeListAsString)).append("\n");
+    public Optional<List<DoseTimeCount>> doseTimeCountList() {
+        List<DoseTimeCount> doseTimeCountList;
+        try {
+            doseTimeCountList = specificDays.stream()
+                    .map(SpecificDaysSet::getDoseTimeCountList)
+                    .flatMap(List::stream)
+                    .toList();
+        } catch (NullPointerException e) {
+            doseTimeCountList = null;
         }
-        return sbf.toString();
+
+        return doseTimeCountList == null ? Optional.empty() : Optional.of(doseTimeCountList);
     }
 
     @Override
-    public Optional<List<DoseTimeCount>> doseTimeCountList() {
-        return Optional.empty();
+    public String getHumanReadableFirstSentence() {
+        List<String> dayInKoreanList = specificDays.stream()
+                .map(SpecificDaysSet::getDays)
+                .flatMap(List::stream)
+                .map(Days::getTitle)
+                .toList();
+
+        // TODO : 평일, 주말 여부 등 고려해서 조금 더 세부적인 문자열 생성 로직 구현 필요.
+        return "매주" + String.join("요일, ", dayInKoreanList) + "에 복용합니다.";
     }
 
     @Getter
@@ -54,12 +66,5 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
             this.days = days;
             this.doseTimeCountList = doseTimeCountList;
         }
-
-        private String humanReadable(Function<List<LocalTime>, String> timeFormatter) {
-            String daysStr = String.join("요일, ", days.stream().map(Days::getTitle).toArray(String[]::new)) + "요일";
-            String timesStr = timeFormatter.apply(this.doseTimeCountList);
-            return String.format("%s마다 %s에 복용합니다.", daysStr, timesStr);
-        }
-
     }
 }

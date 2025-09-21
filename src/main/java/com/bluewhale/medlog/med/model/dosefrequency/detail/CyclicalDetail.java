@@ -41,15 +41,16 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
     }
 
     @Override
-    public String humanReadable() {
-        return String.format(
-                "%d일간 복용하고, %d일간 복용하지 않습니다.\n복용 기간에는 %s에 복용합니다.",
-                onDurationInDays, offDurationInDays, humanReadableTimeListAsString(doseTimeCountList)
-        );
+    public Optional<List<DoseTimeCount>> doseTimeCountList() {
+        return Optional.of(doseTimeCountList);
     }
 
     @Override
-    public Optional<List<DoseTimeCount>> doseTimeCountList() {
-        return Optional.of(doseTimeCountList);
+    public String getHumanReadableFirstSentence() {
+        return String.format(
+                "%d%s 간 복용하고 %d%s 간 복용을 중단합니다.",
+                onDuration, cycleUnit.getInKorean(),
+                offDuration, cycleUnit.getInKorean()
+        );
     }
 }

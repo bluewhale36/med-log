@@ -26,12 +26,12 @@ public class IntervalDetail extends AbstractDoseFrequencyDetail {
     }
 
     @Override
-    public String humanReadable() {
-        return interval + "일에 하루 복용합니다. 복용일의 복용 시각은 " + humanReadableTimeListAsString(doseTimeCountList) + " 입니다.";
+    public Optional<List<DoseTimeCount>> doseTimeCountList() {
+        return Optional.of(doseTimeCountList);
     }
 
     @Override
-    public Optional<List<DoseTimeCount>> doseTimeCountList() {
-        return Optional.of(doseTimeCountList);
+    public String getHumanReadableFirstSentence() {
+        return String.format("매 %d일에 한번 복용합니다.", interval);
     }
 }

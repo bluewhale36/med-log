@@ -2,6 +2,7 @@ package com.bluewhale.medlog.medintakesnapshot.model.provider;
 
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.EveryDayDetail;
+import com.bluewhale.medlog.med.model.dosefrequency.detail.timecount.DoseTimeCount;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateTracer;
 import com.bluewhale.medlog.medintakesnapshot.model.result.reason.EveryDayReason;
@@ -22,9 +23,13 @@ public class EveryDayPolicyProvider extends AbstractPolicyProvider {
 
     @Override
     protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestMedToken prmToken) {
-        return Optional.of(
-                ((EveryDayDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail()).doseTimeCountList()
-        );
+        List<DoseTimeCount> doseTimeCountList =
+                prmToken.getDoseFrequency().getDoseFrequencyDetail().doseTimeCountList().orElse(null);
+        return doseTimeCountList == null ?
+                Optional.empty() :
+                Optional.of(
+                        doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList()
+                );
     }
 
     @Override

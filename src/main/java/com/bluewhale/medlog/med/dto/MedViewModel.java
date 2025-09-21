@@ -4,11 +4,14 @@ import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
+import com.bluewhale.medlog.med.model.dosefrequency.detail.timecount.DoseTimeCount;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Getter
 @ToString
@@ -55,9 +58,14 @@ public class MedViewModel {
 
     private static String buildDoseSentenceShort(MedDTO dto) {
         MedType medType = dto.getMedType();
-        DoseFrequency doseFrequency = dto.getDoseFrequency();
+        List<DoseTimeCount> doseTimeCountList =
+                dto.getDoseFrequency().getDoseFrequencyDetail().doseTimeCountList().orElse(null);
 
+        if (doseTimeCountList != null) {
 
+        } else {
+            return "";
+        }
     }
 
     private static String buildDoseSentenceLong(MedDTO dto) {
