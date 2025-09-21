@@ -25,6 +25,7 @@ public class SecurityConfig {
                         .requestMatchers("/appuser/login/**").permitAll()
                         .requestMatchers("/appuser/logout/**").permitAll()
                         .requestMatchers("/appuser/signin/**").permitAll()
+                        .requestMatchers("/api/redis/**").permitAll()
                         .requestMatchers("/med/**").authenticated()
                         .anyRequest().authenticated()
                 )
