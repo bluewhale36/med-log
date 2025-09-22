@@ -3,11 +3,13 @@ package com.bluewhale.medlog.med.repository;
 import com.bluewhale.medlog.common.repository.IdentifierRoutableRepository;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
+import com.bluewhale.medlog.med.dto.MedViewProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,4 +32,19 @@ public interface MedRepository extends JpaRepository<Med, Long>, IdentifierRouta
     @Override
     @Query("SELECT m.medUuid FROM Med m WHERE m.medId = :id")
     Optional<MedUuid> findUuidById(Long id);
+
+    @Query(
+            """
+            SELECT
+            m.medId AS medId, m.medUuid AS medUuid,
+            m.medName AS medName, m.medType AS medType,
+            m.doseAmount AS doseAmount, m.doseUnit AS doseUnit, m.doseFrequency AS doseFrequency,
+            m.instruction AS instruction, m.effect AS effect, m.sideEffect AS sideEffect,
+            m.startedOn AS startedOn, m.endedOn AS endedOn
+            FROM Med m
+            WHERE m.medId IN :medIdList
+            """
+    )
+    List<MedViewProjection> findAllProjectionByMedIdIn(List<Long> medIdList);
+
 }

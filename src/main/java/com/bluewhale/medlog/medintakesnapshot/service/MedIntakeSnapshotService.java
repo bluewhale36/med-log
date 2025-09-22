@@ -1,108 +1,80 @@
 package com.bluewhale.medlog.medintakesnapshot.service;
 
-import com.bluewhale.medlog.appuser.domain.entity.AppUser;
-import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
-import com.bluewhale.medlog.appuser.repository.AppUserRepository;
-import com.bluewhale.medlog.appuser.service.AppUserIdentifierConvertService;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.dto.MedAggregationDTO;
-import com.bluewhale.medlog.med.dto.MedDTO;
 import com.bluewhale.medlog.med.repository.MedRepository;
-import com.bluewhale.medlog.med.service.MedAggregationService;
 import com.bluewhale.medlog.med.service.MedIdentifierConvertService;
 import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
-import com.bluewhale.medlog.medintakesnapshot.dto.MedIntakeSnapshotDTO;
-import com.bluewhale.medlog.medintakesnapshot.mapper.PolicyRequestTokenMapper;
-import com.bluewhale.medlog.medintakesnapshot.model.manager.SnapshotPolicyManager;
+import com.bluewhale.medlog.medintakesnapshot.model.manager.PolicyManager;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
-import com.bluewhale.medlog.medintakesnapshot.repository.SnapshotPolicyRepository;
+import com.bluewhale.medlog.medintakesnapshot.repository.MedIntakeSnapshotRepository;
 import com.bluewhale.medlog.medintakesnapshot.token.PolicyRequestToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MedIntakeSnapshotService {
 
-    private final SnapshotPolicyManager policyManager;
-    private final SnapshotPolicyRepository policyRepo;
-
-    private final PolicyRequestTokenMapper prtMapper;
-
-    private final MedAggregationService medAggServ;
-
-    private final AppUserIdentifierConvertService appUserCServ;
-    private final MedIdentifierConvertService medCServ;
-
-    private final AppUserRepository appUserRepository;
     private final MedRepository medRepository;
+    private final MedIdentifierConvertService medIdentifierConvertService;
 
+    private final PolicyManager policyManager;
 
-    public void generateMedIntakeSnapshotByAppUserUuidForAfter14Days(AppUserUuid appUserUuid) {
-        List<PolicyEvaluateResult> resultList = new ArrayList<>();
+    private final MedIntakeSnapshotRepository medIntakeSnapshotRepository;
 
-        Long appUserId = appUserCServ.getIdByUuid(appUserUuid);
-        List<MedAggregationDTO> medFDTOList = medAggServ.getMedAggDTOListByAppUserId(appUserId);
+    /**
+     * 하나의 medDTO 에 대해서 snapshot 을 생성 또는 수정하는 로직.
+     * @param medUuid : 하나의 medDTO 를 특정하는 UUID
+     */
+    public void registerMedIntakeSnapshotByMedDTO(MedUuid medUuid) {
+        log.info("Registering MedIntakeSnapshot by medUuid: {}", medUuid);
 
-        for (int i = 0; i < 14; i++) {
-            PolicyRequestToken policyReqToken = prtMapper.getPolicyReqToken(
-                    appUserId, medFDTOList, LocalDate.now().plusDays(i)
-            );
-            resultList.addAll(policyManager.evaluate(List.of(policyReqToken)));
+        Long medId = medIdentifierConvertService.getIdByUuid(medUuid);
+        log.info("Found Med Id: {} for Med UUID: {}", medId, medUuid);
+
+        Med medEntity = medRepository.findById(medId).orElse(null);
+        if (medEntity == null) {
+            log.warn("No Med entity found for Id: {}", medId);
+        } else {
+            log.info("Found Med Entity: {}", medEntity);
         }
 
-        List<MedIntakeSnapshot> entityList = new ArrayList<>();
-        AppUser appUser = appUserRepository.getReferenceById(appUserId);
-        for (PolicyEvaluateResult result : resultList) {
-            Med medReference = medRepository.getReferenceById(result.getMedId());
-            entityList.add(MedIntakeSnapshot.create(result, appUser, medReference));
-        }
+        PolicyRequestToken policyRequestToken = PolicyRequestToken.from(medEntity);
+        log.info("New PolicyRequestToken created : {}", policyRequestToken);
 
-        policyRepo.saveAll(entityList);
+        // 스냅샷 생성 정책 실행
+        List<PolicyEvaluateResult> resultList = policyManager.evaluate(policyRequestToken);
+
+        log.info("MedIntakeSnapshot is creating and saving...");
+        medIntakeSnapshotRepository.saveAll(
+                resultList.stream()
+                        .map(r -> MedIntakeSnapshot.create(r, medEntity.getAppUser(), medEntity))
+                        .toList()
+        );
+        log.info("MedIntakeSnapshot is creating and saving done.");
     }
 
-    public List<MedIntakeSnapshotDTO> getMedIntakeSnapshotDTOListByMedUuid(MedUuid medUuid) {
-        Long medId = medCServ.getIdByUuid(medUuid);
-        List<MedIntakeSnapshot> entityList = policyRepo.findAllByMedId(medId);
-
-        List<MedIntakeSnapshotDTO> dtoList = new ArrayList<>();
-        for (MedIntakeSnapshot entity : entityList) {
-            AppUserUuid appUserUuid = appUserCServ.getUuidById(entity.getAppUser().getAppUserId());
-            dtoList.add(MedIntakeSnapshotDTO.from(entity));
-        }
-        return dtoList;
+    /**
+     * 하나의 MedUuid 에 대해서 Snapshot 을 갱신하는 로직.
+     * @param medUuid : 갱신 대상 약의 UUID
+     */
+    public void updateMedIntakeSnapshotByMedUuid(MedUuid medUuid) {
+        deleteAllByMedUuid(medUuid);
+        registerMedIntakeSnapshotByMedDTO(medUuid);
     }
 
-    public List<MedIntakeSnapshotDTO> createOrModifyMedIntakeSnapshotByMedDTO(MedDTO medDTO) {
-
-        /*
-            하나의 med 정보에 대해서 snapshot 을 생성 또는 수정하는 로직.
-            1. med 정보가 신규 정보일 경우
-            2. med 정보가 기존 정보이나 일부 수정된 경우
-         */
-
-        /*
-            medDTO 에 대한 medId 조회 및 유효한 snapshot 기록 있는 여부 판단
-            1. 있을 경우 삭제 및 재생성.
-            2. 없을 경우 생성.
-         */
-
-        return null;
-    }
-
-    public List<MedIntakeSnapshotDTO> updateMedIntakeSnapshotByMedDTO(MedDTO medDTO) {
-
-        /*
-            snapshot 정보 갱신.
-            매개변수 등 필요 정보는 추후 수정 가능.
-         */
-
-        return null;
+    /**
+     * 특정 약에 대한 모든 스냅샷 기록을 삭제.
+     * @param medUuid : 삭제 대상 약의 UUID
+     */
+    public void deleteAllByMedUuid(MedUuid medUuid) {
+        Long medId = medIdentifierConvertService.getIdByUuid(medUuid);
+        medIntakeSnapshotRepository.deleteAllByMed_MedId(medId);
     }
 
 

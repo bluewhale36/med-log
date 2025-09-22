@@ -29,6 +29,7 @@ public class MedIntakeRecord {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "med_id")
+    @ToString.Exclude
     private Med med;
 
     private boolean isTaken;

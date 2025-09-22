@@ -100,8 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const medUuid = medItem.dataset.medUuid;
         const stdTime = medItem.dataset.stdTime;
         const action = currentButton.dataset.action;
-        const statusTimeDiv = medItem.querySelector('.medication-status-time');
-        const doseText = medItem.querySelector('.medication-dose').textContent;
         const skippedBtn = medItem.querySelector('.skipped-btn');
         const takenBtn = medItem.querySelector('.taken-btn');
 
@@ -109,31 +107,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (medicationStatus[medUuid] && medicationStatus[medUuid].status === action) {
             delete medicationStatus[medUuid];
             currentButton.classList.remove('active');
-            currentButton.textContent = action === 'taken' ? '복용함' : '건너뜀';
-            statusTimeDiv.textContent = '';
         } else {
             // 다른 버튼들의 활성화 상태를 모두 제거
             if (skippedBtn) skippedBtn.classList.remove('active');
             if (takenBtn) takenBtn.classList.remove('active');
-            if (skippedBtn) skippedBtn.textContent = '건너뜀';
-            if (takenBtn) takenBtn.textContent = '복용함';
 
             // 현재 누른 버튼을 활성화하고 상태를 기록
             currentButton.classList.add('active');
             medicationStatus[medUuid] = { status: action, time: new Date(), stdTime: stdTime };
-
-            const now = new Date();
-            const currentTime = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-            if (action === 'taken') {
-                currentButton.textContent = '✓ 복용함';
-                statusTimeDiv.textContent = `${doseText}, ${currentTime}분`;
-                statusTimeDiv.style.color = '#0a84ff';
-            } else { // 'skipped'
-                currentButton.textContent = '× 건너뜀';
-                statusTimeDiv.textContent = `건너뜀, ${currentTime}분`;
-                statusTimeDiv.style.color = '#ccc';
-            }
         }
         updateLogAllButtonState();
     }
@@ -149,25 +130,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 const timeBlock = e.target.closest(".time-block");
                 if (!timeBlock) return;
 
-                const time = timeBlock.dataset.stdTime;
+                const scheduledTime = timeBlock.dataset.stdTime;
                 const medItems = timeBlock.querySelectorAll(".med-list li");
 
-                const date = new Date(pageDate.replace(/\./g, '-'));
-                modalDateLabel.textContent = date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const currentTime = `${hours}:${minutes}`;
 
-                medTimeLabel.textContent = `${time} 복용 예정 약`;
+                const date = new Date(pageDate.replace(/\./g, '-'));
+                modalDateLabel.textContent = date.toLocaleString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+
+                medTimeLabel.textContent = `${scheduledTime} 복용 예정 약`;
                 medCountLabel.textContent = `약 개수 : ${medItems.length}개`;
                 modalMedicationItems.innerHTML = '';
 
                 medItems.forEach(item => {
                     const medUuid = item.dataset.medUuid;
                     const medName = item.querySelector('.med-name')?.textContent;
-                    const medDetail = item.querySelector('.med-detail')?.textContent;
+                    const medDetails = item.querySelectorAll('.med-detail');
+                    const doseAmountDetail = medDetails[0]?.textContent || '';
+                    const doseCountDetail = medDetails[1]?.textContent || '';
+
+                    const scheduledDoseText = `${currentTime}분에 ${doseCountDetail}`;
 
                     const medItemDiv = document.createElement('div');
                     medItemDiv.className = 'medication-item';
                     medItemDiv.dataset.medUuid = medUuid;
-                    const stdDateTime = new Date(`${pageDate.replace(/\./g, '-')}T${time}`);
+                    const stdDateTime = new Date(`${pageDate.replace(/\./g, '-')}T${scheduledTime}`);
                     medItemDiv.dataset.stdTime = toKSTISOString(stdDateTime);
 
                     medItemDiv.innerHTML = `
@@ -176,9 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             <div class="medication-details">
                                  <div class="medication-primary-info">
                                     <div class="medication-name">${medName}</div>
-                                    <div class="medication-dose">${medDetail}</div>
+                                    <div class="medication-dose">${doseAmountDetail}</div>
                                 </div>
-                                <div class="medication-status-time"></div>
+                                <div class="medication-status-time">${scheduledDoseText}</div>
                             </div>
                         </div>
                         <div class="medication-actions">

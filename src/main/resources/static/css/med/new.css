@@ -131,6 +131,13 @@ button:hover {
 
 .time-row, .time-input-group {
     margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dose-count-input {
+    width: 70px;
 }
 
 .day-time-set {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/med/intake")
@@ -31,22 +32,26 @@ public class MedIntakeRecordController {
     }
 
     @GetMapping("/record")
-    public String record(@RequestParam("date") @Nullable LocalDate date,
-                         @AuthAppUserUuid AppUserUuid appUserUuid,
-                         Model model) {
-        List<MedIntakeRecordDayViewDTO> list = medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid);
-        List<LocalDate> dateList = list.stream().map(MedIntakeRecordDayViewDTO::getStdDate).toList();
+    public String record(
+            @RequestParam("referenceDate") @Nullable LocalDate referenceDate,
+            @AuthAppUserUuid AppUserUuid appUserUuid,
+            Model model
+    ) {
+        MedIntakeRecordDayViewDTO medIntakeRecordDayViewDTO =
+                medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid, referenceDate)
+                        .orElse(null);
 
-        model.addAttribute("selectedDate", date == null ? LocalDate.now() : date);
-        model.addAttribute("dateList", dateList);
-        model.addAttribute("mirdvDTOList", list);
+        LocalDate selectedDate = (referenceDate != null) ? referenceDate : LocalDate.now();
+
+        model.addAttribute("selectedDate", selectedDate);
+        model.addAttribute("viewDTO", medIntakeRecordDayViewDTO);
+        model.addAttribute("today", LocalDate.now());
 
         return"med_intake_record/record";
     }
 
     @PostMapping("/record")
     public ResponseEntity<Void> registerNewRecord(@RequestBody List<MedIntakeRecordRegisterDTO> medIntakeRecordRegisterDTOList) {
-        System.out.println("\n\n\n" + medIntakeRecordRegisterDTOList + "\n\n");
         medIntakeRecordAppService.registerNewMedIntakeRecordList(medIntakeRecordRegisterDTOList);
         return ResponseEntity.ok().build();
     }

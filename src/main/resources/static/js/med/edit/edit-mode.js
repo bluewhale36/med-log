@@ -45,15 +45,20 @@ document.addEventListener("DOMContentLoaded", function () {
         const detail = data.doseFrequencyDetail;
         const type = data.doseFrequencyType;
 
+        // ▼▼▼▼▼▼▼▼▼▼ 변경된 부분 시작 ▼▼▼▼▼▼▼▼▼▼
+
         // 공통 시간 채우기 (EVERY_DAY, CYCLICAL, INTERVAL)
-        if (detail.times && Array.isArray(detail.times)) {
+        // 'times' 대신 'doseTimeCountList'를 확인하도록 변경
+        if (detail.doseTimeCountList && Array.isArray(detail.doseTimeCountList)) {
             const timeContainer = document.getElementById("time-input-container");
             timeContainer.innerHTML = ''; // 기존 필드 초기화
-            detail.times.forEach(timeStr => {
+            detail.doseTimeCountList.forEach(dtc => {
                 addCommonTimeInput(); // validation.js의 함수 재사용
-                const lastInput = timeContainer.querySelector(".time-row:last-child .time-input-common");
-                if (lastInput) {
-                    lastInput.value = timeStr;
+                const lastRow = timeContainer.querySelector(".time-row:last-child");
+                if (lastRow) {
+                    // 새로 생성된 시간 및 개수 입력 필드에 값을 설정
+                    lastRow.querySelector(".time-input-common").value = dtc.doseTime;
+                    lastRow.querySelector(".dose-count-input").value = dtc.doseCount;
                 }
             });
         }
@@ -87,23 +92,34 @@ document.addEventListener("DOMContentLoaded", function () {
                             });
                         }
 
-                        // 시간 입력
-                        if (newSetWrapper && set.times && Array.isArray(set.times)) {
+                        // 시간 및 개수 입력
+                        if (newSetWrapper && set.doseTimeCountList && Array.isArray(set.doseTimeCountList)) {
                             const timeGroup = newSetWrapper.querySelector(".time-input-group");
-                            const addSetTimeBtn = newSetWrapper.querySelector("button");
                             timeGroup.innerHTML = ''; // 기본 시간 입력 필드 제거
 
-                            set.times.forEach(timeStr => {
+                            set.doseTimeCountList.forEach(dtc => {
+                                // 새로운 시간-개수 입력 세트 생성
                                 const timeInput = document.createElement('input');
                                 timeInput.type = 'time';
                                 timeInput.className = 'time-input';
-                                timeInput.value = timeStr;
+                                timeInput.value = dtc.doseTime;
+
+                                const countInput = document.createElement('input');
+                                countInput.type = 'number';
+                                countInput.className = 'dose-count-input';
+                                countInput.min = '1';
+                                countInput.max = '127';
+                                countInput.value = dtc.doseCount;
+
                                 timeGroup.appendChild(timeInput);
+                                timeGroup.appendChild(countInput);
+                                timeGroup.appendChild(document.createElement('br'));
                             });
                         }
                     });
                     // 모든 세트가 채워진 후, 전체 체크박스 상태 업데이트
-                    document.querySelector(".weekday-checkbox").dispatchEvent(new Event('change'));
+                    updateUsedDaysFromAllSets();
+                    reRenderAllCheckboxGroups();
                 }
                 break;
             case 'EVERY_DAY':
@@ -112,5 +128,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 // 별도 처리 없음
                 break;
         }
+        // ▲▲▲▲▲▲▲▲▲▲ 변경된 부분 끝 ▲▲▲▲▲▲▲▲▲▲
     }
 });

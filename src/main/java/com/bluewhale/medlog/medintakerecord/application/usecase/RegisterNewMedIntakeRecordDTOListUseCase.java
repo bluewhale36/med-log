@@ -10,7 +10,7 @@ import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
 import com.bluewhale.medlog.medintakerecord.repository.MedIntakeRecordRepository;
 import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
 import com.bluewhale.medlog.medintakesnapshot.dto.MedIntakeSnapshotModifyIsTakenDTO;
-import com.bluewhale.medlog.medintakesnapshot.repository.SnapshotPolicyRepository;
+import com.bluewhale.medlog.medintakesnapshot.repository.MedIntakeSnapshotRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ public class RegisterNewMedIntakeRecordDTOListUseCase implements UseCase<List<Me
 
     private final MedIntakeRecordRepository medIntakeRecordRepository;
 
-    private final SnapshotPolicyRepository snapshotPolicyRepository;
+    private final MedIntakeSnapshotRepository medIntakeSnapshotRepository;
 
 
     @Override
@@ -54,7 +54,7 @@ public class RegisterNewMedIntakeRecordDTOListUseCase implements UseCase<List<Me
             Long medId = medIdentifierConvertService.getIdByUuid(dto.getMedUuid());
 
             MedIntakeSnapshot entity =
-                    snapshotPolicyRepository.findByMedIdAndEstimatedDoseTime(medId, dto.getEstimatedDoseTime());
+                    medIntakeSnapshotRepository.findByMedIdAndEstimatedDoseTime(medId, dto.getEstimatedDoseTime());
 
             if (entity != null) {
                 entity.updateIsTaken(dto.isTaken());

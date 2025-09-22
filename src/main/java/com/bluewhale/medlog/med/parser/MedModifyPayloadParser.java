@@ -20,8 +20,6 @@ public class MedModifyPayloadParser implements MedPayloadParser<MedModifyDTO> {
     @Override
     public MedModifyDTO parseData(Map<String, Object> payload) {
 
-        System.out.println(payload);
-
         DoseFrequency doseFrequency = getDoseFrequencyFromPayload(payload, objectMapper);
 
         String appUserUuidStr = String.valueOf(payload.get("appUserUuid"));

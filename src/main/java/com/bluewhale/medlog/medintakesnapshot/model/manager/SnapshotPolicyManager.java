@@ -9,6 +9,6 @@ public interface SnapshotPolicyManager {
 
     Integer defaultAfterDays = 14;
 
-    List<PolicyEvaluateResult> evaluate(List<PolicyRequestToken> policyReqTokenList);
+    List<PolicyEvaluateResult> evaluate(PolicyRequestToken policyReqTokenList);
 
 }

@@ -13,6 +13,7 @@ import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
 import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
 import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -48,6 +49,7 @@ public class Med {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id")
+    @ToString.Exclude
     private AppUser appUser;
 
     private String medName;
