@@ -2,11 +2,11 @@ package com.bluewhale.medlog.medintakesnapshot.model.provider;
 
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.EveryDayDetail;
-import com.bluewhale.medlog.med.model.dosefrequency.detail.timecount.DoseTimeCount;
+import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateResult;
 import com.bluewhale.medlog.medintakesnapshot.model.result.PolicyEvaluateTracer;
 import com.bluewhale.medlog.medintakesnapshot.model.result.reason.EveryDayReason;
-import com.bluewhale.medlog.medintakesnapshot.token.PolicyRequestMedToken;
+import com.bluewhale.medlog.medintakesnapshot.token.PolicyRequestToken;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -22,21 +22,18 @@ public class EveryDayPolicyProvider extends AbstractPolicyProvider {
     }
 
     @Override
-    protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestMedToken prmToken) {
-        List<DoseTimeCount> doseTimeCountList =
-                prmToken.getDoseFrequency().getDoseFrequencyDetail().doseTimeCountList().orElse(null);
-        return doseTimeCountList == null ?
-                Optional.empty() :
-                Optional.of(
-                        doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList()
-                );
+    protected Optional<List<LocalTime>> getTimeListOfDoseFrequencyDetail(PolicyRequestToken prmToken) {
+        List<LocalTime> timeList = ((EveryDayDetail) prmToken.getDoseFrequency().getDoseFrequencyDetail())
+                .getDoseTimeCountList().stream().map(DoseTimeCount::getDoseTime).toList();
+
+        return Optional.of(timeList);
     }
 
     @Override
-    protected PolicyEvaluateResult doEvaluate(PolicyEvaluateTracer specificTracer, PolicyRequestMedToken prmToken, LocalDateTime stdDateTime) {
+    protected PolicyEvaluateResult doEvaluate(PolicyEvaluateTracer specificTracer, PolicyRequestToken requestToken, LocalDateTime referenceDateTime) {
         specificTracer.setReason(new EveryDayReason());
         return new PolicyEvaluateResult(
-                null, prmToken.getMedId(), true, stdDateTime, stdDateTime.toLocalDate(), specificTracer
+                requestToken.getAppUserId(), requestToken.getMedId(), true, referenceDateTime, referenceDateTime.toLocalDate(), specificTracer
         );
     }
 }
