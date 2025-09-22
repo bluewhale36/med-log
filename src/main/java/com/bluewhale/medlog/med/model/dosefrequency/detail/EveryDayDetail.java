@@ -20,10 +20,4 @@ public class EveryDayDetail extends AbstractDoseFrequencyDetail {
         this.doseTimeCountList = doseTimeCountList;
     }
 
-
-    @Override
-    public String humanReadable() {
-        List<LocalTime> timeList = doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList();
-        return "매일 " + humanReadableTimeListAsString(timeList) + "에 복용합니다.";
-    }
 }

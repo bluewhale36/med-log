@@ -25,9 +25,4 @@ public class IntervalDetail extends AbstractDoseFrequencyDetail {
         this.doseTimeCountList = doseTimeCountList;
     }
 
-    @Override
-    public String humanReadable() {
-        List<LocalTime> timeList = doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList();
-        return interval + "일에 하루 복용합니다. 복용일의 복용 시각은 " + humanReadableTimeListAsString(timeList) + " 입니다.";
-    }
 }

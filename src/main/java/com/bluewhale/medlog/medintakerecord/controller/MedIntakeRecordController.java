@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/med/intake")
@@ -27,7 +26,7 @@ public class MedIntakeRecordController {
 
     @GetMapping({"", "/"})
     public String index(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
-        model.addAttribute("medDTOList", medAppService.getMedDTOListByAppUserUuid(appUserUuid));
+        model.addAttribute("medDTOList", medAppService.getMedSimpleViewModelListByAppUserUuid(appUserUuid));
         return "med_intake_record/main";
     }
 

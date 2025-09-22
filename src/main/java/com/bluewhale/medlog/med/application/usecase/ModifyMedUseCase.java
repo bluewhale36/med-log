@@ -1,4 +1,4 @@
-package com.bluewhale.medlog.med.application.usecase.med;
+package com.bluewhale.medlog.med.application.usecase;
 
 import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.common.exception.IllegalIdentifierException;

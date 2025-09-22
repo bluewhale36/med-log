@@ -6,7 +6,6 @@ import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDTO;
 import com.bluewhale.medlog.med.application.service.MedApplicationService;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
-import com.bluewhale.medlog.med.dto.MedModifyDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedForm;
@@ -14,6 +13,7 @@ import com.bluewhale.medlog.med.model.medication.MedType;
 import com.bluewhale.medlog.med.service.MedService;
 import com.bluewhale.medlog.security.annotation.AuthAppUserUuid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +25,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/med")
 @RequiredArgsConstructor
+@Slf4j
 public class MedController {
 
     private final MedApplicationService medAppService;
@@ -33,13 +34,14 @@ public class MedController {
 
     @GetMapping({"", "/"})
     public String home(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
-        model.addAttribute("medDTOList", medService.getMedDTOListByAppUserUuid(appUserUuid));
+        model.addAttribute("medSimpleViewModelList", medAppService.getMedSimpleViewModelListByAppUserUuid(appUserUuid));
         return "med/main";
     }
 
     @GetMapping("/{medUuid}")
     public String getOneMedInfo(@PathVariable("medUuid") String medUuid, Model model) {
-        model.addAttribute("medDTO", medService.getMedDTOByMedUuid(new MedUuid(medUuid)));
+        log.info("Path MedUuid Str: {}", medUuid);
+        model.addAttribute("medDetailViewModel", medAppService.getMedDetailViewModel(new MedUuid(medUuid)));
         return "med/one-and-edit";
     }
 

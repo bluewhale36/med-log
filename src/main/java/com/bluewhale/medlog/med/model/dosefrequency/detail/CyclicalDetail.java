@@ -39,13 +39,4 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
         this.onDurationInDays = cycleUnit.getDurationAsDays(onDuration);
         this.offDurationInDays = cycleUnit.getDurationAsDays(offDuration);
     }
-
-    @Override
-    public String humanReadable() {
-        List<LocalTime> timeList = doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList();
-        return String.format(
-                "%d일간 복용하고, %d일간 복용하지 않습니다.\n복용 기간에는 %s에 복용합니다.",
-                onDurationInDays, offDurationInDays, humanReadableTimeListAsString(timeList)
-        );
-    }
 }
