@@ -111,8 +111,8 @@ public enum MedType {
     POWDER(
             "파우더",
             "회",
-            "뿌림",
-            "뿌립니다",
+            "사용",
+            "사용합니다",
             MedForm.MORE_FORMS
     ),
     SPRAY(

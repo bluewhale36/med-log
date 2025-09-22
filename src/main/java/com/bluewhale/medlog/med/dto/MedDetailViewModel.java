@@ -7,6 +7,7 @@ import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDetailViewModel;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
+import com.bluewhale.medlog.med.model.dosefrequency.detail.AbstractDoseFrequencyDetail;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
 import lombok.AccessLevel;
@@ -59,13 +60,16 @@ public class MedDetailViewModel {
                 .startedOn(fetchedEntity.getStartedOn())
                 .endedOn(fetchedEntity.getEndedOn())
                 .frequencySentence(
-                        generateDetailFrequencySentence(fetchedEntity)
+                        generateDetailFrequencySentence(
+                                fetchedEntity.getDoseFrequency().getDoseFrequencyDetail(),
+                                fetchedEntity.getMedType()
+                        )
                 )
                 .build();
     }
 
-    private static String generateDetailFrequencySentence(Med fetchedEntity) {
-        return null;
+    private static String generateDetailFrequencySentence(AbstractDoseFrequencyDetail frequencyDetail, MedType medType) {
+        return frequencyDetail.generateDetailFrequencySentence(medType);
     }
 
 }
