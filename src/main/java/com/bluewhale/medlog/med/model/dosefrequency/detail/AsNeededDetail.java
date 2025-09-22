@@ -1,6 +1,7 @@
 package com.bluewhale.medlog.med.model.dosefrequency.detail;
 
 import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
+import com.bluewhale.medlog.med.model.medication.MedType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -11,14 +12,15 @@ public class AsNeededDetail extends AbstractDoseFrequencyDetail {
     @JsonProperty("asNeeded")
     private final boolean asNeeded = true;
 
-
-    @Override
-    public String humanReadable() {
-        return "필요할 때마다 복용하세요.";
-    }
-
     @Override
     public List<DoseTimeCount> getDoseTimeCountList() {
         return new ArrayList<>();
     }
+
+    @Override
+    protected String doGenerateDetailFrequencySentence(MedType medType) {
+        return String.format("필요에 따라 %s.", medType.getDoseActionInVerb());
+    }
+
+
 }

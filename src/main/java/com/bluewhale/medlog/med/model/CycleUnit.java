@@ -11,10 +11,11 @@ import java.util.function.IntUnaryOperator;
 @ToString
 public enum CycleUnit {
 
-    DAY("day", x -> x),
-    WEEK("week", x -> x *7);
+    DAY("day", "일", x -> x),
+    WEEK("week", "주",x -> x *7);
 
     private final String title;
+    private final String unitInKorean;
     private final IntUnaryOperator operator;
 
     public Integer getDurationAsDays(int value) {

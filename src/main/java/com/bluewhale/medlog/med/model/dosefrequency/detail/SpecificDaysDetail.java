@@ -2,6 +2,7 @@ package com.bluewhale.medlog.med.model.dosefrequency.detail;
 
 import com.bluewhale.medlog.med.model.Days;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
+import com.bluewhale.medlog.med.model.medication.MedType;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -25,22 +26,38 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
     }
 
     @Override
-    public String humanReadable() {
-        StringBuffer sbf = new StringBuffer();
-        for (int i = 0; i < specificDays.size(); i++) {
-            // AbstractDoseFrequencyDetail 의 humanReadableTimeListAsString method 자체를 인자로 넘기는 아이디어!
-            sbf.append(i + 1).append(". ").append(specificDays.get(i).humanReadable(this::humanReadableTimeListAsString)).append("\n");
-        }
-        return sbf.toString();
-    }
-
-    @Override
     public List<DoseTimeCount> getDoseTimeCountList() {
         List<DoseTimeCount> list = new ArrayList<>();
         for (SpecificDaysSet set : specificDays) {
             list.addAll(set.getDoseTimeCountList());
         }
         return list;
+    }
+
+    @Override
+    protected String doGenerateDetailFrequencySentence(MedType medType) {
+        List<String> daySetStringList = new ArrayList<>();
+        for (int i = 0; i < specificDays.size(); i++) {
+            SpecificDaysSet daySet = specificDays.get(i);
+
+            String dayString = String.join(", ", daySet.getDayList().stream().map(Days::getTitle).toList());
+
+            List<String> doseTimeCountSentenceList = new ArrayList<>();
+            for (DoseTimeCount doseTimeCount : daySet.getDoseTimeCountList()) {
+                doseTimeCountSentenceList.add(
+                        String.format(
+                                "%s분에 %s%s", doseTimeCount.getDoseTime(), doseTimeCount.getDoseCount(), medType.getCountUnit()
+                        )
+                );
+            }
+            String doseTimeCountSentence = String.join(", ", doseTimeCountSentenceList);
+
+            daySetStringList.add(
+                    String.format("%d. %s : %s %s.\n", i +1, dayString, doseTimeCountSentence, medType.getDoseActionInVerb())
+            );
+        }
+
+        return String.join("", daySetStringList);
     }
 
     // SpecificDaysDetail.java 의 SpecificDaysSet 클래스 (수정된 코드)
@@ -58,13 +75,6 @@ public class SpecificDaysDetail extends AbstractDoseFrequencyDetail {
         ) {
             this.dayList = dayList;
             this.doseTimeCountList = doseTimeCountList;
-        }
-
-        private String humanReadable(Function<List<LocalTime>, String> timeFormatter) {
-            List<LocalTime> timeList = doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList();
-            String daysStr = String.join("요일, ", dayList.stream().map(Days::getTitle).toArray(String[]::new)) + "요일";
-            String timesStr = timeFormatter.apply(timeList);
-            return String.format("%s마다 %s에 복용합니다.", daysStr, timesStr);
         }
 
     }

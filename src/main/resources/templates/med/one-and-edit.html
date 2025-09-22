@@ -19,8 +19,8 @@
 </div>
 
 <form id="medication-edit-form">
-    <input type="hidden" th:value="${medDTO.getAppUserUuid().asString()}" name="appUserUuid" id="appUserUuid">
-    <input type="hidden" th:value="${medDTO.getMedUuid().asString()}" name="medUuid" id="medUuid">
+    <input type="hidden" th:value="${medDetailViewModel.getAppUserUuid().asString()}" name="appUserUuid" id="appUserUuid">
+    <input type="hidden" th:value="${medDetailViewModel.getMedUuid().asString()}" name="medUuid" id="medUuid">
 
     <fieldset id="edit-notify" style="display: none">
         <legend style="color: crimson">WARNING</legend>
@@ -31,16 +31,16 @@
         <legend>약 정보 (수정 불가)</legend>
         <div class="input-row">
             <label>약 명 :
-                <input type="text" th:value="${medDTO.medName}" readonly>
+                <input type="text" th:value="${medDetailViewModel.medName}" readonly>
             </label>
             <label>약 형태 :
-                <input type="text" th:value="${medDTO.medType.title}" readonly>
+                <input type="text" th:value="${medDetailViewModel.medType.title}" readonly>
             </label>
             <label>사용량 :
-                <input type="text" th:value="${medDTO.doseAmount}" readonly>
+                <input type="text" th:value="${medDetailViewModel.doseAmount}" readonly>
             </label>
             <label>사용량 단위 :
-                <input type="text" th:value="${medDTO.doseUnit.title}" readonly>
+                <input type="text" th:value="${medDetailViewModel.doseUnit.title}" readonly>
             </label>
         </div>
     </fieldset>
@@ -49,11 +49,11 @@
         <legend>복용 주기</legend>
         <div class="input-row">
             <label>주기 종류 :
-                <input type="text" th:value="|${medDTO.doseFrequency.doseFrequencyType.title} (ex.${medDTO.doseFrequency.doseFrequencyType.placeholder})|" readonly>
+                <input type="text" th:value="|${medDetailViewModel.doseFrequency.doseFrequencyType.title} (ex.${medDetailViewModel.doseFrequency.doseFrequencyType.placeholder})|" readonly>
             </label>
         </div>
         <div class="day-time-set">
-            <p th:text="${medDTO.doseFrequency.doseFrequencyDetail.humanReadable()}"></p>
+            <p th:text="${medDetailViewModel.frequencySentence}"></p>
         </div>
     </fieldset>
 
@@ -66,7 +66,7 @@
                            th:value="${type.name()}"
                            class="dose-frequency-type-radio"
                            th:id="${'type-' + type.name()}"
-                           th:checked="${type.name() == medDTO.doseFrequency.doseFrequencyType.name()}">
+                           th:checked="${type.name() == medDetailViewModel.doseFrequency.doseFrequencyType.name()}">
                     <span th:text="${type.title}"></span>
                     <small class="info" th:text="${type.placeholder}"></small>
                 </label>
@@ -107,10 +107,10 @@
         <legend>복용 기간</legend>
         <div class="input-row">
             <label>시작 일자 :
-                <input type="date" name="startedOn" th:value="${medDTO.startedOn}" disabled>
+                <input type="date" name="startedOn" th:value="${medDetailViewModel.startedOn}" disabled>
             </label>
             <label>종료 일자 :
-                <input type="date" name="endedOn" th:value="${medDTO.endedOn}" disabled>
+                <input type="date" name="endedOn" th:value="${medDetailViewModel.endedOn}" disabled>
             </label>
         </div>
     </fieldset>
@@ -118,14 +118,14 @@
     <fieldset>
         <legend>기타 정보</legend>
         <label>복약 지도:
-            <textarea name="instruction" rows="5" th:text="${medDTO.instruction}" disabled></textarea>
+            <textarea name="instruction" rows="5" th:text="${medDetailViewModel.instruction}" disabled></textarea>
         </label>
         <div class="input-row">
             <label>효과 :
-                <input type="text" name="effect" th:value="${medDTO.effect}" disabled>
+                <input type="text" name="effect" th:value="${medDetailViewModel.effect}" disabled>
             </label>
             <label>부작용 :
-                <input type="text" name="sideEffect" th:value="${medDTO.sideEffect}" disabled>
+                <input type="text" name="sideEffect" th:value="${medDetailViewModel.sideEffect}" disabled>
             </label>
         </div>
     </fieldset>
@@ -142,7 +142,7 @@
     <div id="delete-modal" class="modal-overlay">
         <div class="modal-content">
             <h2>삭제 확인</h2>
-            <p>&quot;<span th:text="${medDTO.medName}"></span>&quot;을 삭제하시겠습니까?<br/>복용 기록하기, 정보 보기 등을 할 수 없게 됩니다.</p>
+            <p>&quot;<span th:text="${medDetailViewModel.medName}"></span>&quot;을 삭제하시겠습니까?<br/>복용 기록하기, 정보 보기 등을 할 수 없게 됩니다.</p>
             <div class="modal-buttons">
                 <button type="button" id="cancel-delete-btn">취소</button>
                 <button type="button" id="confirm-delete-btn">삭제</button>
@@ -153,7 +153,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    const doseFrequencyData = /*[[${medDTO.doseFrequency}]]*/ null;
+    const doseFrequencyData = /*[[${medDetailViewModel.doseFrequency}]]*/ null;
     /*]]>*/
 </script>
 

@@ -9,18 +9,18 @@
 <h1>복용 중인 약</h1>
 
 <div class="medication-list">
-    <div class="medication-card" th:each="med : ${medDTOList}">
+    <div class="medication-card" th:each="medSimpleViewModel : ${medSimpleViewModelList}">
         <div class="card-header">
-            <h2 th:text="${med.medName}">약 이름</h2>
-            <span class="med-type" th:text="${med.medType.title}">정제</span>
+            <h2 th:text="${medSimpleViewModel.medName}"></h2>
+            <span class="med-type" th:text="${medSimpleViewModel.medType.title}"></span>
         </div>
 
         <div class="card-body">
             <p>
-                <span th:text="${med.medType.title}"></span>
+                <span th:text="${medSimpleViewModel.medType.title}"></span>
             </p>
             <p>
-                <span th:text="|${med.doseAmount} ${med.doseUnit.title}|"></span>
+                <span th:text="|${medSimpleViewModel.doseAmount} ${medSimpleViewModel.doseUnit.title}|"></span>
             </p>
             <p style="color: #3a3a3c">
                 <small>
@@ -30,13 +30,13 @@
                             <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
                         </svg>
                     </span>
-                    <span th:text="${med.doseFrequency.doseFrequencyType.title}"></span>
+                    <span th:text="${medSimpleViewModel.frequencySentence}"></span>
                 </small>
             </p>
         </div>
 
         <div class="card-footer">
-            <a th:href="@{/med/{medUuid}(medUuid=${med.medUuid.value})}">
+            <a th:href="@{/med/{medUuid}(medUuid=${medSimpleViewModel.medUuid.asString()})}">
                 <button type="button">details</button>
             </a>
         </div>

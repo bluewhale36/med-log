@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,5 +45,8 @@ public interface MedRepository extends JpaRepository<Med, Long>, IdentifierRouta
             """
     )
     List<MedViewProjection> findAllProjectionByMedIdIn(List<Long> medIdList);
+
+    @Query("SELECT m FROM Med m JOIN FETCH m.appUser LEFT JOIN FETCH m.hospitalVisitRecord WHERE m.medId = :medId")
+    Med findByIdWithHospitalVisitRecordAndAppUser(Long medId);
 
 }

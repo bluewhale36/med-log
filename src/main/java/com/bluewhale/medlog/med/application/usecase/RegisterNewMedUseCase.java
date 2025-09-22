@@ -1,4 +1,4 @@
-package com.bluewhale.medlog.med.application.usecase.med;
+package com.bluewhale.medlog.med.application.usecase;
 
 import com.bluewhale.medlog.appuser.domain.entity.AppUser;
 import com.bluewhale.medlog.appuser.repository.AppUserRepository;

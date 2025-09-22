@@ -2,12 +2,14 @@ package com.bluewhale.medlog.med.model.dosefrequency.detail;
 
 import com.bluewhale.medlog.med.model.CycleUnit;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
+import com.bluewhale.medlog.med.model.medication.MedType;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -41,11 +43,22 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
     }
 
     @Override
-    public String humanReadable() {
-        List<LocalTime> timeList = doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList();
+    protected String doGenerateDetailFrequencySentence(MedType medType) {
+        List<String> doseTimeCountSentenceList = new ArrayList<>();
+        for (DoseTimeCount doseTimeCount : doseTimeCountList) {
+            doseTimeCountSentenceList.add(
+                    String.format(
+                            "%s분에 %s%s", doseTimeCount.getDoseTime(), doseTimeCount.getDoseCount(), medType.getCountUnit()
+                    )
+            );
+        }
+        String doseTimeCountSentence = String.join(", ", doseTimeCountSentenceList);
+
         return String.format(
-                "%d일간 복용하고, %d일간 복용하지 않습니다.\n복용 기간에는 %s에 복용합니다.",
-                onDurationInDays, offDurationInDays, humanReadableTimeListAsString(timeList)
+                "%d%s간 %s하고 %d%s간 중단합니다.\n%s 기간 중에는 %s %s.",
+                onDuration, cycleUnit.getUnitInKorean(), medType.getDoseActionInNoun(),
+                offDuration, cycleUnit.getUnitInKorean(),
+                medType.getDoseActionInNoun(), doseTimeCountSentence, medType.getDoseActionInVerb()
         );
     }
 }

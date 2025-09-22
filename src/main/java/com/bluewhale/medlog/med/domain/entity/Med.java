@@ -87,6 +87,7 @@ public class Med {
             cascade = CascadeType.REMOVE, orphanRemoval = true,
             mappedBy = "med"
     )
+    @ToString.Exclude
     private List<MedIntakeRecord> medIntakeRecordList;
 
     @OneToMany(
@@ -94,6 +95,7 @@ public class Med {
             cascade = CascadeType.ALL, orphanRemoval = true,
             mappedBy = "med"
     )
+    @ToString.Exclude
     private List<MedIntakeSnapshot> medIntakeSnapshotList;
 
     public static Med create(MedRegisterDTO dto, AppUser appUser, HospitalVisitRecord hospitalVisitRecord) {

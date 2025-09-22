@@ -1,12 +1,11 @@
 package com.bluewhale.medlog.med.application.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
-import com.bluewhale.medlog.med.application.usecase.med.GetMedDTOListByAppUserUuidUseCase;
-import com.bluewhale.medlog.med.application.usecase.med.ModifyMedUseCase;
-import com.bluewhale.medlog.med.application.usecase.med.SoftDeleteMedUseCase;
-import com.bluewhale.medlog.med.application.usecase.med.RegisterNewMedUseCase;
+import com.bluewhale.medlog.med.application.usecase.*;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.MedDTO;
+import com.bluewhale.medlog.med.dto.MedDetailViewModel;
+import com.bluewhale.medlog.med.dto.MedSimpleViewModel;
 import com.bluewhale.medlog.medintakesnapshot.application.usecase.CreateNewMedSnapshotByMedUuidUseCase;
 import com.bluewhale.medlog.medintakesnapshot.application.usecase.ModifyMedSnapshotByMedUuidUseCase;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +66,20 @@ public class MedApplicationService {
     }
 
 
+    private final GetMedSimpleViewModelListByAppUserUuidUseCase getMedSimpleViewModelListByAppUserUuidUseCase;
+
+    /**
+     * 사용자 UUID를 기반으로 해당 사용자의 약 정보 리스트를 조회합니다.
+     *
+     * @param appUserUuid 약 정보를 조회할 사용자 UUID
+     * @return 해당 사용자의 약 정보 리스트
+     */
+    @Transactional(readOnly = true)
+    public List<MedSimpleViewModel> getMedSimpleViewModelListByAppUserUuid(AppUserUuid appUserUuid) {
+        return getMedSimpleViewModelListByAppUserUuidUseCase.execute(appUserUuid);
+    }
+
+
     private final ModifyMedUseCase modifyMedUseCase;
     private final ModifyMedSnapshotByMedUuidUseCase modifyMedSnapshotByMedUuidUseCase;
 
@@ -81,6 +94,14 @@ public class MedApplicationService {
         MedDTO modifiedMedDTO = modifyMedUseCase.execute(payload);
         modifyMedSnapshotByMedUuidUseCase.execute(modifiedMedDTO.getMedUuid());
         return modifiedMedDTO;
+    }
+
+
+    private final GetMedDetailViewModelByMedUuidUseCase getMedDetailViewModelByMedUuidUseCase;
+
+    @Transactional(readOnly = true)
+    public MedDetailViewModel getMedDetailViewModel(MedUuid medUuid) {
+        return getMedDetailViewModelByMedUuidUseCase.execute(medUuid);
     }
 
 }

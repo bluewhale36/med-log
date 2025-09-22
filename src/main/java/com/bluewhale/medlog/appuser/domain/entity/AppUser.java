@@ -39,6 +39,7 @@ public class AppUser {
 
     private String username;
 
+    @ToString.Exclude
     private String password;
 
     private String name;
