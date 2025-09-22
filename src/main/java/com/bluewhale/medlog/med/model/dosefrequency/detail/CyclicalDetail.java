@@ -25,7 +25,7 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
 
     @JsonCreator
     public CyclicalDetail(
-            @JsonProperty("times") List<DoseTimeCount> doseTimeCountList,
+            @JsonProperty("doseTimeCountList") List<DoseTimeCount> doseTimeCountList,
             @JsonProperty("onDuration") int onDuration,
             @JsonProperty("offDuration") int offDuration,
             @JsonProperty("cycleUnit") CycleUnit cycleUnit
@@ -48,7 +48,7 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
     @Override
     public String getHumanReadableFirstSentence() {
         return String.format(
-                "%d%s 간 복용하고 %d%s 간 복용을 중단합니다.",
+                "%d%s간 복용하고 %d%s간 복용을 중단합니다.",
                 onDuration, cycleUnit.getInKorean(),
                 offDuration, cycleUnit.getInKorean()
         );

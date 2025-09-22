@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +42,7 @@ public class SpecificDaysPolicyProvider extends AbstractPolicyProvider {
 
 
         for (SpecificDaysDetail.SpecificDaysSet set : specificDaysSetList) {
-            if (set.getDays().contains(stdDay) && set.getDoseTimeCountList().contains(stdDateTime.toLocalTime())) {
+            if (set.getDaysList().contains(stdDay) && set.getDoseTimeCountList().contains(stdDateTime.toLocalTime())) {
                 specificTracer.setReason(
                         new SpecificDaysReason(stdDay, true)
                 );

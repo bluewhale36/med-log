@@ -21,8 +21,7 @@
                 <span th:text="${med.startedOn}">2025-08-01</span> ~
                 <span th:text="${med.endedOn}">2025-12-31</span>
             </p>
-            <p><strong>복용 주기:</strong> <span th:text="${med.doseFrequency.doseFrequencyType.title}">특정 요일</span></p>
-            <p th:text="${med.doseFrequency.doseFrequencyDetail.humanReadable()}">월, 수, 금 오전 9시</p>
+            <p><strong>복용 주기:</strong> <span th:text="${med.doseFrequency.doseFrequencyDetail.humanReadableFirstSentence}"></span></p>
         </div>
 
         <div class="card-footer">

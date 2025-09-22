@@ -57,19 +57,11 @@ public class MedViewModel {
     }
 
     private static String buildDoseSentenceShort(MedDTO dto) {
-        MedType medType = dto.getMedType();
-        List<DoseTimeCount> doseTimeCountList =
-                dto.getDoseFrequency().getDoseFrequencyDetail().doseTimeCountList().orElse(null);
-
-        if (doseTimeCountList != null) {
-
-        } else {
-            return "";
-        }
+        return dto.getDoseFrequency().getDoseFrequencyDetail().getHumanReadableFirstSentence();
     }
 
     private static String buildDoseSentenceLong(MedDTO dto) {
-
+        return "";
     }
 
 

@@ -19,7 +19,7 @@ public class IntervalDetail extends AbstractDoseFrequencyDetail {
     @JsonCreator
     public IntervalDetail(
             @JsonProperty("interval") Integer interval,
-            @JsonProperty("times") List<DoseTimeCount> doseTimeCountList
+            @JsonProperty("doseTimeCountList") List<DoseTimeCount> doseTimeCountList
     ) {
         this.interval = interval;
         this.doseTimeCountList = doseTimeCountList;
