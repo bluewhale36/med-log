@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedDateStr = dateScrollContainer.dataset.selectedDate;
     const todayStr = dateScrollContainer.dataset.today;
 
-    // Timezone 문제를 피하기 위해 new Date()에 T00:00:00를 붙이지 않습니다.
     const selectedDate = new Date(selectedDateStr);
     const today = new Date(todayStr);
 
@@ -21,45 +20,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
     dateScrollContainer.appendChild(dateScroll);
 
-    // ▼▼▼▼▼▼▼▼▼▼ [수정된 부분] ▼▼▼▼▼▼▼▼▼▼
-    // setTimeout을 사용해 렌더링이 완료된 후 스크롤 위치를 조정합니다.
+    dateScroll.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        dateScroll.scrollBy({
+            left: e.deltaY,
+            behavior: 'smooth'
+        });
+    });
+
     setTimeout(() => {
         const selectedElement = dateScroll.querySelector(".selected");
         if (selectedElement) {
             const containerCenter = dateScroll.offsetWidth / 2;
             const elementCenter = selectedElement.offsetLeft + (selectedElement.offsetWidth / 2);
             const scrollLeft = elementCenter - containerCenter;
-
             dateScroll.scrollLeft = scrollLeft;
         }
-    }, 0); // 딜레이를 0으로 주어 렌더링 사이클 직후에 실행되도록 합니다.
-    // ▲▲▲▲▲▲▲▲▲▲ [수정된 부분] ▲▲▲▲▲▲▲▲▲▲
+    }, 0);
 });
 
 /**
- * 요구사항에 따라 날짜 범위를 생성하는 함수
+ * 요구사항에 따라 날짜 범위를 생성하는 함수 (수정됨)
  */
 function generateDateRange(selectedDate, today) {
-    let startDate, endDate;
-    const fourteenDays = 14 * 24 * 60 * 60 * 1000;
+    const pastDays = 14; // 과거로 보여줄 날짜 수
+    const futureRenderDays = 19; // 오늘 기준, 미래로 렌더링할 총 날짜 수 (14 + 5)
 
-    // getTime()은 UTC 기준이므로 timezone 문제 없음
-    const selectedTime = selectedDate.getTime();
-    const todayTime = today.getTime();
-
-    if (selectedTime === todayTime) {
-        startDate = new Date(todayTime - fourteenDays);
-        endDate = new Date(todayTime + fourteenDays);
-    } else if (selectedTime < todayTime) {
-        startDate = new Date(selectedTime - fourteenDays);
-        endDate = new Date(todayTime + fourteenDays);
-    } else {
-        startDate = new Date(todayTime - fourteenDays);
-        endDate = new Date(selectedTime + fourteenDays);
-    }
+    // 시작일을 '선택된 날짜 - 14일'로 설정
+    const startDate = new Date(selectedDate.getTime() - (pastDays * 24 * 60 * 60 * 1000));
+    // 종료일을 '오늘 + 19일'로 고정
+    const endDate = new Date(today.getTime() + (futureRenderDays * 24 * 60 * 60 * 1000));
 
     const dates = [];
     let currentDate = new Date(startDate);
+
     while (currentDate <= endDate) {
         dates.push(new Date(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
@@ -68,16 +62,28 @@ function generateDateRange(selectedDate, today) {
 }
 
 /**
- * 각 날짜 요소를 생성하는 함수
+ * 각 날짜 요소를 생성하는 함수 (수정됨)
  */
 function createDateItem(date, selectedDate, today) {
     const wrapper = document.createElement("div");
     wrapper.className = "date-item-wrapper";
 
-    // ▼▼▼ [수정된 부분] toISOString() 대신 toYYYYMMDD 헬퍼 함수 사용 ▼▼▼
     const dateStr = toYYYYMMDD(date);
     const selectedDateStr = toYYYYMMDD(selectedDate);
     const todayStr = toYYYYMMDD(today);
+
+    // ▼▼▼▼▼▼▼▼▼▼ [추가된 로직] ▼▼▼▼▼▼▼▼▼▼
+    const futureSelectableDays = 14;
+    const maxSelectableDate = new Date(today.getTime() + (futureSelectableDays * 24 * 60 * 60 * 1000));
+
+    // 렌더링할 날짜가 선택 가능한 최대 날짜보다 미래인 경우
+    if (date > maxSelectableDate) {
+        wrapper.classList.add("disabled");
+    } else {
+        // 선택 가능한 날짜에만 클릭 이벤트를 추가
+        wrapper.setAttribute("onclick", `location.href='/med/intake/record?referenceDate=${dateStr}'`);
+    }
+    // ▲▲▲▲▲▲▲▲▲▲ [추가된 로직] ▲▲▲▲▲▲▲▲▲▲
 
     if (dateStr === selectedDateStr) {
         wrapper.classList.add("selected");
@@ -85,15 +91,13 @@ function createDateItem(date, selectedDate, today) {
     if (dateStr === todayStr) {
         wrapper.classList.add("today");
     }
-    wrapper.setAttribute("onclick", `location.href='/med/intake/record?referenceDate=${dateStr}'`);
-    // ▲▲▲ [수정된 부분] ▲▲▲
 
     const circle = document.createElement("div");
     circle.className = "date-day-circle";
 
     const dayLabel = document.createElement("div");
     dayLabel.className = "date-day-label";
-    dayLabel.textContent = date.toLocaleDateString('ko-KR', { weekday: 'short' });
+    dayLabel.textContent = date.toLocaleString('ko-KR', { weekday: 'short' });
 
     const dateLabel = document.createElement("div");
     dateLabel.className = "date-date-label";
@@ -106,13 +110,11 @@ function createDateItem(date, selectedDate, today) {
 }
 
 /**
- * [추가] Timezone 문제를 해결하기 위한 날짜 포맷팅 헬퍼 함수
- * @param {Date} date
- * @returns {string} 'YYYY-MM-DD' 형식의 문자열
+ * Timezone 문제를 해결하기 위한 날짜 포맷팅 헬퍼 함수
  */
 function toYYYYMMDD(date) {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth()는 0부터 시작
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
