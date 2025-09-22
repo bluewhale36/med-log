@@ -1,14 +1,13 @@
 package com.bluewhale.medlog.med.model.dosefrequency.detail;
 
 import com.bluewhale.medlog.med.model.CycleUnit;
-import com.bluewhale.medlog.med.model.dosefrequency.detail.timecount.DoseTimeCount;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 
 @Getter
@@ -41,16 +40,8 @@ public class CyclicalDetail extends AbstractDoseFrequencyDetail {
     }
 
     @Override
-    public Optional<List<DoseTimeCount>> doseTimeCountList() {
-        return Optional.of(doseTimeCountList);
-    }
-
-    @Override
-    public String getHumanReadableFirstSentence() {
+        List<LocalTime> timeList = doseTimeCountList.stream().map(DoseTimeCount::getDoseTime).toList();
         return String.format(
-                "%d%s간 복용하고 %d%s간 복용을 중단합니다.",
-                onDuration, cycleUnit.getInKorean(),
-                offDuration, cycleUnit.getInKorean()
         );
     }
 }

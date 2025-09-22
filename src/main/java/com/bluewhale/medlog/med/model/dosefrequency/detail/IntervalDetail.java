@@ -1,13 +1,12 @@
 package com.bluewhale.medlog.med.model.dosefrequency.detail;
 
-import com.bluewhale.medlog.med.model.dosefrequency.detail.timecount.DoseTimeCount;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @ToString
@@ -26,12 +25,5 @@ public class IntervalDetail extends AbstractDoseFrequencyDetail {
     }
 
     @Override
-    public Optional<List<DoseTimeCount>> doseTimeCountList() {
-        return Optional.of(doseTimeCountList);
-    }
-
-    @Override
-    public String getHumanReadableFirstSentence() {
-        return String.format("매 %d일에 한번 복용합니다.", interval);
     }
 }
