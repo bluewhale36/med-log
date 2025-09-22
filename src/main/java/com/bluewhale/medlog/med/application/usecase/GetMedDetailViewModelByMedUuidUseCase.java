@@ -3,7 +3,7 @@ package com.bluewhale.medlog.med.application.usecase;
 import com.bluewhale.medlog.common.application.usecase.UseCase;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.dto.MedDetailViewModel;
+import com.bluewhale.medlog.med.dto.dto.MedDetailViewModel;
 import com.bluewhale.medlog.med.repository.MedRepository;
 import com.bluewhale.medlog.med.service.MedIdentifierConvertService;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,8 @@ public class GetMedDetailViewModelByMedUuidUseCase implements UseCase<MedUuid, M
 
     @Override
     public MedDetailViewModel execute(MedUuid input) {
-        log.info("MedDetailViewModel UseCase MedUuid: {}", input);
         Long medId = medIdConvertService.getIdByUuid(input);
-        log.info("MedDetailViewModel UseCase MedId: {}", medId);
         Med med = medRepository.findByIdWithHospitalVisitRecordAndAppUser(medId);
-        log.info("MedDetailViewModel UseCase med: {}", med);
-        MedDetailViewModel result = MedDetailViewModel.from(med);
-        log.info("MedDetailViewModel: {}", result);
-        return result;
+        return MedDetailViewModel.from(med);
     }
 }

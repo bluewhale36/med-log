@@ -2,14 +2,11 @@ package com.bluewhale.medlog.medintakerecord.dto;
 
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.dto.MedDTO;
-import com.bluewhale.medlog.med.dto.MedViewProjection;
-import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
-import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
+import com.bluewhale.medlog.med.dto.dto.MedDTO;
+import com.bluewhale.medlog.med.dto.dto.MedViewProjection;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
 import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
-import com.bluewhale.medlog.medintakerecord.domain.value.MedIntakeRecordUuid;
 import com.bluewhale.medlog.medintakerecord.enums.RecordViewType;
 import lombok.*;
 

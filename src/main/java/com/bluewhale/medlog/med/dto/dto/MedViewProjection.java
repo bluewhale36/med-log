@@ -1,4 +1,4 @@
-package com.bluewhale.medlog.med.dto;
+package com.bluewhale.medlog.med.dto.dto;
 
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;

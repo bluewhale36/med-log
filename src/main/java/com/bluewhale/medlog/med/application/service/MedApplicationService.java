@@ -3,12 +3,14 @@ package com.bluewhale.medlog.med.application.service;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.med.application.usecase.*;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.dto.MedDTO;
-import com.bluewhale.medlog.med.dto.MedDetailViewModel;
-import com.bluewhale.medlog.med.dto.MedSimpleViewModel;
+import com.bluewhale.medlog.med.dto.dto.MedDTO;
+import com.bluewhale.medlog.med.dto.dto.MedDetailViewModel;
+import com.bluewhale.medlog.med.dto.dto.MedSimpleViewModel;
+import com.bluewhale.medlog.med.dto.wrapper.MedDTOWrapper;
 import com.bluewhale.medlog.medintakesnapshot.application.usecase.CreateNewMedSnapshotByMedUuidUseCase;
 import com.bluewhale.medlog.medintakesnapshot.application.usecase.ModifyMedSnapshotByMedUuidUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +65,15 @@ public class MedApplicationService {
     @Transactional(readOnly = true)
     public List<MedDTO> getMedDTOListByAppUserUuid(AppUserUuid appUserUuid) {
         return getMedDTOListByAppUserUuidUseCase.execute(appUserUuid);
+    }
+
+
+    private final GetMedDTOWrapperByAppUserUuid getMedDTOWrapperByAppUserUuidUseCase;
+
+    @Transactional(readOnly = true)
+    @Cacheable(key = "#appUserUuid", value = "appUserMedDTO")
+    public MedDTOWrapper getMedDTOWrapperByAppUserUuid(AppUserUuid appUserUuid) {
+        return getMedDTOWrapperByAppUserUuidUseCase.execute(appUserUuid);
     }
 
 

@@ -1,8 +1,7 @@
-package com.bluewhale.medlog.med.dto;
+package com.bluewhale.medlog.med.dto.dto;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.hospital.domain.entity.HospitalVisitRecord;
-import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDetailViewModel;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;

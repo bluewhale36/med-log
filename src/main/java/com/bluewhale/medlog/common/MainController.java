@@ -21,7 +21,7 @@ public class MainController {
     @RequestMapping("/")
     public String home(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
         if (appUserUuid != null) {
-            model.addAttribute("medDTOList", medAppService.getMedDTOListByAppUserUuid(appUserUuid));
+            model.addAttribute("medDTOList", medAppService.getMedDTOWrapperByAppUserUuid(appUserUuid).getMedDTOList());
             model.addAttribute("hvrDTOList", hospitalVisitRecordAppService.getHospitalVisitRecordDTOListByAppUserUuid(appUserUuid));
         }
         return "home";

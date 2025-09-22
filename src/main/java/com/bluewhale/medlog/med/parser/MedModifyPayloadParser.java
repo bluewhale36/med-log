@@ -2,7 +2,7 @@ package com.bluewhale.medlog.med.parser;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.dto.MedModifyDTO;
+import com.bluewhale.medlog.med.dto.dto.MedModifyDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

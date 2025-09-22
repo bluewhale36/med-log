@@ -2,8 +2,7 @@ package com.bluewhale.medlog.medintakerecord.application.usecase;
 
 import com.bluewhale.medlog.appuser.service.AppUserIdentifierConvertService;
 import com.bluewhale.medlog.common.application.usecase.UseCase;
-import com.bluewhale.medlog.med.domain.entity.Med;
-import com.bluewhale.medlog.med.dto.MedViewProjection;
+import com.bluewhale.medlog.med.dto.dto.MedViewProjection;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount.DoseTimeCount;
 import com.bluewhale.medlog.med.repository.MedRepository;

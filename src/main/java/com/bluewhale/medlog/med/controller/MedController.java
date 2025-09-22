@@ -5,7 +5,7 @@ import com.bluewhale.medlog.hospital.application.service.HospitalVisitRecordAppl
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDTO;
 import com.bluewhale.medlog.med.application.service.MedApplicationService;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.dto.MedDTO;
+import com.bluewhale.medlog.med.dto.dto.MedDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedForm;
