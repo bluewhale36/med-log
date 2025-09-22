@@ -61,6 +61,7 @@ public class MedViewModel {
     }
 
     private static String buildDoseSentenceLong(MedDTO dto) {
+        // TODO : 상세 메시지 생성 로직
         return "";
     }
 
