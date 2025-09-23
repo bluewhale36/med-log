@@ -6,15 +6,19 @@ import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 public class MedSimpleViewModel {
 
@@ -28,6 +32,37 @@ public class MedSimpleViewModel {
     private final LocalDate endedOn;
 
     private final String frequencySentence;
+
+    @JsonCreator
+    public MedSimpleViewModel(
+            @JsonProperty("medUuid") MedUuid medUuid,
+            @JsonProperty("medName") String medName,
+            @JsonProperty("medType") MedType medType,
+            @JsonProperty("doseAmount") Float doseAmount,
+            @JsonProperty("doseUnit") DoseUnit doseUnit,
+            @JsonProperty("doseFrequency") DoseFrequency doseFrequency,
+
+            @JsonSerialize(using = LocalDateSerializer.class)
+            @JsonDeserialize(using = LocalDateDeserializer.class)
+            @JsonProperty("startedOn")
+            LocalDate startedOn,
+
+            @JsonSerialize(using = LocalDateSerializer.class)
+            @JsonDeserialize(using = LocalDateDeserializer.class)
+            @JsonProperty("endedOn")
+            LocalDate endedOn
+    ) {
+        this.medUuid = medUuid;
+        this.medName = medName;
+        this.medType = medType;
+        this.doseAmount = doseAmount;
+        this.doseUnit = doseUnit;
+        this.doseFrequency = doseFrequency;
+        this.startedOn = startedOn;
+        this.endedOn = endedOn;
+        this.frequencySentence =
+                generateFrequencySimpleSentence(doseFrequency.getDoseFrequencyType(), medType);
+    }
 
     public static MedSimpleViewModel from(Med unfetchedEntity) {
         return MedSimpleViewModel.builder()

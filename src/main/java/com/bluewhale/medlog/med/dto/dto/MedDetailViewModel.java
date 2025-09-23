@@ -9,15 +9,19 @@ import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.bluewhale.medlog.med.model.dosefrequency.detail.AbstractDoseFrequencyDetail;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 public class MedDetailViewModel {
 
@@ -36,6 +40,49 @@ public class MedDetailViewModel {
     private final LocalDate endedOn;
 
     private final String frequencySentence;
+
+    @JsonCreator
+    public MedDetailViewModel(
+            @JsonProperty("medUuid") MedUuid medUuid,
+
+            @JsonProperty("hospitalVisitRecordDetailViewModel")
+            HospitalVisitRecordDetailViewModel hospitalVisitRecordDetailViewModel,
+
+            @JsonProperty("appUserUuid") AppUserUuid appUserUuid,
+            @JsonProperty("medName") String medName,
+            @JsonProperty("medType") MedType medType,
+            @JsonProperty("doseAmount") Float doseAmount,
+            @JsonProperty("doseUnit") DoseUnit doseUnit,
+            @JsonProperty("doseFrequency") DoseFrequency doseFrequency,
+            @JsonProperty("instruction") String instruction,
+            @JsonProperty("effect") String effect,
+            @JsonProperty("sideEffect") String sideEffect,
+
+            @JsonProperty("startedOn")
+            @JsonSerialize(using = LocalDateSerializer.class)
+            @JsonDeserialize(using = LocalDateDeserializer.class)
+            LocalDate startedOn,
+
+            @JsonProperty("endedOn")
+            @JsonSerialize(using = LocalDateSerializer.class)
+            @JsonDeserialize(using = LocalDateDeserializer.class)
+            LocalDate endedOn
+    ) {
+        this.medUuid = medUuid;
+        this.hospitalVisitRecordDetailViewModel = hospitalVisitRecordDetailViewModel;
+        this.appUserUuid = appUserUuid;
+        this.medName = medName;
+        this.medType = medType;
+        this.doseAmount = doseAmount;
+        this.doseUnit = doseUnit;
+        this.doseFrequency = doseFrequency;
+        this.instruction = instruction;
+        this.effect = effect;
+        this.sideEffect = sideEffect;
+        this.startedOn = startedOn;
+        this.endedOn = endedOn;
+        this.frequencySentence = generateDetailFrequencySentence(doseFrequency.getDoseFrequencyDetail(), medType);
+    }
 
     public static MedDetailViewModel from(Med fetchedEntity) {
         HospitalVisitRecord visitEntity = fetchedEntity.getHospitalVisitRecord();

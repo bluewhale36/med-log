@@ -7,6 +7,7 @@ import com.bluewhale.medlog.med.dto.dto.MedDTO;
 import com.bluewhale.medlog.med.dto.dto.MedDetailViewModel;
 import com.bluewhale.medlog.med.dto.dto.MedSimpleViewModel;
 import com.bluewhale.medlog.med.dto.wrapper.MedDTOWrapper;
+import com.bluewhale.medlog.med.dto.wrapper.MedSimpleViewModelWrapper;
 import com.bluewhale.medlog.medintakesnapshot.application.usecase.CreateNewMedSnapshotByMedUuidUseCase;
 import com.bluewhale.medlog.medintakesnapshot.application.usecase.ModifyMedSnapshotByMedUuidUseCase;
 import lombok.RequiredArgsConstructor;
@@ -91,6 +92,15 @@ public class MedApplicationService {
     }
 
 
+    private final GetMedSimpleViewModelWrapperByAppUserUuid getMedSimpleViewModelWrapperByAppUserUuidUseCase;
+
+    @Transactional(readOnly = true)
+    @Cacheable(key = "#appUserUuid", value = "medSimpleViewModel")
+    public MedSimpleViewModelWrapper getMedSimpleViewModelWrapperByAppUserUuid(AppUserUuid appUserUuid) {
+        return getMedSimpleViewModelWrapperByAppUserUuidUseCase.execute(appUserUuid);
+    }
+
+
     private final ModifyMedUseCase modifyMedUseCase;
     private final ModifyMedSnapshotByMedUuidUseCase modifyMedSnapshotByMedUuidUseCase;
 
@@ -111,6 +121,7 @@ public class MedApplicationService {
     private final GetMedDetailViewModelByMedUuidUseCase getMedDetailViewModelByMedUuidUseCase;
 
     @Transactional(readOnly = true)
+    @Cacheable(key = "#medUuid", value = "medDetailViewModel")
     public MedDetailViewModel getMedDetailViewModel(MedUuid medUuid) {
         return getMedDetailViewModelByMedUuidUseCase.execute(medUuid);
     }

@@ -34,7 +34,7 @@ public class MedController {
 
     @GetMapping({"", "/"})
     public String home(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
-        model.addAttribute("medSimpleViewModelList", medAppService.getMedSimpleViewModelListByAppUserUuid(appUserUuid));
+        model.addAttribute("medSimpleViewModelList", medAppService.getMedSimpleViewModelWrapperByAppUserUuid(appUserUuid).getMedSimpleViewModelList());
         return "med/main";
     }
 
