@@ -22,6 +22,7 @@ public class GetMedDetailViewModelByMedUuidUseCase implements UseCase<MedUuid, M
     public MedDetailViewModel execute(MedUuid input) {
         Long medId = medIdConvertService.getIdByUuid(input);
         Med med = medRepository.findByIdWithHospitalVisitRecordAndAppUser(medId);
+        log.info("Data Received from Repository");
         return MedDetailViewModel.from(med);
     }
 }

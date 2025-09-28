@@ -56,7 +56,7 @@ public class RedisCacheConfig {
 
     /**
      * Redis 데이터 처리를 위한 템플릿을 구성합니다.
-     * 해당 구성된 RedisTemplate을 통해서 데이터 통신으로 처리되는 대한 직렬화를 수행합니다.
+     * 해당 구성된 RedisTemplate 을 통해서 데이터 통신으로 처리되는 대한 직렬화를 수행합니다.
      *
      * @return RedisTemplate<String, Object>
      */

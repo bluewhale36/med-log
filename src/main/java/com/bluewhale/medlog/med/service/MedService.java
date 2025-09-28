@@ -10,10 +10,12 @@ import com.bluewhale.medlog.hospital.service.HospitalVisitRecordIdentifierConver
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.med.dto.dto.MedDTO;
+import com.bluewhale.medlog.med.dto.dto.MedDetailViewModel;
 import com.bluewhale.medlog.med.dto.dto.MedRegisterDTO;
 import com.bluewhale.medlog.med.parser.MedRegisterPayloadParser;
 import com.bluewhale.medlog.med.repository.MedRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,6 +69,11 @@ public class MedService {
                 () -> new IllegalArgumentException(String.format("Medication for MedUuid %s not found", medUuid))
         );
         return MedDTO.from(entity);
+    }
+
+    @CachePut(key = "#entity.medUuid", value = "medDetailViewModel")
+    public MedDetailViewModel cachePutMedDetailViewModel(Med entity) {
+        return MedDetailViewModel.from(entity);
     }
 
 

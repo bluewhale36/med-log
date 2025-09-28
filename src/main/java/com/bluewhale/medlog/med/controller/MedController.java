@@ -35,12 +35,12 @@ public class MedController {
     @GetMapping({"", "/"})
     public String home(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
         model.addAttribute("medSimpleViewModelList", medAppService.getMedSimpleViewModelWrapperByAppUserUuid(appUserUuid).getMedSimpleViewModelList());
+        model.addAttribute("appUserUuid", appUserUuid);
         return "med/main";
     }
 
     @GetMapping("/{medUuid}")
     public String getOneMedInfo(@PathVariable("medUuid") String medUuid, Model model) {
-        log.info("Path MedUuid Str: {}", medUuid);
         model.addAttribute("medDetailViewModel", medAppService.getMedDetailViewModel(new MedUuid(medUuid)));
         return "med/one-and-edit";
     }

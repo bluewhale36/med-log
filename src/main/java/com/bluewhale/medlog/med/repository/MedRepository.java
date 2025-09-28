@@ -49,4 +49,7 @@ public interface MedRepository extends JpaRepository<Med, Long>, IdentifierRouta
     @Query("SELECT m FROM Med m JOIN FETCH m.appUser LEFT JOIN FETCH m.hospitalVisitRecord WHERE m.medId = :medId")
     Med findByIdWithHospitalVisitRecordAndAppUser(Long medId);
 
+    @Query("SELECT m FROM Med m JOIN FETCH m.appUser LEFT JOIN FETCH m.hospitalVisitRecord WHERE m.medId IN :medIdList")
+    List<Med> findAllByMedIdInWithHospitalVisitRecordAndAppUser(List<Long> medIdList);
+
 }

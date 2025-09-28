@@ -11,6 +11,7 @@ import com.bluewhale.medlog.med.dto.wrapper.MedSimpleViewModelWrapper;
 import com.bluewhale.medlog.medintakesnapshot.application.usecase.CreateNewMedSnapshotByMedUuidUseCase;
 import com.bluewhale.medlog.medintakesnapshot.application.usecase.ModifyMedSnapshotByMedUuidUseCase;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MedApplicationService {
 
     private final RegisterNewMedUseCase regiNewMedUseCase;
@@ -124,6 +126,14 @@ public class MedApplicationService {
     @Cacheable(key = "#medUuid", value = "medDetailViewModel")
     public MedDetailViewModel getMedDetailViewModel(MedUuid medUuid) {
         return getMedDetailViewModelByMedUuidUseCase.execute(medUuid);
+    }
+
+
+    private final CachePutMedDetailViewModelByAppUserUuid cachePutMedDetailViewModelByAppUserUuidUseCase;
+
+    @Transactional(readOnly = true)
+    public void putMedDetailViewModelInCache(AppUserUuid appUserUuid) {
+        cachePutMedDetailViewModelByAppUserUuidUseCase.execute(appUserUuid);
     }
 
 }
