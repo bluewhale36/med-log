@@ -8,8 +8,19 @@ import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;
 import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
 import com.bluewhale.medlog.medintakerecord.enums.RecordViewType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,13 +30,36 @@ import java.util.Map;
 
 @Getter
 @ToString
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
-public class MedIntakeRecordDayViewDTO {
+public class MedIntakeRecordDayViewDTO implements Serializable {
 
     private final LocalDate referenceDate;
     private final Map<LocalTime, List<ViewItemTypeRecordDTO>> viewItemDTOListMapForTypeRecord;
     private final Map<LocalTime, List<ViewItemTypeScheduledDTO>> viewItemDTOListMapForTypeScheduled;
+
+    @JsonCreator
+    public MedIntakeRecordDayViewDTO(
+
+            @JsonProperty("referenceDate")
+            @JsonSerialize(using = LocalDateSerializer.class)
+            @JsonDeserialize(using = LocalDateDeserializer.class)
+            LocalDate referenceDate,
+
+            @JsonProperty("viewItemDTOListMapForTypeRecord")
+            @JsonSerialize(using = LocalTimeSerializer.class)
+            @JsonDeserialize(using = LocalTimeDeserializer.class)
+            Map<LocalTime, List<ViewItemTypeRecordDTO>> viewItemDTOListMapForTypeRecord,
+
+            @JsonProperty("viewItemDTOListMapForTypeScheduled")
+            @JsonSerialize(using = LocalTimeSerializer.class)
+            @JsonDeserialize(using = LocalTimeDeserializer.class)
+            Map<LocalTime, List<ViewItemTypeScheduledDTO>> viewItemDTOListMapForTypeScheduled
+    ) {
+        this.referenceDate = referenceDate;
+        this.viewItemDTOListMapForTypeRecord = viewItemDTOListMapForTypeRecord;
+        this.viewItemDTOListMapForTypeScheduled = viewItemDTOListMapForTypeScheduled;
+    }
+
 
     public static MedIntakeRecordDayViewDTO of(
             LocalDate referenceDate,
@@ -36,11 +70,10 @@ public class MedIntakeRecordDayViewDTO {
     }
 
     @Getter
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     @Builder(access = AccessLevel.PRIVATE)
     @ToString
     @EqualsAndHashCode
-    public static class ViewItemTypeRecordDTO {
+    public static class ViewItemTypeRecordDTO implements Serializable {
 
         private final RecordViewType recordViewType = RecordViewType.RECORD;
 
@@ -51,6 +84,24 @@ public class MedIntakeRecordDayViewDTO {
 
         // 기준 시점 그룹화 목적
         private final LocalDateTime referenceDateTime;
+
+        @JsonCreator
+        public ViewItemTypeRecordDTO(
+                @JsonProperty("medDTO")
+                MedDTO medDTO,
+                @JsonProperty("medIntakeRecordDTO")
+                MedIntakeRecordDTO medIntakeRecordDTO,
+
+                @JsonProperty("referenceDateTime")
+                @JsonSerialize(using = LocalDateTimeSerializer.class)
+                @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+                LocalDateTime referenceDateTime
+        ) {
+            this.medDTO = medDTO;
+            this.medIntakeRecordDTO = medIntakeRecordDTO;
+            this.referenceDateTime = referenceDateTime;
+        }
+
 
         public static ViewItemTypeRecordDTO of(MedIntakeRecord entity, LocalDateTime referenceDateTime) {
             if (entity == null) {
@@ -74,11 +125,10 @@ public class MedIntakeRecordDayViewDTO {
     }
 
     @Getter
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     @Builder(access = AccessLevel.PRIVATE)
     @ToString
     @EqualsAndHashCode
-    public static class ViewItemTypeScheduledDTO {
+    public static class ViewItemTypeScheduledDTO implements Serializable {
         private final RecordViewType recordViewType = RecordViewType.SCHEDULED;
 
         private final MedUuid medUuid;
@@ -90,6 +140,42 @@ public class MedIntakeRecordDayViewDTO {
         private final LocalTime estimatedDoseTime;
 
         private final LocalDateTime referenceDateTime;
+
+        @JsonCreator
+        public ViewItemTypeScheduledDTO(
+                @JsonProperty("medUuid")
+                MedUuid medUuid,
+                @JsonProperty("medName")
+                String medName,
+                @JsonProperty("medType")
+                MedType medType,
+                @JsonProperty("doseAmount")
+                Float doseAmount,
+                @JsonProperty("doseUnit")
+                DoseUnit doseUnit,
+                @JsonProperty("doseCount")
+                Integer doseCount,
+
+                @JsonProperty("estimatedDoseTime")
+                @JsonSerialize(using = LocalTimeSerializer.class)
+                @JsonDeserialize(using = LocalTimeDeserializer.class)
+                LocalTime estimatedDoseTime,
+
+                @JsonProperty("referenceDateTime")
+                @JsonSerialize(using = LocalDateTimeSerializer.class)
+                @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+                LocalDateTime referenceDateTime
+        ) {
+            this.medUuid = medUuid;
+            this.medName = medName;
+            this.medType = medType;
+            this.doseAmount = doseAmount;
+            this.doseUnit = doseUnit;
+            this.doseCount = doseCount;
+            this.estimatedDoseTime = estimatedDoseTime;
+            this.referenceDateTime = referenceDateTime;
+        }
+
 
         public static ViewItemTypeScheduledDTO of(MedViewProjection projection, Integer doseCount, LocalDateTime referenceDateTime) {
             if (projection == null) {
