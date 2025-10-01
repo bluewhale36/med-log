@@ -1,5 +1,8 @@
 package com.bluewhale.medlog.redis.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -35,10 +38,24 @@ public class RedisCacheConfig {
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory rcf) {
+
+        // JavaTimeModule 포함의 ObjectMapper 생성
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        objectMapper.activateDefaultTyping(
+                BasicPolymorphicTypeValidator.builder().allowIfBaseType(Object.class).build(),
+                ObjectMapper.DefaultTyping.NON_FINAL
+        );
+
+        // 위 ObjectMapper 를 포함한 Serializer 생성
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .disableCachingNullValues()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                // JavaTimeModule 포함의 ObjectMapper 포함하는 Serializer 를 지정
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
                 .entryTtl(Duration.ofMinutes(30L));
 
         return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(rcf).cacheDefaults(config).build();

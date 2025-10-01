@@ -5,6 +5,7 @@ import com.bluewhale.medlog.med.application.service.MedApplicationService;
 import com.bluewhale.medlog.medintakerecord.application.service.MedIntakeRecordApplicationService;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +13,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/med-intake-record")
+@Slf4j
 public class MedIntakeRecordRestController {
 
     private final MedIntakeRecordApplicationService medIntakeRecordAppService;
 
     @PutMapping("/cache/{appUserUuidStr}")
     public ResponseEntity<Void> updateRecordCache(@PathVariable String appUserUuidStr) {
+        log.info("updateRecordCache appUserUuidStr={}", appUserUuidStr);
         medIntakeRecordAppService.putMedIntakeRecordCacheByAppUserUuid(new AppUserUuid(appUserUuidStr));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
