@@ -45,6 +45,7 @@ public class MedIntakeRecordController {
         model.addAttribute("selectedDate", selectedDate);
         model.addAttribute("viewDTO", medIntakeRecordDayViewDTO);
         model.addAttribute("today", LocalDate.now());
+        model.addAttribute("appUserUuid", appUserUuid);
 
         return"med_intake_record/record";
     }

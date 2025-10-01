@@ -46,13 +46,9 @@ public class MedIntakeRecordDayViewDTO implements Serializable {
             LocalDate referenceDate,
 
             @JsonProperty("viewItemDTOListMapForTypeRecord")
-            @JsonSerialize(using = LocalTimeSerializer.class)
-            @JsonDeserialize(using = LocalTimeDeserializer.class)
             Map<LocalTime, List<ViewItemTypeRecordDTO>> viewItemDTOListMapForTypeRecord,
 
             @JsonProperty("viewItemDTOListMapForTypeScheduled")
-            @JsonSerialize(using = LocalTimeSerializer.class)
-            @JsonDeserialize(using = LocalTimeDeserializer.class)
             Map<LocalTime, List<ViewItemTypeScheduledDTO>> viewItemDTOListMapForTypeScheduled
     ) {
         this.referenceDate = referenceDate;

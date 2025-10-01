@@ -1,6 +1,7 @@
 package com.bluewhale.medlog.medintakerecord.application.service;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
+import com.bluewhale.medlog.medintakerecord.application.usecase.CachePutMedIntakeRecordByAppUserUuid;
 import com.bluewhale.medlog.medintakerecord.application.usecase.GetRecordViewDTOByReferenceDateUseCase;
 import com.bluewhale.medlog.medintakerecord.application.usecase.RegisterNewMedIntakeRecordDTOListUseCase;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDTO;
@@ -38,5 +39,15 @@ public class MedIntakeRecordApplicationService {
     public void registerNewMedIntakeRecordList(List<MedIntakeRecordRegisterDTO> medIntakeRecordRegisterDTOList) {
         List<MedIntakeRecordDTO> medIntakeRecordDTOList =
                 registerNewMedIntakeRecordDTOListUseCase.execute(medIntakeRecordRegisterDTOList);
+    }
+
+
+    private final CachePutMedIntakeRecordByAppUserUuid cachePutMedIntakeRecordByAppUserUuidUseCase;
+
+    @Transactional(readOnly = true)
+    public void putMedIntakeRecordCacheByAppUserUuid(AppUserUuid appUserUuid) {
+        cachePutMedIntakeRecordByAppUserUuidUseCase.execute(
+                RenderServiceRequestToken.of(appUserUuid, LocalDate.now())
+        );
     }
 }

@@ -10,6 +10,7 @@
 <th:block th:replace="~{fragments/loading_indicator :: commonUiHtml}"></th:block>
 
 <div class="container">
+    <input type="hidden" id="app-user-uuid" th:value="${appUserUuid.asString()}">
     <header>
         <h1>Medication Log</h1>
         <button class="today-button" onclick="getToday()">오늘</button>
