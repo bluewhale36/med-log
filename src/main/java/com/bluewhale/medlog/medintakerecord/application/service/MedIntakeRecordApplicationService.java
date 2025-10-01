@@ -45,9 +45,9 @@ public class MedIntakeRecordApplicationService {
     private final CachePutMedIntakeRecordByAppUserUuid cachePutMedIntakeRecordByAppUserUuidUseCase;
 
     @Transactional(readOnly = true)
-    public void putMedIntakeRecordCacheByAppUserUuid(AppUserUuid appUserUuid) {
+    public void putMedIntakeRecordCacheByAppUserUuid(AppUserUuid appUserUuid, LocalDate referenceDate) {
         cachePutMedIntakeRecordByAppUserUuidUseCase.execute(
-                RenderServiceRequestToken.of(appUserUuid, LocalDate.now())
+                RenderServiceRequestToken.of(appUserUuid, referenceDate)
         );
     }
 }

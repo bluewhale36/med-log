@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/med-intake-record")
@@ -18,10 +20,12 @@ public class MedIntakeRecordRestController {
 
     private final MedIntakeRecordApplicationService medIntakeRecordAppService;
 
-    @PutMapping("/cache/{appUserUuidStr}")
-    public ResponseEntity<Void> updateRecordCache(@PathVariable String appUserUuidStr) {
+    @PutMapping("/cache/{appUserUuidStr}/{referenceDateStr}")
+    public ResponseEntity<Void> updateRecordCache(
+            @PathVariable String appUserUuidStr, @PathVariable String referenceDateStr
+    ) {
         log.info("updateRecordCache appUserUuidStr={}", appUserUuidStr);
-        medIntakeRecordAppService.putMedIntakeRecordCacheByAppUserUuid(new AppUserUuid(appUserUuidStr));
+        medIntakeRecordAppService.putMedIntakeRecordCacheByAppUserUuid(new AppUserUuid(appUserUuidStr), LocalDate.parse(referenceDateStr));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
