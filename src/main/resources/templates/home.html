@@ -56,8 +56,8 @@
         <ul id="visitList">
             <!-- JS로 동적 삽입 -->
             <li th:each="hvrDTO : ${hvrDTOList}">
-                <span th:text="${hvrDTO.getConsultedAt()}"></span>
-                <span th:text="${hvrDTO.getHospitalName()}"></span>
+                <span th:text="${hvrDTO.consultedAt()}"></span>
+                <span th:text="${hvrDTO.hospitalName()}"></span>
             </li>
             <li th:if="${hvrDTOList.size() == 0}">
                 <span>병원 방문 기록이 없습니다.</span>

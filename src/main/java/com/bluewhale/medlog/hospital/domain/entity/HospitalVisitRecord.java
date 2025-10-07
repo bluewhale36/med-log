@@ -44,11 +44,11 @@ public class HospitalVisitRecord {
                 .visitId(null)
                 .visitUuid(new VisitUuid(UUID.randomUUID().toString()))
                 .appUser(appUser)
-                .hospitalName(dto.getHospitalName())
-                .consultedAt(dto.getConsultedAt())
-                .chiefSymptom(dto.getChiefSymptom())
-                .diagnosis(dto.getDiagnosis())
-                .physicianName(dto.getPhysicianName())
+                .hospitalName(dto.hospitalName())
+                .consultedAt(dto.consultedAt())
+                .chiefSymptom(dto.chiefSymptom())
+                .diagnosis(dto.diagnosis())
+                .physicianName(dto.physicianName())
                 .build();
     }
 }

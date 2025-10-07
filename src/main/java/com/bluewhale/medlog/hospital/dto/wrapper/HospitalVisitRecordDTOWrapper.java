@@ -8,17 +8,8 @@ import lombok.ToString;
 
 import java.util.List;
 
-@Getter
-@ToString
-public class HospitalVisitRecordDTOWrapper {
+public record HospitalVisitRecordDTOWrapper(
+        List<HospitalVisitRecordDTO> hospitalVisitRecordDTOList
+) {
 
-    private final List<HospitalVisitRecordDTO> hospitalVisitRecordDTOList;
-
-    @JsonCreator
-    public HospitalVisitRecordDTOWrapper(
-            @JsonProperty("hospitalVisitRecordDTOList")
-            List<HospitalVisitRecordDTO> hospitalVisitRecordDTOList
-    ) {
-        this.hospitalVisitRecordDTOList = hospitalVisitRecordDTOList;
-    }
 }

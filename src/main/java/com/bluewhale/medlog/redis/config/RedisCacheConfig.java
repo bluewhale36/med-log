@@ -1,5 +1,6 @@
 package com.bluewhale.medlog.redis.config;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -43,9 +44,11 @@ public class RedisCacheConfig {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
+        // [수정] 타입 정보를 JSON 객체 내 프로퍼티로 저장하도록 변경
         objectMapper.activateDefaultTyping(
                 BasicPolymorphicTypeValidator.builder().allowIfBaseType(Object.class).build(),
-                ObjectMapper.DefaultTyping.NON_FINAL
+                ObjectMapper.DefaultTyping.EVERYTHING,  // Record Class 의 클래스 정보 저장 목적. 내부 저장소이므로 보안 관련 위험 낮음.
+                JsonTypeInfo.As.PROPERTY
         );
 
         // 위 ObjectMapper 를 포함한 Serializer 생성

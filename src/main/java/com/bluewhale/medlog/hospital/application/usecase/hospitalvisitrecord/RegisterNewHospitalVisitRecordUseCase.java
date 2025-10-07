@@ -20,7 +20,7 @@ public class RegisterNewHospitalVisitRecordUseCase implements UseCase<HospitalVi
 
     @Override
     public Void execute(HospitalVisitRecordRegisterDTO input) {
-        Long appUserId = appUserConvertService.getIdByUuid(input.getAppUserUuid());
+        Long appUserId = appUserConvertService.getIdByUuid(input.appUserUuid());
         AppUser appUserReference = appUserRepository.getReferenceById(appUserId);
 
         HospitalVisitRecord savingEntity = HospitalVisitRecord.create(input, appUserReference);

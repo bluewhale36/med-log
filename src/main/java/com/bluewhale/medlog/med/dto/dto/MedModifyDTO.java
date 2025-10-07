@@ -7,20 +7,16 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-@RequiredArgsConstructor
-@Getter
 @Builder
-@ToString
-@EqualsAndHashCode
-public class MedModifyDTO {
-
-    private final AppUserUuid appUserUuid;
-    private final MedUuid medUuid;
-    private final DoseFrequency doseFrequency;
-    private final String instruction;
-    private final String effect;
-    private final String sideEffect;
-    private final LocalDate startedOn;
-    private final LocalDate endedOn;
+public record MedModifyDTO(
+        AppUserUuid appUserUuid,
+        MedUuid medUuid,
+        DoseFrequency doseFrequency,
+        String instruction,
+        String effect,
+        String sideEffect,
+        LocalDate startedOn,
+        LocalDate endedOn
+) {
 
 }

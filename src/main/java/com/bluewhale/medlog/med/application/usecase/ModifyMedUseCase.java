@@ -26,7 +26,7 @@ public class ModifyMedUseCase implements UseCase<Map<String, Object>, MedDTO> {
         MedModifyDTO modifyDTO = medModifyPayloadParser.parseData(input);
 
         // MedUuid 로 MedId 조회.
-        Long medId = medIdentifierConvertService.getIdByUuid(modifyDTO.getMedUuid());
+        Long medId = medIdentifierConvertService.getIdByUuid(modifyDTO.medUuid());
 
         // Entity 조회.
         Med med = medRepository.findById(medId).orElseThrow(
