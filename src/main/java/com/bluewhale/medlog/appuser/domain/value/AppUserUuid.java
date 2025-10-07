@@ -9,11 +9,10 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class AppUserUuid extends AbstractUuid {
     @JsonCreator
-    public AppUserUuid(String uuid) {
-        super(uuid);
+    public AppUserUuid(@JsonProperty("value") String value) {
+        super(value);
     }
 
-    @JsonProperty
     public String asString() {
         return getValue();
     }

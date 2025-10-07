@@ -5,7 +5,7 @@ import com.bluewhale.medlog.hospital.application.service.HospitalVisitRecordAppl
 import com.bluewhale.medlog.hospital.dto.HospitalVisitRecordDTO;
 import com.bluewhale.medlog.med.application.service.MedApplicationService;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.dto.MedDTO;
+import com.bluewhale.medlog.med.dto.dto.MedDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequencyType;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedForm;
@@ -34,13 +34,13 @@ public class MedController {
 
     @GetMapping({"", "/"})
     public String home(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
-        model.addAttribute("medSimpleViewModelList", medAppService.getMedSimpleViewModelListByAppUserUuid(appUserUuid));
+        model.addAttribute("medSimpleViewModelList", medAppService.getMedSimpleViewModelWrapperByAppUserUuid(appUserUuid).getMedSimpleViewModelList());
+        model.addAttribute("appUserUuid", appUserUuid);
         return "med/main";
     }
 
     @GetMapping("/{medUuid}")
     public String getOneMedInfo(@PathVariable("medUuid") String medUuid, Model model) {
-        log.info("Path MedUuid Str: {}", medUuid);
         model.addAttribute("medDetailViewModel", medAppService.getMedDetailViewModel(new MedUuid(medUuid)));
         return "med/one-and-edit";
     }

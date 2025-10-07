@@ -1,5 +1,6 @@
 package com.bluewhale.medlog.medintakerecord.dto;
 
+import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public class MedIntakeRecordRegisterDTO {
 
     private final MedUuid medUuid;
+    private final AppUserUuid appUserUuid;
 
     /*
         true : 복용함

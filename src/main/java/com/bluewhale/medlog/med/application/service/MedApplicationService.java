@@ -3,12 +3,16 @@ package com.bluewhale.medlog.med.application.service;
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.med.application.usecase.*;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.dto.MedDTO;
-import com.bluewhale.medlog.med.dto.MedDetailViewModel;
-import com.bluewhale.medlog.med.dto.MedSimpleViewModel;
+import com.bluewhale.medlog.med.dto.dto.MedDTO;
+import com.bluewhale.medlog.med.dto.dto.MedDetailViewModel;
+import com.bluewhale.medlog.med.dto.dto.MedSimpleViewModel;
+import com.bluewhale.medlog.med.dto.wrapper.MedDTOWrapper;
+import com.bluewhale.medlog.med.dto.wrapper.MedSimpleViewModelWrapper;
 import com.bluewhale.medlog.medintakesnapshot.application.usecase.CreateNewMedSnapshotByMedUuidUseCase;
 import com.bluewhale.medlog.medintakesnapshot.application.usecase.ModifyMedSnapshotByMedUuidUseCase;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +26,7 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MedApplicationService {
 
     private final RegisterNewMedUseCase regiNewMedUseCase;
@@ -66,6 +71,15 @@ public class MedApplicationService {
     }
 
 
+    private final GetMedDTOWrapperByAppUserUuid getMedDTOWrapperByAppUserUuidUseCase;
+
+    @Transactional(readOnly = true)
+    @Cacheable(key = "#appUserUuid", value = "appUserMedDTO")
+    public MedDTOWrapper getMedDTOWrapperByAppUserUuid(AppUserUuid appUserUuid) {
+        return getMedDTOWrapperByAppUserUuidUseCase.execute(appUserUuid);
+    }
+
+
     private final GetMedSimpleViewModelListByAppUserUuidUseCase getMedSimpleViewModelListByAppUserUuidUseCase;
 
     /**
@@ -77,6 +91,15 @@ public class MedApplicationService {
     @Transactional(readOnly = true)
     public List<MedSimpleViewModel> getMedSimpleViewModelListByAppUserUuid(AppUserUuid appUserUuid) {
         return getMedSimpleViewModelListByAppUserUuidUseCase.execute(appUserUuid);
+    }
+
+
+    private final GetMedSimpleViewModelWrapperByAppUserUuid getMedSimpleViewModelWrapperByAppUserUuidUseCase;
+
+    @Transactional(readOnly = true)
+    @Cacheable(key = "#appUserUuid", value = "medSimpleViewModel")
+    public MedSimpleViewModelWrapper getMedSimpleViewModelWrapperByAppUserUuid(AppUserUuid appUserUuid) {
+        return getMedSimpleViewModelWrapperByAppUserUuidUseCase.execute(appUserUuid);
     }
 
 
@@ -100,8 +123,17 @@ public class MedApplicationService {
     private final GetMedDetailViewModelByMedUuidUseCase getMedDetailViewModelByMedUuidUseCase;
 
     @Transactional(readOnly = true)
+    @Cacheable(key = "#medUuid", value = "medDetailViewModel")
     public MedDetailViewModel getMedDetailViewModel(MedUuid medUuid) {
         return getMedDetailViewModelByMedUuidUseCase.execute(medUuid);
+    }
+
+
+    private final CachePutMedDetailViewModelByAppUserUuid cachePutMedDetailViewModelByAppUserUuidUseCase;
+
+    @Transactional(readOnly = true)
+    public void putMedDetailViewModelInCache(AppUserUuid appUserUuid) {
+        cachePutMedDetailViewModelByAppUserUuidUseCase.execute(appUserUuid);
     }
 
 }

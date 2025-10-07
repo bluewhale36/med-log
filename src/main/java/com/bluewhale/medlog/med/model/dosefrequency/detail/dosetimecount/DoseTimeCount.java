@@ -2,6 +2,10 @@ package com.bluewhale.medlog.med.model.dosefrequency.detail.dosetimecount;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -16,7 +20,11 @@ public class DoseTimeCount {
 
     @JsonCreator
     public DoseTimeCount(
-            @JsonProperty("doseTime") LocalTime doseTime,
+            @JsonProperty("doseTime")
+            @JsonSerialize(using = LocalTimeSerializer.class)
+            @JsonDeserialize(using = LocalTimeDeserializer.class)
+            LocalTime doseTime,
+
             @JsonProperty("doseCount") Integer doseCount
     ) {
         this.doseTime = doseTime;

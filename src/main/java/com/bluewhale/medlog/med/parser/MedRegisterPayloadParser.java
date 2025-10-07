@@ -2,7 +2,7 @@ package com.bluewhale.medlog.med.parser;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.hospital.domain.value.VisitUuid;
-import com.bluewhale.medlog.med.dto.MedRegisterDTO;
+import com.bluewhale.medlog.med.dto.dto.MedRegisterDTO;
 import com.bluewhale.medlog.med.model.dosefrequency.DoseFrequency;
 import com.bluewhale.medlog.med.model.medication.DoseUnit;
 import com.bluewhale.medlog.med.model.medication.MedType;

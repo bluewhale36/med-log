@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <title>복용 중인 약 목록</title>
     <link rel="stylesheet" href="/css/med/list.css">
+    <script src="/js/med/main.js" defer></script>
 </head>
 <body>
 <h1>복용 중인 약</h1>
+
+<input type="hidden" id="app-user-uuid" th:value="${appUserUuid.value}" readonly>
 
 <div class="medication-list">
     <div class="medication-card" th:each="medSimpleViewModel : ${medSimpleViewModelList}">

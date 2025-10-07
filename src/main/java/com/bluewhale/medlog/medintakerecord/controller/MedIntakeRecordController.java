@@ -8,6 +8,7 @@ import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
 import com.bluewhale.medlog.security.annotation.AuthAppUserUuid;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/med/intake")
 @RequiredArgsConstructor
+@Slf4j
 public class MedIntakeRecordController {
 
     private final MedApplicationService medAppService;
@@ -36,21 +38,23 @@ public class MedIntakeRecordController {
             @AuthAppUserUuid AppUserUuid appUserUuid,
             Model model
     ) {
-        MedIntakeRecordDayViewDTO medIntakeRecordDayViewDTO =
-                medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid, referenceDate)
-                        .orElse(null);
-
         LocalDate selectedDate = (referenceDate != null) ? referenceDate : LocalDate.now();
+
+        MedIntakeRecordDayViewDTO medIntakeRecordDayViewDTO =
+                medIntakeRecordAppService.getDTOListForIntakeRecordView(appUserUuid, selectedDate)
+                        .orElse(null);
 
         model.addAttribute("selectedDate", selectedDate);
         model.addAttribute("viewDTO", medIntakeRecordDayViewDTO);
         model.addAttribute("today", LocalDate.now());
+        model.addAttribute("appUserUuid", appUserUuid);
 
         return"med_intake_record/record";
     }
 
     @PostMapping("/record")
     public ResponseEntity<Void> registerNewRecord(@RequestBody List<MedIntakeRecordRegisterDTO> medIntakeRecordRegisterDTOList) {
+        log.info("MedIntakeRecordRegisterDTOList: {}", medIntakeRecordRegisterDTOList);
         medIntakeRecordAppService.registerNewMedIntakeRecordList(medIntakeRecordRegisterDTOList);
         return ResponseEntity.ok().build();
     }

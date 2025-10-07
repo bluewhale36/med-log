@@ -1,4 +1,4 @@
-package com.bluewhale.medlog.med.dto;
+package com.bluewhale.medlog.med.dto.dto;
 
 import com.bluewhale.medlog.appuser.domain.value.AppUserUuid;
 import com.bluewhale.medlog.hospital.domain.value.VisitUuid;

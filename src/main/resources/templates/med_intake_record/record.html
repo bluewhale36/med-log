@@ -10,6 +10,8 @@
 <th:block th:replace="~{fragments/loading_indicator :: commonUiHtml}"></th:block>
 
 <div class="container">
+    <input type="hidden" id="app-user-uuid" th:value="${appUserUuid.asString()}">
+    <input type="hidden" id="selected-date" th:value="${selectedDate.toString()}">
     <header>
         <h1>Medication Log</h1>
         <button class="today-button" onclick="getToday()">오늘</button>
@@ -137,6 +139,7 @@
 </div>
 <script src="/js/med_intake_record/record_modal.js" defer></script>
 <script src="/js/med_intake_record/date_scroll.js" defer></script>
+<script src="/js/med_intake_record/load_other_record_cache.js" defer></script>
 <script>
     function getToday() {
         // 'referenceDate' 파라미터 없이 요청하여 컨트롤러에서 오늘 날짜로 처리하도록 함

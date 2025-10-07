@@ -8,11 +8,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class MedIntakeRecordUuid extends AbstractUuid {
     @JsonCreator
-    public MedIntakeRecordUuid(String value) {
+    public MedIntakeRecordUuid(@JsonProperty("value") String value) {
         super(value);
     }
 
-    @JsonProperty
+
     public String asString() {
         return getValue();
     }

@@ -1,6 +1,8 @@
 package com.bluewhale.medlog.med.model.dosefrequency;
 
 import com.bluewhale.medlog.med.model.dosefrequency.detail.AbstractDoseFrequencyDetail;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -19,7 +21,11 @@ public class DoseFrequency {
         return new DoseFrequency(type, detail);
     }
 
-    private DoseFrequency(DoseFrequencyType type, AbstractDoseFrequencyDetail detail) {
+    @JsonCreator
+    public DoseFrequency(
+            @JsonProperty("doseFrequencyType") DoseFrequencyType type,
+            @JsonProperty("doseFrequencyDetail") AbstractDoseFrequencyDetail detail
+    ) {
         this.doseFrequencyType = type;
         this.doseFrequencyDetail = detail;
     }

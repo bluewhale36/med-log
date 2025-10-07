@@ -2,7 +2,6 @@ package com.bluewhale.medlog.medintakesnapshot.dto;
 
 import com.bluewhale.medlog.med.domain.value.MedUuid;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDTO;
-import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,9 +18,9 @@ public class MedIntakeSnapshotModifyIsTakenDTO {
 
     public static MedIntakeSnapshotModifyIsTakenDTO from(MedIntakeRecordDTO medIntakeRecordDTO) {
         return MedIntakeSnapshotModifyIsTakenDTO.builder()
-                .medUuid(medIntakeRecordDTO.getMedUuid())
+                .medUuid(medIntakeRecordDTO.medUuid())
                 .isTaken(medIntakeRecordDTO.isTaken())
-                .estimatedDoseTime(medIntakeRecordDTO.getEstimatedDoseTime())
+                .estimatedDoseTime(medIntakeRecordDTO.estimatedDoseTime())
                 .build();
     }
 }

@@ -54,10 +54,13 @@ document.addEventListener("DOMContentLoaded", () => {
      * 예정된 약 복용 기록을 서버로 전송합니다.
      */
     function sendIntakeRecord() {
+        const appUserUuid = document.querySelector("#app-user-uuid")?.value;
+
         const payload = Object.keys(medicationStatus).map(medUuid => {
             const record = medicationStatus[medUuid];
             return {
-                medUuid: medUuid,
+                medUuid: { "value": medUuid },
+                appUserUuid: { "value": appUserUuid },
                 isTaken: record.status === 'taken',
                 estimatedDoseTime: record.stdTime,
                 takenAt: toKSTISOString(record.time)

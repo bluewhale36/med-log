@@ -3,7 +3,7 @@ package com.bluewhale.medlog.med.repository;
 import com.bluewhale.medlog.common.repository.IdentifierRoutableRepository;
 import com.bluewhale.medlog.med.domain.entity.Med;
 import com.bluewhale.medlog.med.domain.value.MedUuid;
-import com.bluewhale.medlog.med.dto.MedViewProjection;
+import com.bluewhale.medlog.med.dto.dto.MedViewProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -48,5 +48,8 @@ public interface MedRepository extends JpaRepository<Med, Long>, IdentifierRouta
 
     @Query("SELECT m FROM Med m JOIN FETCH m.appUser LEFT JOIN FETCH m.hospitalVisitRecord WHERE m.medId = :medId")
     Med findByIdWithHospitalVisitRecordAndAppUser(Long medId);
+
+    @Query("SELECT m FROM Med m JOIN FETCH m.appUser LEFT JOIN FETCH m.hospitalVisitRecord WHERE m.medId IN :medIdList")
+    List<Med> findAllByMedIdInWithHospitalVisitRecordAndAppUser(List<Long> medIdList);
 
 }
