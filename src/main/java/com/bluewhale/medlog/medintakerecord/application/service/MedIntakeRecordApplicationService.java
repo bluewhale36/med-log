@@ -37,7 +37,6 @@ public class MedIntakeRecordApplicationService {
     }
 
     @Transactional
-//    @CacheEvict(key = "#appUserUuid.asString().concat(':').concat(#referenceDate.toString())", value = "recordDayViewDTO")
     public void registerNewMedIntakeRecordList(List<MedIntakeRecordRegisterDTO> medIntakeRecordRegisterDTOList) {
         List<MedIntakeRecordDTO> medIntakeRecordDTOList =
                 registerNewMedIntakeRecordDTOListUseCase.execute(medIntakeRecordRegisterDTOList);

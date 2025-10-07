@@ -8,6 +8,7 @@ import com.bluewhale.medlog.medintakerecord.domain.entity.MedIntakeRecord;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
 import com.bluewhale.medlog.medintakerecord.repository.MedIntakeRecordRepository;
+import com.bluewhale.medlog.medintakerecord.service.MedIntakeRecordService;
 import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
 import com.bluewhale.medlog.medintakesnapshot.dto.MedIntakeSnapshotModifyIsTakenDTO;
 import com.bluewhale.medlog.medintakesnapshot.repository.MedIntakeSnapshotRepository;
@@ -22,11 +23,10 @@ import java.util.List;
 public class RegisterNewMedIntakeRecordDTOListUseCase implements UseCase<List<MedIntakeRecordRegisterDTO>, List<MedIntakeRecordDTO>> {
 
     private final MedIdentifierConvertService medIdentifierConvertService;
+    private final MedIntakeRecordService medIntakeRecordService;
 
     private final MedRepository medRepository;
-
     private final MedIntakeRecordRepository medIntakeRecordRepository;
-
     private final MedIntakeSnapshotRepository medIntakeSnapshotRepository;
 
 
@@ -61,6 +61,13 @@ public class RegisterNewMedIntakeRecordDTOListUseCase implements UseCase<List<Me
             } else {
                 throw new IllegalStateException("MedIntakeSnapshot not found with medId : " + medId + " And EstimatedDoseTime : " + dto.getEstimatedDoseTime());
             }
+        }
+
+        /*
+            각각의 복용 기록 정보에 대한 캐시 삭제 필요
+         */
+        for (MedIntakeRecordRegisterDTO dto : input) {
+            medIntakeRecordService.evictMedIntakeRecordCache(dto.getAppUserUuid(), dto.getEstimatedDoseTime().toLocalDate());
         }
 
         return medIntakeRecordDTOList;

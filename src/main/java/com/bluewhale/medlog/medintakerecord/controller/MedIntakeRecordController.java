@@ -8,6 +8,7 @@ import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
 import com.bluewhale.medlog.security.annotation.AuthAppUserUuid;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/med/intake")
 @RequiredArgsConstructor
+@Slf4j
 public class MedIntakeRecordController {
 
     private final MedApplicationService medAppService;
@@ -52,6 +54,7 @@ public class MedIntakeRecordController {
 
     @PostMapping("/record")
     public ResponseEntity<Void> registerNewRecord(@RequestBody List<MedIntakeRecordRegisterDTO> medIntakeRecordRegisterDTOList) {
+        log.info("MedIntakeRecordRegisterDTOList: {}", medIntakeRecordRegisterDTOList);
         medIntakeRecordAppService.registerNewMedIntakeRecordList(medIntakeRecordRegisterDTOList);
         return ResponseEntity.ok().build();
     }

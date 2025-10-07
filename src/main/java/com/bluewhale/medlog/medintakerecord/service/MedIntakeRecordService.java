@@ -14,6 +14,7 @@ import com.bluewhale.medlog.medintakesnapshot.domain.entity.MedIntakeSnapshot;
 import com.bluewhale.medlog.medintakesnapshot.repository.MedIntakeSnapshotRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -400,5 +401,12 @@ public class MedIntakeRecordService {
             log.info("No Med found for AppUserUuid: {}", appUserUuid);
             return Optional.empty();
         }
+    }
+
+
+    @CacheEvict(key = "#appUserUuid.asString().concat(':').concat(#referenceDate.toString())", value = "recordDayViewDTO")
+    public void evictMedIntakeRecordCache(AppUserUuid appUserUuid, LocalDate referenceDate) {
+        log.info("Evicting MedIntakeRecord for AppUserUuid={}, ReferenceDate={}", appUserUuid, referenceDate);
+        return;
     }
 }
