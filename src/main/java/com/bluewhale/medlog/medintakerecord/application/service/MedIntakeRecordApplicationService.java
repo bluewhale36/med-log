@@ -9,6 +9,7 @@ import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordDayViewDTO;
 import com.bluewhale.medlog.medintakerecord.dto.MedIntakeRecordRegisterDTO;
 import com.bluewhale.medlog.medintakerecord.model.RenderServiceRequestToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public class MedIntakeRecordApplicationService {
     private final RegisterNewMedIntakeRecordDTOListUseCase registerNewMedIntakeRecordDTOListUseCase;
 
     @Transactional(readOnly = true)
-    @Cacheable(key = "#appUserUuid.asString().concat(':').concat(#referenceDate.toString())", value = "recordDayViewDTO")
+    @Cacheable(key = "#appUserUuid.asString().concat(':').concat(#referenceDate.toString())", value = "recordDayViewDTO", unless = "#result == null")
     public Optional<MedIntakeRecordDayViewDTO> getDTOListForIntakeRecordView(
             AppUserUuid appUserUuid, LocalDate referenceDate
     ) {
@@ -36,6 +37,7 @@ public class MedIntakeRecordApplicationService {
     }
 
     @Transactional
+//    @CacheEvict(key = "#appUserUuid.asString().concat(':').concat(#referenceDate.toString())", value = "recordDayViewDTO")
     public void registerNewMedIntakeRecordList(List<MedIntakeRecordRegisterDTO> medIntakeRecordRegisterDTOList) {
         List<MedIntakeRecordDTO> medIntakeRecordDTOList =
                 registerNewMedIntakeRecordDTOListUseCase.execute(medIntakeRecordRegisterDTOList);
