@@ -39,7 +39,7 @@ public class RegisterNewMedIntakeRecordDTOListUseCase implements UseCase<List<Me
         List<MedIntakeRecord> medIntakeRecordList = new ArrayList<>();
 
         for (MedIntakeRecordRegisterDTO dto : input) {
-            Long medId = medIdentifierConvertService.getIdByUuid(dto.getMedUuid());
+            Long medId = medIdentifierConvertService.getIdByUuid(dto.medUuid());
             Med medReference = medRepository.getReferenceById(medId);
             MedIntakeRecord entity = MedIntakeRecord.create(dto, medReference);
             medIntakeRecordList.add(entity);
@@ -67,7 +67,7 @@ public class RegisterNewMedIntakeRecordDTOListUseCase implements UseCase<List<Me
             각각의 복용 기록 정보에 대한 캐시 삭제 필요
          */
         for (MedIntakeRecordRegisterDTO dto : input) {
-            medIntakeRecordService.evictMedIntakeRecordCache(dto.getAppUserUuid(), dto.getEstimatedDoseTime().toLocalDate());
+            medIntakeRecordService.evictMedIntakeRecordCache(dto.appUserUuid(), dto.estimatedDoseTime().toLocalDate());
         }
 
         return medIntakeRecordDTOList;

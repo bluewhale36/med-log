@@ -7,15 +7,13 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Getter
-@RequiredArgsConstructor
-@ToString
-public class HospitalVisitRecordRegisterDTO {
+public record HospitalVisitRecordRegisterDTO(
+        AppUserUuid appUserUuid,
+        String hospitalName,
+        LocalDateTime consultedAt,
+        String chiefSymptom,
+        String diagnosis,
+        String physicianName
+) {
 
-    private final AppUserUuid appUserUuid;
-    private final String hospitalName;
-    private final LocalDateTime consultedAt;
-    private final String chiefSymptom;
-    private final String diagnosis;
-    private final String physicianName;
 }

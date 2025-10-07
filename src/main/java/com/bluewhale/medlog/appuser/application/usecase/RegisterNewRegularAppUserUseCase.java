@@ -19,7 +19,7 @@ public class RegisterNewRegularAppUserUseCase implements UseCase<AppUserRegister
 
     @Override
     public AppUser execute(AppUserRegisterDTO input) {
-        String encodedPassword = passwordEncoder.encode(input.getPassword());
+        String encodedPassword = passwordEncoder.encode(input.password());
         AppUser entity = AppUser.create(input, encodedPassword);
         entity.addRole(Role.REGULAR);
 

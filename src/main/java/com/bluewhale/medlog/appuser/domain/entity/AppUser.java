@@ -16,7 +16,6 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,12 +69,12 @@ public class AppUser {
         return AppUser.builder()
                 .appUserId(null)
                 .appUserUuid(new AppUserUuid(UUID.randomUUID().toString()))
-                .username(dto.getUsername())
+                .username(dto.username())
                 .password(encodedPassword)
-                .name(dto.getName())
-                .email(dto.getEmail())
-                .birthdate(dto.getBirthdate())
-                .gender(dto.getGender())
+                .name(dto.name())
+                .email(dto.email())
+                .birthdate(dto.birthdate())
+                .gender(dto.gender())
                 .isEnabled(IsEnabled.ENABLED)
                 .isLocked(IsLocked.UNLOCKED)
                 .enrolledAt(null)

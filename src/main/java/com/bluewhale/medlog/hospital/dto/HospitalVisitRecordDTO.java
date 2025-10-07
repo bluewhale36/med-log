@@ -11,23 +11,20 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Getter
-@ToString
 @Builder
-public class HospitalVisitRecordDTO {
-
-    private final VisitUuid visitUuid;
-    private final AppUserUuid appUserUuid;
-    private final String hospitalName;
-    private final LocalDateTime consultedAt;
-    private final String chiefSymptom;
-    private final String diagnosis;
-    private final String physicianName;
+public record HospitalVisitRecordDTO(
+        VisitUuid visitUuid,
+        AppUserUuid appUserUuid,
+        String hospitalName,
+        LocalDateTime consultedAt,
+        String chiefSymptom,
+        String diagnosis,
+        String physicianName
+) {
 
     @JsonCreator
     public HospitalVisitRecordDTO(

@@ -40,7 +40,7 @@ public class MedApplicationService {
     @Transactional(rollbackFor = Exception.class)
     public void registerNewMed(Map<String, Object> payload) {
         MedDTO insertedMedDTO = regiNewMedUseCase.execute(payload);
-        createNewMedSnapshotByMedUuidUseCase.execute(insertedMedDTO.getMedUuid());
+        createNewMedSnapshotByMedUuidUseCase.execute(insertedMedDTO.medUuid());
     }
 
 
@@ -115,7 +115,7 @@ public class MedApplicationService {
     @Transactional(rollbackFor = Exception.class)
     public MedDTO updateMedInfo(Map<String, Object> payload) {
         MedDTO modifiedMedDTO = modifyMedUseCase.execute(payload);
-        modifyMedSnapshotByMedUuidUseCase.execute(modifiedMedDTO.getMedUuid());
+        modifyMedSnapshotByMedUuidUseCase.execute(modifiedMedDTO.medUuid());
         return modifiedMedDTO;
     }
 

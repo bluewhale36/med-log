@@ -14,38 +14,15 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Getter
 @Builder(access = AccessLevel.PRIVATE)
-@ToString
-public class HospitalVisitRecordDetailViewModel {
-
-    private final VisitUuid visitUuid;
-    private final String hospitalName;
-    private final LocalDateTime consultedAt;
-    private final String chiefSymptom;
-    private final String diagnosis;
-    private final String physicianName;
-
-    public HospitalVisitRecordDetailViewModel(
-            @JsonProperty("visitUuid") VisitUuid visitUuid,
-            @JsonProperty("hospitalName") String hospitalName,
-
-            @JsonProperty("consultedAt")
-            @JsonSerialize(using = LocalDateTimeSerializer.class)
-            @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-            LocalDateTime consultedAt,
-
-            @JsonProperty("chiefSymptom") String chiefSymptom,
-            @JsonProperty("diagnosis") String diagnosis,
-            @JsonProperty("physicianName") String physicianName
-    ) {
-        this.visitUuid = visitUuid;
-        this.hospitalName = hospitalName;
-        this.consultedAt = consultedAt;
-        this.chiefSymptom = chiefSymptom;
-        this.diagnosis = diagnosis;
-        this.physicianName = physicianName;
-    }
+public record HospitalVisitRecordDetailViewModel(
+        VisitUuid visitUuid,
+        String hospitalName,
+        LocalDateTime consultedAt,
+        String chiefSymptom,
+        String diagnosis,
+        String physicianName
+) {
 
     public static HospitalVisitRecordDetailViewModel from(HospitalVisitRecord entity) {
         return HospitalVisitRecordDetailViewModel.builder()

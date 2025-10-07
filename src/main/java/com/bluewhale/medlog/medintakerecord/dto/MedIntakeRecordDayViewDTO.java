@@ -28,34 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 
-@Getter
-@ToString
-@EqualsAndHashCode
-public class MedIntakeRecordDayViewDTO implements Serializable {
-
-    private final LocalDate referenceDate;
-    private final Map<LocalTime, List<ViewItemTypeRecordDTO>> viewItemDTOListMapForTypeRecord;
-    private final Map<LocalTime, List<ViewItemTypeScheduledDTO>> viewItemDTOListMapForTypeScheduled;
-
-    @JsonCreator
-    public MedIntakeRecordDayViewDTO(
-
-            @JsonProperty("referenceDate")
-            @JsonSerialize(using = LocalDateSerializer.class)
-            @JsonDeserialize(using = LocalDateDeserializer.class)
-            LocalDate referenceDate,
-
-            @JsonProperty("viewItemDTOListMapForTypeRecord")
-            Map<LocalTime, List<ViewItemTypeRecordDTO>> viewItemDTOListMapForTypeRecord,
-
-            @JsonProperty("viewItemDTOListMapForTypeScheduled")
-            Map<LocalTime, List<ViewItemTypeScheduledDTO>> viewItemDTOListMapForTypeScheduled
-    ) {
-        this.referenceDate = referenceDate;
-        this.viewItemDTOListMapForTypeRecord = viewItemDTOListMapForTypeRecord;
-        this.viewItemDTOListMapForTypeScheduled = viewItemDTOListMapForTypeScheduled;
-    }
-
+public record MedIntakeRecordDayViewDTO(
+        LocalDate referenceDate,
+        Map<LocalTime, List<ViewItemTypeRecordDTO>> viewItemDTOListMapForTypeRecord,
+        Map<LocalTime, List<ViewItemTypeScheduledDTO>> viewItemDTOListMapForTypeScheduled
+) implements Serializable {
 
     public static MedIntakeRecordDayViewDTO of(
             LocalDate referenceDate,
@@ -83,15 +60,9 @@ public class MedIntakeRecordDayViewDTO implements Serializable {
 
         @JsonCreator
         public ViewItemTypeRecordDTO(
-                @JsonProperty("medDTO")
-                MedDTO medDTO,
-                @JsonProperty("medIntakeRecordDTO")
-                MedIntakeRecordDTO medIntakeRecordDTO,
-
-                @JsonProperty("referenceDateTime")
-                @JsonSerialize(using = LocalDateTimeSerializer.class)
-                @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-                LocalDateTime referenceDateTime
+                @JsonProperty("medDTO") MedDTO medDTO,
+                @JsonProperty("medIntakeRecordDTO") MedIntakeRecordDTO medIntakeRecordDTO,
+                @JsonProperty("referenceDateTime") LocalDateTime referenceDateTime
         ) {
             this.medDTO = medDTO;
             this.medIntakeRecordDTO = medIntakeRecordDTO;
@@ -139,28 +110,14 @@ public class MedIntakeRecordDayViewDTO implements Serializable {
 
         @JsonCreator
         public ViewItemTypeScheduledDTO(
-                @JsonProperty("medUuid")
-                MedUuid medUuid,
-                @JsonProperty("medName")
-                String medName,
-                @JsonProperty("medType")
-                MedType medType,
-                @JsonProperty("doseAmount")
-                Float doseAmount,
-                @JsonProperty("doseUnit")
-                DoseUnit doseUnit,
-                @JsonProperty("doseCount")
-                Integer doseCount,
-
-                @JsonProperty("estimatedDoseTime")
-                @JsonSerialize(using = LocalTimeSerializer.class)
-                @JsonDeserialize(using = LocalTimeDeserializer.class)
-                LocalTime estimatedDoseTime,
-
-                @JsonProperty("referenceDateTime")
-                @JsonSerialize(using = LocalDateTimeSerializer.class)
-                @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-                LocalDateTime referenceDateTime
+                @JsonProperty("medUuid") MedUuid medUuid,
+                @JsonProperty("medName") String medName,
+                @JsonProperty("medType") MedType medType,
+                @JsonProperty("doseAmount") Float doseAmount,
+                @JsonProperty("doseUnit") DoseUnit doseUnit,
+                @JsonProperty("doseCount") Integer doseCount,
+                @JsonProperty("estimatedDoseTime") LocalTime estimatedDoseTime,
+                @JsonProperty("referenceDateTime") LocalDateTime referenceDateTime
         ) {
             this.medUuid = medUuid;
             this.medName = medName;

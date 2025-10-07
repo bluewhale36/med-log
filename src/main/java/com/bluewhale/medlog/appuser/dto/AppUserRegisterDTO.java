@@ -7,17 +7,13 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 
-@RequiredArgsConstructor
-@Getter
-@ToString
-public class AppUserRegisterDTO {
-
-    private final String username;
-    private final String password;
-
-    private final String name;
-    private final String email;
-    private final LocalDate birthdate;
-    private final Gender gender;
+public record AppUserRegisterDTO(
+        String username,
+        String password,
+        String name,
+        String email,
+        LocalDate birthdate,
+        Gender gender
+) {
 
 }

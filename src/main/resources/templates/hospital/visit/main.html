@@ -12,7 +12,7 @@
 <hr/>
 
 <th:block th:each="hvrDTO : ${hvrDTOList}">
-    <a th:href="@{/hospital/visit/{hvrUuid}(hvrUuid=${hvrDTO.getVisitUuid().asString()})}">
+    <a th:href="@{/hospital/visit/{hvrUuid}(hvrUuid=${hvrDTO.visitUuid().asString()})}">
         <div th:text="${hvrDTO}"></div>
     </a>
     <br/>

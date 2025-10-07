@@ -22,7 +22,7 @@ public class MainController {
     public String home(@AuthAppUserUuid AppUserUuid appUserUuid, Model model) {
         if (appUserUuid != null) {
             model.addAttribute("medDTOList", medAppService.getMedDTOWrapperByAppUserUuid(appUserUuid).getMedDTOList());
-            model.addAttribute("hvrDTOList", hospitalVisitRecordAppService.getHospitalVisitRecordWrapperByAppUserUuid(appUserUuid).getHospitalVisitRecordDTOList());
+            model.addAttribute("hvrDTOList", hospitalVisitRecordAppService.getHospitalVisitRecordWrapperByAppUserUuid(appUserUuid).hospitalVisitRecordDTOList());
         }
         return "home";
     }

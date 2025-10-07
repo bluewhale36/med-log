@@ -103,24 +103,24 @@ public class Med {
                 .medUuid(new MedUuid(UUID.randomUUID().toString()))
                 .hospitalVisitRecord(hospitalVisitRecord)
                 .appUser(appUser)
-                .medName(dto.getMedName())
-                .medType(dto.getMedType())
-                .doseAmount(dto.getDoseAmount())
-                .doseUnit(dto.getDoseUnit())
-                .doseFrequency(dto.getDoseFrequency())
-                .instruction(dto.getInstruction())
-                .effect(dto.getEffect())
-                .sideEffect(dto.getSideEffect())
-                .startedOn(dto.getStartedOn())
-                .endedOn(dto.getEndedOn())
+                .medName(dto.medName())
+                .medType(dto.medType())
+                .doseAmount(dto.doseAmount())
+                .doseUnit(dto.doseUnit())
+                .doseFrequency(dto.doseFrequency())
+                .instruction(dto.instruction())
+                .effect(dto.effect())
+                .sideEffect(dto.sideEffect())
+                .startedOn(dto.startedOn())
+                .endedOn(dto.endedOn())
                 .status(Status.ACTIVE)
                 .deletedAt(null)
                 .build();
     }
 
     public void updateSchedule(MedModifyDTO modifyDTO) {
-        this.doseFrequency = modifyDTO.getDoseFrequency();
-        this.startedOn = modifyDTO.getStartedOn();
-        this.endedOn = modifyDTO.getEndedOn();
+        this.doseFrequency = modifyDTO.doseFrequency();
+        this.startedOn = modifyDTO.startedOn();
+        this.endedOn = modifyDTO.endedOn();
     }
 }
